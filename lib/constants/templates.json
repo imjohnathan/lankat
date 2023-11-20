@@ -1,0 +1,102 @@
+[
+  {
+    "id": 1,
+    "name": "Smoke",
+    "preview": "/templates/themes/smoke/preview.png",
+    "settings": {
+      "bgId": "45",
+      "primaryColor": "#405B2E",
+      "bioLayoutId": "1",
+      "bioColorSetId": "9",
+      "bioBgBlurColor": "rgba(255, 255, 255, 0.4)",
+      "linkStyleId": "15",
+      "linkBgColorId": "1",
+      "linkBgColor1": "#FFFFFF",
+      "linkBgColor2": "#FFFFFF",
+      "linkBorderColorId": "1",
+      "linkBorderColor": "#405B2E",
+      "linkTextColor": "#405B2E",
+      "linkTextAlignId": "center"
+    }
+  },
+  {
+    "id": 2,
+    "name": "Spray",
+    "preview": "/templates/themes/spray/preview.png",
+    "settings": {
+      "bgId": "45",
+      "primaryColor": "#405B2E",
+      "bioLayoutId": "1",
+      "bioColorSetId": "9",
+      "bioBgBlurColor": "rgba(255, 255, 255, 0.4)",
+      "linkStyleId": "15",
+      "linkBgColorId": "1",
+      "linkBgColor1": "#FFFFFF",
+      "linkBgColor2": "#FFFFFF",
+      "linkBorderColorId": "1",
+      "linkBorderColor": "#405B2E",
+      "linkTextColor": "#405B2E",
+      "linkTextAlignId": "center"
+    }
+  },
+  {
+    "id": 3,
+    "name": "Air White",
+    "preview": "/templates/themes/air-white/preview.png",
+    "settings": {
+      "bgId": "45",
+      "primaryColor": "#405B2E",
+      "bioLayoutId": "1",
+      "bioColorSetId": "9",
+      "bioBgBlurColor": "rgba(255, 255, 255, 0.4)",
+      "linkStyleId": "15",
+      "linkBgColorId": "1",
+      "linkBgColor1": "#FFFFFF",
+      "linkBgColor2": "#FFFFFF",
+      "linkBorderColorId": "1",
+      "linkBorderColor": "#405B2E",
+      "linkTextColor": "#405B2E",
+      "linkTextAlignId": "center"
+    }
+  },
+  {
+    "id": 4,
+    "name": "Noir",
+    "preview": "/templates/themes/noir/preview.png",
+    "settings": {
+      "bgId": "45",
+      "primaryColor": "#405B2E",
+      "bioLayoutId": "1",
+      "bioColorSetId": "9",
+      "bioBgBlurColor": "rgba(255, 255, 255, 0.4)",
+      "linkStyleId": "15",
+      "linkBgColorId": "1",
+      "linkBgColor1": "#FFFFFF",
+      "linkBgColor2": "#FFFFFF",
+      "linkBorderColorId": "1",
+      "linkBorderColor": "#405B2E",
+      "linkTextColor": "#405B2E",
+      "linkTextAlignId": "center"
+    }
+  },
+  {
+    "id": 5,
+    "name": "Air Black",
+    "preview": "/templates/themes/air-black/preview.png",
+    "settings": {
+      "bgId": "45",
+      "primaryColor": "#405B2E",
+      "bioLayoutId": "1",
+      "bioColorSetId": "9",
+      "bioBgBlurColor": "rgba(255, 255, 255, 0.4)",
+      "linkStyleId": "15",
+      "linkBgColorId": "1",
+      "linkBgColor1": "#FFFFFF",
+      "linkBgColor2": "#FFFFFF",
+      "linkBorderColorId": "1",
+      "linkBorderColor": "#405B2E",
+      "linkTextColor": "#405B2E",
+      "linkTextAlignId": "center"
+    }
+  }
+]
