@@ -3,10 +3,6 @@ import { isValidUrl } from "@/lib/utils";
 import { NextFetchEvent } from "next/server";
 import { parse } from "node-html-parser";
 
-export const config = {
-  runtime: "edge",
-};
-
 export const GET = auth(async (req: any, ev: NextFetchEvent) => {
   if (!req.auth) {
     return new Response(
