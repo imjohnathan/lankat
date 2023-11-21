@@ -21,7 +21,7 @@ export default async function RootLayout({
 }) {
   const session = await auth();
   return (
-    <SessionProvider session={session}>
+    <SessionProvider session={session} refetchOnWindowFocus={false}>
       <ClientLayout>
         <html lang="en">
           <body className={inter.className}>
