@@ -1,5 +1,6 @@
 "use client";
 
+import { devtoolsExchange } from "@urql/devtools";
 import { authExchange } from "@urql/exchange-auth";
 import {
   UrqlProvider,
@@ -33,7 +34,13 @@ export default function Layout({ children }: React.PropsWithChildren) {
     const client = createClient({
       url: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT ?? "",
       fetchOptions: () => ({ headers }),
-      exchanges: [authHeader, cacheExchange, ssr, fetchExchange],
+      exchanges: [
+        devtoolsExchange,
+        authHeader,
+        cacheExchange,
+        ssr,
+        fetchExchange,
+      ],
       suspense: true,
     });
 

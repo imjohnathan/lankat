@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth";
 import { cacheExchange, createClient, fetchExchange } from "@urql/core";
+import { devtoolsExchange } from "@urql/devtools";
 import { authExchange } from "@urql/exchange-auth";
 import { registerUrql } from "@urql/next/rsc";
 
@@ -22,7 +23,7 @@ export const headers = {
 export const client = createClient({
   url: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
   fetchOptions: () => ({ headers }),
-  exchanges: [authHeader, cacheExchange, fetchExchange],
+  exchanges: [devtoolsExchange, authHeader, cacheExchange, fetchExchange],
 });
 
 export const { getClient } = registerUrql(() => client);
