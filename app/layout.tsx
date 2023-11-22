@@ -1,3 +1,4 @@
+import Modal from "@/components/Modal";
 import Header from "@/components/layout/Header";
 import { auth } from "@/lib/auth";
 import type { Metadata } from "next";
@@ -28,6 +29,7 @@ export default async function RootLayout({
             <Header />
             {children}
             <Toaster />
+            <Modal />
           </body>
         </html>
       </ClientLayout>

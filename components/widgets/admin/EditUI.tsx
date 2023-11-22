@@ -1,6 +1,7 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
+import useModalStore from "@/stores/useModalStore";
 import IconDrag from "~icons/mingcute/dots-fill";
 import IconEdit from "~icons/solar/pen-new-square-outline";
 import IconDelete from "~icons/solar/trash-bin-minimalistic-outline";
@@ -13,7 +14,8 @@ export default function WidgetUI({
   handleToggleWidgetShow,
   ...props
 }) {
-  const { id, isShow } = props;
+  const { openEditModal } = useModalStore();
+  const { id, isShow, type, widget } = props;
   return (
     <Card className="w-full">
       <div className="flex flex-row justify-between p-2">
@@ -28,7 +30,10 @@ export default function WidgetUI({
           />
         </div>
         <div className="flex items-center justify-center gap-2">
-          <button className="text-slate-400 hover:text-black">
+          <button
+            onClick={() => openEditModal({ type, widget })}
+            className="text-slate-400 hover:text-black"
+          >
             <IconEdit />
           </button>
           <button

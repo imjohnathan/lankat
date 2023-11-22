@@ -8,7 +8,17 @@ export default function Header() {
         <Link href="/">
           <Logo className="h-6" />
         </Link>
-        <div></div>
+        <ul className="flex gap-8 text-lg font-medium">
+          <li>
+            <Link href="/hello">你好</Link>
+          </li>
+          <li>
+            <Link href="/dnd">頁面</Link>
+          </li>
+          <li>
+            <Link href="/links">連結</Link>
+          </li>
+        </ul>
         <UserNav className="flex justify-end" />
       </header>
       <div className="h-[65px]"></div>

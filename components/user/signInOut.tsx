@@ -1,7 +1,7 @@
 import { signIn, signOut } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
-export function SignIn({
+export async function SignIn({
   provider,
   children,
   className,
@@ -24,7 +24,7 @@ export function SignIn({
   );
 }
 
-export function SignOut({
+export async function SignOut({
   children,
   className,
 }: {

@@ -9,8 +9,10 @@ import { gql, useMutation, useQuery } from "@urql/next";
 import { produce } from "immer";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { useContext, useEffect } from "react";
 import { useForm, useFormState } from "react-hook-form";
+import { toast } from "sonner";
 
 export function UserUrl(
   props: React.PropsWithChildren<{
@@ -218,7 +220,7 @@ export function Styles(
   const [updateUserResult, updateUser] = useMutation(query);
   const { data: session } = useSession();
   const { form, setForm } = useContext(FormStateContext);
-
+  const router = useRouter();
   const { register, handleSubmit, control } = useForm({
     shouldUseNativeValidation: true,
     defaultValues: {
@@ -256,6 +258,8 @@ export function Styles(
         })),
       };
       const { data, error } = await updateUser(variables);
+      toast.success("完成設定！開始拖拉吧～");
+      router.push("/dnd");
     } catch (e) {
       console.error(e);
     } finally {
