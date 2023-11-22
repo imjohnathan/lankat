@@ -53,51 +53,56 @@ function DataTable() {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[100px]">預覽圖</TableHead>
-          <TableHead>網址</TableHead>
+          <TableHead className="w-2100px]">預覽圖</TableHead>
+          <TableHead className="w-[100px]">網址</TableHead>
           <TableHead>成效</TableHead>
           <TableHead className="text-right">時間</TableHead>
           <TableHead>操作</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.links.map(({ clicks, created_at, id, key, url, og_image }) => {
-          const {
-            data: { publicUrl },
-          } = supabase.storage
-            .from(process.env.NEXT_PUBLIC_SUPABASE_LINKS_BUCKET as string)
-            .getPublicUrl(og_image);
-          return (
-            <TableRow key={id}>
-              <TableCell>
-                <img
-                  src={og_image}
-                  alt={"OG image"}
-                  className="h-[100px] w-[100px] object-cover"
-                />
-              </TableCell>
-              <TableCell>
-                <p className="max-w-sm truncate">{url}</p>
-                <p>https://lank.at/s/{key}</p>
-              </TableCell>
-              <TableCell>{clicks || 0}</TableCell>
-              <TableCell className="text-right">
-                {dateFormat(created_at)}
-              </TableCell>
-              <TableCell className="grid h-full w-full place-items-center gap-1">
-                <div className="flex gap-1">
-                  <Button>編輯</Button>
-                  <Button
-                    onClick={() => handleDelete(id)}
-                    variant="destructive"
-                  >
-                    刪除
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          );
-        })}
+        {data?.links.length &&
+          data.links.map(({ clicks, created_at, id, key, url, og_image }) => {
+            const {
+              data: { publicUrl },
+            } = supabase.storage
+              .from(process.env.NEXT_PUBLIC_SUPABASE_LINKS_BUCKET as string)
+              .getPublicUrl(og_image);
+            return (
+              <TableRow key={id}>
+                <TableCell>
+                  <img
+                    src={
+                      og_image ||
+                      "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs="
+                    }
+                    alt={"OG image"}
+                    className="h-[100px] w-[100px] rounded-lg border object-cover"
+                  />
+                </TableCell>
+                <TableCell>
+                  <p className="max-w-sm truncate">{url}</p>
+                  <p>https://lank.at/s/{key}</p>
+                </TableCell>
+                <TableCell>{clicks || 0}</TableCell>
+                <TableCell className="text-right">
+                  {dateFormat(created_at)}
+                </TableCell>
+                <TableCell className="grid h-full w-full place-items-center gap-1">
+                  <div className="flex gap-1">
+                    <Button size={"sm"}>編輯</Button>
+                    <Button
+                      size={"sm"}
+                      onClick={() => handleDelete(id)}
+                      variant="destructive"
+                    >
+                      刪除
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })}
       </TableBody>
     </Table>
   );
