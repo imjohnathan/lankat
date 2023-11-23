@@ -4,16 +4,17 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 // import { renderers } from "./page.client";
 
-function getRenderer(type) {
+function getRenderer(type: string) {
   if (type === "spacer") {
-    return () => {
+    return function Spacer() {
       return (
         <div className="h-7 w-full bg-slate-300 p-6 opacity-40">spacer</div>
       );
     };
   }
-  return () => <Button>{type}</Button>;
-  //return renderers[type] || (() => <div>No renderer found for {type}</div>);
+  return function Type() {
+    return <Button>{type}</Button>;
+  };
 }
 
 export function Field(props) {
