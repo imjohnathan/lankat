@@ -19,6 +19,7 @@ import {
 } from "@/lib/utils";
 import { gql, useMutation } from "@urql/next";
 import { produce } from "immer";
+import { nanoid } from "nanoid";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useDebounce } from "use-debounce";
@@ -68,7 +69,7 @@ export default function AddLinksModal({ open, setOpen }: AddLinksModalProps) {
   const generateKey = () => {
     setData(
       produce((data) => {
-        data.key = generateRandomKey();
+        data.key = nanoid(7);
       }),
     );
   };

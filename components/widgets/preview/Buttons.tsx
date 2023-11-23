@@ -1,5 +1,29 @@
 import { Button } from "@/components/ui/button";
 import { type Widgets } from "@/gql/graphql";
+import { clsx } from "clsx";
+
+interface WidgetLinkProps {
+  isShow: boolean;
+  name: string;
+  url: string;
+}
+
+export function PreviewItem({ isShow, url, name }: WidgetLinkProps) {
+  return (
+    <div className="w-full">
+      <Button
+        asChild
+        variant="outline"
+        className={clsx("w-full", { "opacity-50": !isShow })}
+      >
+        <a href={url} target="_blank">
+          {name ? name : "..."}
+        </a>
+      </Button>
+    </div>
+  );
+}
+
 export default function ButtonPreview({
   widget,
   ...props
@@ -9,16 +33,12 @@ export default function ButtonPreview({
   const { widgets_links } = widget;
   const widgetData = widgets_links.length
     ? widgets_links
-    : [{ id: 0, name: "", link: { url: "" } }];
+    : [{ isShow: true, id: 1, name: "", link: { url: "" } }];
   return (
     <div>
       <div className="mx-auto grid max-w-xs gap-4">
-        {widgetData.map(({ id, isShow, name, link: { url } }, index) => (
-          <div key={index} className="w-full">
-            <Button asChild variant="outline" className="w-full">
-              <a href={url}>{name ? name : "..."}</a>
-            </Button>
-          </div>
+        {widgetData.map(({ link: { url }, ...rest }, index) => (
+          <PreviewItem key={index} {...url} {...rest} />
         ))}
       </div>
     </div>

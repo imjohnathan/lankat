@@ -20,7 +20,11 @@ export default function WidgetUI({
     <Card className="w-full">
       <div className="flex flex-row justify-between p-2">
         <div className="flex items-center justify-center gap-2">
-          <button className="cursor-grab px-2" {...listeners} {...attributes}>
+          <button
+            className="cursor-grab touch-none px-2"
+            {...listeners}
+            {...attributes}
+          >
             <IconDrag />
           </button>
           <Switch
