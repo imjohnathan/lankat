@@ -341,9 +341,9 @@ export default function ButtonEdit({ widget }: { widget: WidgetLinkProps }) {
             </DndContext>
             <Button onClick={addField}>新增</Button>
           </div>
-          <code className="mt-10 block max-w-sm whitespace-pre">
+          {/* <code className="mt-10 block max-w-sm whitespace-pre">
             {JSON.stringify(form, null, 2)}
-          </code>
+          </code> */}
         </ScrollArea>
         <div className="flex-1">
           <Preview fields={form.widgets_links} />
