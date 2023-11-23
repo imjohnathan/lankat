@@ -5,7 +5,6 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { clsx } from "clsx";
 import IconDrag from "~icons/mingcute/dots-fill";
-import IconFolder from "~icons/solar/add-folder-bold";
 import IconCopy from "~icons/solar/copy-outline";
 import IconEyeHide from "~icons/solar/eye-line-duotone";
 import IconEye from "~icons/solar/eye-outline";
@@ -71,7 +70,9 @@ export default function Field({
         </button>
       </div>
       <div
-        className={clsx("grid flex-1 gap-4", { "opacity-50": !field.isShow })}
+        className={clsx("grid flex-1 items-center gap-4", {
+          "opacity-50": !field.isShow,
+        })}
       >
         <div
           className={cn(
@@ -106,12 +107,6 @@ export default function Field({
             value={field.url}
             onChange={(e) => handleFieldChange(index, { url: e.target.value })}
           />
-          <button
-            type="button"
-            className="mr-2 grid place-items-center text-lg"
-          >
-            <IconFolder />
-          </button>
         </div>
       </div>
     </Card>
