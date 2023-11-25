@@ -83,3 +83,8 @@ export const getExtensionFromBase64 = (base64String: string) => {
 
   return null;
 };
+
+export function capitalize(str: string) {
+  if (!str || typeof str !== "string") return str;
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
