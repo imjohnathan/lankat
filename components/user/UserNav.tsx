@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SignIn, SignOut } from "@/components/user/signInOut";
 import { auth } from "@/lib/auth";
+import Link from "next/link";
 
 export async function UserNav({ className }: { className?: string }) {
   const session = await auth();
@@ -49,17 +50,24 @@ export async function UserNav({ className }: { className?: string }) {
                   </p>
                 </div>
               </DropdownMenuLabel>
+              <DropdownMenuItem className="cursor-pointer" asChild>
+                <Link href="/admin/setting">帳號設定</Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
             </>
           )}
-          <DropdownMenuItem>
+          <DropdownMenuItem className="p-0">
             {session ? (
-              <SignOut className="w-full">
-                <button className="w-full text-left">登出</button>
+              <SignOut className="h-full w-full">
+                <button className="h-full w-full px-2 py-1.5 text-left">
+                  登出
+                </button>
               </SignOut>
             ) : (
-              <SignIn provider="google" className="w-full">
-                <button className="w-full text-left">使用 Google 登入</button>
+              <SignIn provider="google" className="h-full w-full">
+                <button className="h-full w-full px-2 py-1.5 text-left">
+                  使用 Google 登入
+                </button>
               </SignIn>
             )}
           </DropdownMenuItem>

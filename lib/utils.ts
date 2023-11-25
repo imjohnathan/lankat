@@ -66,3 +66,20 @@ export const truncate = (str: string | null, length: number) => {
   if (!str || str.length <= length) return str;
   return `${str.slice(0, length - 3)}...`;
 };
+
+export const getExtensionFromBase64 = (base64String: string) => {
+  const match = base64String.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+
+  if (match && match.length > 1) {
+    const mimeType: string = match[1];
+    const extensions: { [key: string]: string } = {
+      "image/jpeg": "jpg",
+      "image/png": "png",
+      "image/gif": "gif",
+    };
+
+    return extensions[mimeType] || null;
+  }
+
+  return null;
+};

@@ -1,5 +1,4 @@
 import Modal from "@/components/Modal";
-import Header from "@/components/layout/Header";
 import { auth } from "@/lib/auth";
 import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
@@ -26,7 +25,6 @@ export default async function RootLayout({
       <ClientLayout>
         <html lang="en">
           <body className={inter.className}>
-            <Header />
             {children}
             <Toaster />
             <Modal />

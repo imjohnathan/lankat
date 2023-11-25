@@ -3,15 +3,17 @@
 import { lazy } from "react";
 import { create } from "zustand";
 
-const components = {
+export const components = {
   LoadingModal: lazy(() => new Promise(() => {})),
   EditModal: lazy(() => import("@/components/widgets/modals")),
+  QRcodeModal: lazy(() => import("@/components/userpage/modals/QRcode")),
 };
 
 interface State {
   component: keyof typeof components | null;
   props: any;
   isLoading: boolean;
+  isOpen: boolean;
 }
 
 interface Actions {
@@ -19,10 +21,12 @@ interface Actions {
   close: () => void;
   openLoadingModal: (props: any) => void;
   openEditModal: (props: any) => void;
+  openQRcodeModal: (props: any) => void;
 }
 
 const initialState = {
   component: null,
+  isOpen: false,
   props: {},
   isLoading: false,
 };
@@ -34,7 +38,7 @@ const useModalStore = create<State & Actions>((set, get) => ({
 
     const { props, component, isLoading } = payload;
 
-    if (component === null) {
+    if (!component || !components.hasOwnProperty(component)) {
       return;
     }
 
@@ -42,7 +46,8 @@ const useModalStore = create<State & Actions>((set, get) => ({
     body.style.overflowY = "hidden";
 
     set({
-      component: components[component] ?? null,
+      isOpen: true,
+      component,
       props: props || {},
       isLoading,
     });
@@ -50,11 +55,16 @@ const useModalStore = create<State & Actions>((set, get) => ({
   close: () => {
     const body = document.body;
     body.style.overflowY = "";
-    set(initialState);
+
+    set({ isOpen: false });
+
+    setTimeout(() => {
+      set(initialState);
+    }, 300);
   },
   openEditModal: async (props: Partial<State>) => {
     get().open({
-      props,
+      props: { ...props, className: "max-w-screen-lg sm:max-h-[90vh]" },
       component: "EditModal",
     });
   },
@@ -62,6 +72,12 @@ const useModalStore = create<State & Actions>((set, get) => ({
     get().open({
       props,
       component: "LoadingModal",
+    });
+  },
+  openQRcodeModal: async (props: Partial<State>) => {
+    get().open({
+      props,
+      component: "QRcodeModal",
     });
   },
 }));

@@ -1733,6 +1733,10 @@ export type Mutation_Root = {
   delete_pages?: Maybe<Pages_Mutation_Response>;
   /** delete single row from the table: "pages" */
   delete_pages_by_pk?: Maybe<Pages>;
+  /** delete data from the table: "pages_widgets" */
+  delete_pages_widgets?: Maybe<Pages_Widgets_Mutation_Response>;
+  /** delete single row from the table: "pages_widgets" */
+  delete_pages_widgets_by_pk?: Maybe<Pages_Widgets>;
   /** delete data from the table: "styles" */
   delete_styles?: Maybe<Styles_Mutation_Response>;
   /** delete single row from the table: "styles" */
@@ -1777,6 +1781,10 @@ export type Mutation_Root = {
   insert_pages?: Maybe<Pages_Mutation_Response>;
   /** insert a single row into the table: "pages" */
   insert_pages_one?: Maybe<Pages>;
+  /** insert data into the table: "pages_widgets" */
+  insert_pages_widgets?: Maybe<Pages_Widgets_Mutation_Response>;
+  /** insert a single row into the table: "pages_widgets" */
+  insert_pages_widgets_one?: Maybe<Pages_Widgets>;
   /** insert data into the table: "styles" */
   insert_styles?: Maybe<Styles_Mutation_Response>;
   /** insert a single row into the table: "styles" */
@@ -1831,6 +1839,12 @@ export type Mutation_Root = {
   update_pages_by_pk?: Maybe<Pages>;
   /** update multiples rows of table: "pages" */
   update_pages_many?: Maybe<Array<Maybe<Pages_Mutation_Response>>>;
+  /** update data of the table: "pages_widgets" */
+  update_pages_widgets?: Maybe<Pages_Widgets_Mutation_Response>;
+  /** update single row of the table: "pages_widgets" */
+  update_pages_widgets_by_pk?: Maybe<Pages_Widgets>;
+  /** update multiples rows of table: "pages_widgets" */
+  update_pages_widgets_many?: Maybe<Array<Maybe<Pages_Widgets_Mutation_Response>>>;
   /** update data of the table: "styles" */
   update_styles?: Maybe<Styles_Mutation_Response>;
   /** update single row of the table: "styles" */
@@ -1927,6 +1941,18 @@ export type Mutation_RootDelete_PagesArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Pages_By_PkArgs = {
   id: Scalars['uuid']['input'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Pages_WidgetsArgs = {
+  where: Pages_Widgets_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Pages_Widgets_By_PkArgs = {
+  id: Scalars['bigint']['input'];
 };
 
 
@@ -2069,6 +2095,20 @@ export type Mutation_RootInsert_PagesArgs = {
 export type Mutation_RootInsert_Pages_OneArgs = {
   object: Pages_Insert_Input;
   on_conflict?: InputMaybe<Pages_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Pages_WidgetsArgs = {
+  objects: Array<Pages_Widgets_Insert_Input>;
+  on_conflict?: InputMaybe<Pages_Widgets_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Pages_Widgets_OneArgs = {
+  object: Pages_Widgets_Insert_Input;
+  on_conflict?: InputMaybe<Pages_Widgets_On_Conflict>;
 };
 
 
@@ -2275,6 +2315,28 @@ export type Mutation_RootUpdate_Pages_ManyArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_Pages_WidgetsArgs = {
+  _inc?: InputMaybe<Pages_Widgets_Inc_Input>;
+  _set?: InputMaybe<Pages_Widgets_Set_Input>;
+  where: Pages_Widgets_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Pages_Widgets_By_PkArgs = {
+  _inc?: InputMaybe<Pages_Widgets_Inc_Input>;
+  _set?: InputMaybe<Pages_Widgets_Set_Input>;
+  pk_columns: Pages_Widgets_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Pages_Widgets_ManyArgs = {
+  updates: Array<Pages_Widgets_Updates>;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_StylesArgs = {
   _inc?: InputMaybe<Styles_Inc_Input>;
   _set?: InputMaybe<Styles_Set_Input>;
@@ -2446,9 +2508,57 @@ export type Pages = {
   id: Scalars['uuid']['output'];
   is_home?: Maybe<Scalars['Boolean']['output']>;
   key?: Maybe<Scalars['String']['output']>;
+  /** An array relationship */
+  pages_widgets: Array<Pages_Widgets>;
+  /** An aggregate relationship */
+  pages_widgets_aggregate: Pages_Widgets_Aggregate;
   user?: Maybe<Scalars['uuid']['output']>;
   /** An object relationship */
   userByUser?: Maybe<Users>;
+  /** An array relationship */
+  users: Array<Users>;
+  /** An aggregate relationship */
+  users_aggregate: Users_Aggregate;
+};
+
+
+/** columns and relationships of "pages" */
+export type PagesPages_WidgetsArgs = {
+  distinct_on?: InputMaybe<Array<Pages_Widgets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Pages_Widgets_Order_By>>;
+  where?: InputMaybe<Pages_Widgets_Bool_Exp>;
+};
+
+
+/** columns and relationships of "pages" */
+export type PagesPages_Widgets_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Pages_Widgets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Pages_Widgets_Order_By>>;
+  where?: InputMaybe<Pages_Widgets_Bool_Exp>;
+};
+
+
+/** columns and relationships of "pages" */
+export type PagesUsersArgs = {
+  distinct_on?: InputMaybe<Array<Users_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Users_Order_By>>;
+  where?: InputMaybe<Users_Bool_Exp>;
+};
+
+
+/** columns and relationships of "pages" */
+export type PagesUsers_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Users_Order_By>>;
+  where?: InputMaybe<Users_Bool_Exp>;
 };
 
 /** aggregated selection of "pages" */
@@ -2523,8 +2633,12 @@ export type Pages_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   is_home?: InputMaybe<Boolean_Comparison_Exp>;
   key?: InputMaybe<String_Comparison_Exp>;
+  pages_widgets?: InputMaybe<Pages_Widgets_Bool_Exp>;
+  pages_widgets_aggregate?: InputMaybe<Pages_Widgets_Aggregate_Bool_Exp>;
   user?: InputMaybe<Uuid_Comparison_Exp>;
   userByUser?: InputMaybe<Users_Bool_Exp>;
+  users?: InputMaybe<Users_Bool_Exp>;
+  users_aggregate?: InputMaybe<Users_Aggregate_Bool_Exp>;
 };
 
 /** unique or primary key constraints on table "pages" */
@@ -2539,8 +2653,10 @@ export type Pages_Insert_Input = {
   id?: InputMaybe<Scalars['uuid']['input']>;
   is_home?: InputMaybe<Scalars['Boolean']['input']>;
   key?: InputMaybe<Scalars['String']['input']>;
+  pages_widgets?: InputMaybe<Pages_Widgets_Arr_Rel_Insert_Input>;
   user?: InputMaybe<Scalars['uuid']['input']>;
   userByUser?: InputMaybe<Users_Obj_Rel_Insert_Input>;
+  users?: InputMaybe<Users_Arr_Rel_Insert_Input>;
 };
 
 /** aggregate max on columns */
@@ -2586,6 +2702,13 @@ export type Pages_Mutation_Response = {
   returning: Array<Pages>;
 };
 
+/** input type for inserting object relation for remote table "pages" */
+export type Pages_Obj_Rel_Insert_Input = {
+  data: Pages_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Pages_On_Conflict>;
+};
+
 /** on_conflict condition type for table "pages" */
 export type Pages_On_Conflict = {
   constraint: Pages_Constraint;
@@ -2599,8 +2722,10 @@ export type Pages_Order_By = {
   id?: InputMaybe<Order_By>;
   is_home?: InputMaybe<Order_By>;
   key?: InputMaybe<Order_By>;
+  pages_widgets_aggregate?: InputMaybe<Pages_Widgets_Aggregate_Order_By>;
   user?: InputMaybe<Order_By>;
   userByUser?: InputMaybe<Users_Order_By>;
+  users_aggregate?: InputMaybe<Users_Aggregate_Order_By>;
 };
 
 /** primary key columns input for table: pages */
@@ -2681,6 +2806,312 @@ export type Pages_Updates = {
   where: Pages_Bool_Exp;
 };
 
+/** columns and relationships of "pages_widgets" */
+export type Pages_Widgets = {
+  __typename?: 'pages_widgets';
+  id: Scalars['bigint']['output'];
+  /** An object relationship */
+  page?: Maybe<Pages>;
+  page_id?: Maybe<Scalars['uuid']['output']>;
+  /** An object relationship */
+  widget?: Maybe<Widgets>;
+  widget_id?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** aggregated selection of "pages_widgets" */
+export type Pages_Widgets_Aggregate = {
+  __typename?: 'pages_widgets_aggregate';
+  aggregate?: Maybe<Pages_Widgets_Aggregate_Fields>;
+  nodes: Array<Pages_Widgets>;
+};
+
+export type Pages_Widgets_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Pages_Widgets_Aggregate_Bool_Exp_Count>;
+};
+
+export type Pages_Widgets_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Pages_Widgets_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Pages_Widgets_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
+/** aggregate fields of "pages_widgets" */
+export type Pages_Widgets_Aggregate_Fields = {
+  __typename?: 'pages_widgets_aggregate_fields';
+  avg?: Maybe<Pages_Widgets_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Pages_Widgets_Max_Fields>;
+  min?: Maybe<Pages_Widgets_Min_Fields>;
+  stddev?: Maybe<Pages_Widgets_Stddev_Fields>;
+  stddev_pop?: Maybe<Pages_Widgets_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Pages_Widgets_Stddev_Samp_Fields>;
+  sum?: Maybe<Pages_Widgets_Sum_Fields>;
+  var_pop?: Maybe<Pages_Widgets_Var_Pop_Fields>;
+  var_samp?: Maybe<Pages_Widgets_Var_Samp_Fields>;
+  variance?: Maybe<Pages_Widgets_Variance_Fields>;
+};
+
+
+/** aggregate fields of "pages_widgets" */
+export type Pages_Widgets_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Pages_Widgets_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "pages_widgets" */
+export type Pages_Widgets_Aggregate_Order_By = {
+  avg?: InputMaybe<Pages_Widgets_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Pages_Widgets_Max_Order_By>;
+  min?: InputMaybe<Pages_Widgets_Min_Order_By>;
+  stddev?: InputMaybe<Pages_Widgets_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Pages_Widgets_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Pages_Widgets_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Pages_Widgets_Sum_Order_By>;
+  var_pop?: InputMaybe<Pages_Widgets_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Pages_Widgets_Var_Samp_Order_By>;
+  variance?: InputMaybe<Pages_Widgets_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "pages_widgets" */
+export type Pages_Widgets_Arr_Rel_Insert_Input = {
+  data: Array<Pages_Widgets_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Pages_Widgets_On_Conflict>;
+};
+
+/** aggregate avg on columns */
+export type Pages_Widgets_Avg_Fields = {
+  __typename?: 'pages_widgets_avg_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "pages_widgets" */
+export type Pages_Widgets_Avg_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "pages_widgets". All fields are combined with a logical 'AND'. */
+export type Pages_Widgets_Bool_Exp = {
+  _and?: InputMaybe<Array<Pages_Widgets_Bool_Exp>>;
+  _not?: InputMaybe<Pages_Widgets_Bool_Exp>;
+  _or?: InputMaybe<Array<Pages_Widgets_Bool_Exp>>;
+  id?: InputMaybe<Bigint_Comparison_Exp>;
+  page?: InputMaybe<Pages_Bool_Exp>;
+  page_id?: InputMaybe<Uuid_Comparison_Exp>;
+  widget?: InputMaybe<Widgets_Bool_Exp>;
+  widget_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "pages_widgets" */
+export enum Pages_Widgets_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  PagesWidgetsPkey = 'pages_widgets_pkey'
+}
+
+/** input type for incrementing numeric columns in table "pages_widgets" */
+export type Pages_Widgets_Inc_Input = {
+  id?: InputMaybe<Scalars['bigint']['input']>;
+};
+
+/** input type for inserting data into table "pages_widgets" */
+export type Pages_Widgets_Insert_Input = {
+  id?: InputMaybe<Scalars['bigint']['input']>;
+  page?: InputMaybe<Pages_Obj_Rel_Insert_Input>;
+  page_id?: InputMaybe<Scalars['uuid']['input']>;
+  widget?: InputMaybe<Widgets_Obj_Rel_Insert_Input>;
+  widget_id?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** aggregate max on columns */
+export type Pages_Widgets_Max_Fields = {
+  __typename?: 'pages_widgets_max_fields';
+  id?: Maybe<Scalars['bigint']['output']>;
+  page_id?: Maybe<Scalars['uuid']['output']>;
+  widget_id?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** order by max() on columns of table "pages_widgets" */
+export type Pages_Widgets_Max_Order_By = {
+  id?: InputMaybe<Order_By>;
+  page_id?: InputMaybe<Order_By>;
+  widget_id?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Pages_Widgets_Min_Fields = {
+  __typename?: 'pages_widgets_min_fields';
+  id?: Maybe<Scalars['bigint']['output']>;
+  page_id?: Maybe<Scalars['uuid']['output']>;
+  widget_id?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** order by min() on columns of table "pages_widgets" */
+export type Pages_Widgets_Min_Order_By = {
+  id?: InputMaybe<Order_By>;
+  page_id?: InputMaybe<Order_By>;
+  widget_id?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "pages_widgets" */
+export type Pages_Widgets_Mutation_Response = {
+  __typename?: 'pages_widgets_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Pages_Widgets>;
+};
+
+/** on_conflict condition type for table "pages_widgets" */
+export type Pages_Widgets_On_Conflict = {
+  constraint: Pages_Widgets_Constraint;
+  update_columns?: Array<Pages_Widgets_Update_Column>;
+  where?: InputMaybe<Pages_Widgets_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "pages_widgets". */
+export type Pages_Widgets_Order_By = {
+  id?: InputMaybe<Order_By>;
+  page?: InputMaybe<Pages_Order_By>;
+  page_id?: InputMaybe<Order_By>;
+  widget?: InputMaybe<Widgets_Order_By>;
+  widget_id?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: pages_widgets */
+export type Pages_Widgets_Pk_Columns_Input = {
+  id: Scalars['bigint']['input'];
+};
+
+/** select columns of table "pages_widgets" */
+export enum Pages_Widgets_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  PageId = 'page_id',
+  /** column name */
+  WidgetId = 'widget_id'
+}
+
+/** input type for updating data in table "pages_widgets" */
+export type Pages_Widgets_Set_Input = {
+  id?: InputMaybe<Scalars['bigint']['input']>;
+  page_id?: InputMaybe<Scalars['uuid']['input']>;
+  widget_id?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** aggregate stddev on columns */
+export type Pages_Widgets_Stddev_Fields = {
+  __typename?: 'pages_widgets_stddev_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev() on columns of table "pages_widgets" */
+export type Pages_Widgets_Stddev_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Pages_Widgets_Stddev_Pop_Fields = {
+  __typename?: 'pages_widgets_stddev_pop_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev_pop() on columns of table "pages_widgets" */
+export type Pages_Widgets_Stddev_Pop_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Pages_Widgets_Stddev_Samp_Fields = {
+  __typename?: 'pages_widgets_stddev_samp_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev_samp() on columns of table "pages_widgets" */
+export type Pages_Widgets_Stddev_Samp_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** Streaming cursor of the table "pages_widgets" */
+export type Pages_Widgets_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Pages_Widgets_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Pages_Widgets_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['bigint']['input']>;
+  page_id?: InputMaybe<Scalars['uuid']['input']>;
+  widget_id?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Pages_Widgets_Sum_Fields = {
+  __typename?: 'pages_widgets_sum_fields';
+  id?: Maybe<Scalars['bigint']['output']>;
+};
+
+/** order by sum() on columns of table "pages_widgets" */
+export type Pages_Widgets_Sum_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** update columns of table "pages_widgets" */
+export enum Pages_Widgets_Update_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  PageId = 'page_id',
+  /** column name */
+  WidgetId = 'widget_id'
+}
+
+export type Pages_Widgets_Updates = {
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<Pages_Widgets_Inc_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Pages_Widgets_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Pages_Widgets_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type Pages_Widgets_Var_Pop_Fields = {
+  __typename?: 'pages_widgets_var_pop_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by var_pop() on columns of table "pages_widgets" */
+export type Pages_Widgets_Var_Pop_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Pages_Widgets_Var_Samp_Fields = {
+  __typename?: 'pages_widgets_var_samp_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by var_samp() on columns of table "pages_widgets" */
+export type Pages_Widgets_Var_Samp_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Pages_Widgets_Variance_Fields = {
+  __typename?: 'pages_widgets_variance_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "pages_widgets" */
+export type Pages_Widgets_Variance_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
 export type Query_Root = {
   __typename?: 'query_root';
   /** fetch data from the table: "genres" */
@@ -2713,6 +3144,12 @@ export type Query_Root = {
   pages_aggregate: Pages_Aggregate;
   /** fetch data from the table: "pages" using primary key columns */
   pages_by_pk?: Maybe<Pages>;
+  /** An array relationship */
+  pages_widgets: Array<Pages_Widgets>;
+  /** An aggregate relationship */
+  pages_widgets_aggregate: Pages_Widgets_Aggregate;
+  /** fetch data from the table: "pages_widgets" using primary key columns */
+  pages_widgets_by_pk?: Maybe<Pages_Widgets>;
   /** fetch data from the table: "styles" */
   styles: Array<Styles>;
   /** fetch aggregated fields from the table: "styles" */
@@ -2725,9 +3162,9 @@ export type Query_Root = {
   tags_aggregate: Tags_Aggregate;
   /** fetch data from the table: "tags" using primary key columns */
   tags_by_pk?: Maybe<Tags>;
-  /** fetch data from the table: "users" */
+  /** An array relationship */
   users: Array<Users>;
-  /** fetch aggregated fields from the table: "users" */
+  /** An aggregate relationship */
   users_aggregate: Users_Aggregate;
   /** fetch data from the table: "users" using primary key columns */
   users_by_pk?: Maybe<Users>;
@@ -2864,6 +3301,29 @@ export type Query_RootPages_AggregateArgs = {
 
 export type Query_RootPages_By_PkArgs = {
   id: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootPages_WidgetsArgs = {
+  distinct_on?: InputMaybe<Array<Pages_Widgets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Pages_Widgets_Order_By>>;
+  where?: InputMaybe<Pages_Widgets_Bool_Exp>;
+};
+
+
+export type Query_RootPages_Widgets_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Pages_Widgets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Pages_Widgets_Order_By>>;
+  where?: InputMaybe<Pages_Widgets_Bool_Exp>;
+};
+
+
+export type Query_RootPages_Widgets_By_PkArgs = {
+  id: Scalars['bigint']['input'];
 };
 
 
@@ -3308,6 +3768,14 @@ export type Subscription_Root = {
   pages_by_pk?: Maybe<Pages>;
   /** fetch data from the table in a streaming manner: "pages" */
   pages_stream: Array<Pages>;
+  /** An array relationship */
+  pages_widgets: Array<Pages_Widgets>;
+  /** An aggregate relationship */
+  pages_widgets_aggregate: Pages_Widgets_Aggregate;
+  /** fetch data from the table: "pages_widgets" using primary key columns */
+  pages_widgets_by_pk?: Maybe<Pages_Widgets>;
+  /** fetch data from the table in a streaming manner: "pages_widgets" */
+  pages_widgets_stream: Array<Pages_Widgets>;
   /** fetch data from the table: "styles" */
   styles: Array<Styles>;
   /** fetch aggregated fields from the table: "styles" */
@@ -3324,9 +3792,9 @@ export type Subscription_Root = {
   tags_by_pk?: Maybe<Tags>;
   /** fetch data from the table in a streaming manner: "tags" */
   tags_stream: Array<Tags>;
-  /** fetch data from the table: "users" */
+  /** An array relationship */
   users: Array<Users>;
-  /** fetch aggregated fields from the table: "users" */
+  /** An aggregate relationship */
   users_aggregate: Users_Aggregate;
   /** fetch data from the table: "users" using primary key columns */
   users_by_pk?: Maybe<Users>;
@@ -3506,6 +3974,36 @@ export type Subscription_RootPages_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Pages_Stream_Cursor_Input>>;
   where?: InputMaybe<Pages_Bool_Exp>;
+};
+
+
+export type Subscription_RootPages_WidgetsArgs = {
+  distinct_on?: InputMaybe<Array<Pages_Widgets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Pages_Widgets_Order_By>>;
+  where?: InputMaybe<Pages_Widgets_Bool_Exp>;
+};
+
+
+export type Subscription_RootPages_Widgets_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Pages_Widgets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Pages_Widgets_Order_By>>;
+  where?: InputMaybe<Pages_Widgets_Bool_Exp>;
+};
+
+
+export type Subscription_RootPages_Widgets_By_PkArgs = {
+  id: Scalars['bigint']['input'];
+};
+
+
+export type Subscription_RootPages_Widgets_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Pages_Widgets_Stream_Cursor_Input>>;
+  where?: InputMaybe<Pages_Widgets_Bool_Exp>;
 };
 
 
@@ -4054,8 +4552,10 @@ export type Timestamptz_Comparison_Exp = {
 /** columns and relationships of "users" */
 export type Users = {
   __typename?: 'users';
+  bio?: Maybe<Scalars['String']['output']>;
   display_name?: Maybe<Scalars['String']['output']>;
   email?: Maybe<Scalars['String']['output']>;
+  home?: Maybe<Scalars['uuid']['output']>;
   id: Scalars['uuid']['output'];
   image?: Maybe<Scalars['String']['output']>;
   /** An array relationship */
@@ -4063,10 +4563,13 @@ export type Users = {
   /** An aggregate relationship */
   links_aggregate: Links_Aggregate;
   name?: Maybe<Scalars['String']['output']>;
+  /** An object relationship */
+  page?: Maybe<Pages>;
   /** An array relationship */
   pages: Array<Pages>;
   /** An aggregate relationship */
   pages_aggregate: Pages_Aggregate;
+  social_links?: Maybe<Scalars['jsonb']['output']>;
   /** An array relationship */
   tags: Array<Tags>;
   /** An aggregate relationship */
@@ -4122,6 +4625,12 @@ export type UsersPages_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   order_by?: InputMaybe<Array<Pages_Order_By>>;
   where?: InputMaybe<Pages_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users" */
+export type UsersSocial_LinksArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -4197,6 +4706,33 @@ export type Users_Aggregate = {
   nodes: Array<Users>;
 };
 
+export type Users_Aggregate_Bool_Exp = {
+  bool_and?: InputMaybe<Users_Aggregate_Bool_Exp_Bool_And>;
+  bool_or?: InputMaybe<Users_Aggregate_Bool_Exp_Bool_Or>;
+  count?: InputMaybe<Users_Aggregate_Bool_Exp_Count>;
+};
+
+export type Users_Aggregate_Bool_Exp_Bool_And = {
+  arguments: Users_Select_Column_Users_Aggregate_Bool_Exp_Bool_And_Arguments_Columns;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Users_Bool_Exp>;
+  predicate: Boolean_Comparison_Exp;
+};
+
+export type Users_Aggregate_Bool_Exp_Bool_Or = {
+  arguments: Users_Select_Column_Users_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Users_Bool_Exp>;
+  predicate: Boolean_Comparison_Exp;
+};
+
+export type Users_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Users_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Users_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
 /** aggregate fields of "users" */
 export type Users_Aggregate_Fields = {
   __typename?: 'users_aggregate_fields';
@@ -4212,9 +4748,24 @@ export type Users_Aggregate_FieldsCountArgs = {
   distinct?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+/** order by aggregate values of table "users" */
+export type Users_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Users_Max_Order_By>;
+  min?: InputMaybe<Users_Min_Order_By>;
+};
+
 /** append existing jsonb value of filtered columns with new jsonb value */
 export type Users_Append_Input = {
+  social_links?: InputMaybe<Scalars['jsonb']['input']>;
   theme?: InputMaybe<Scalars['jsonb']['input']>;
+};
+
+/** input type for inserting array relation for remote table "users" */
+export type Users_Arr_Rel_Insert_Input = {
+  data: Array<Users_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Users_On_Conflict>;
 };
 
 /** Boolean expression to filter rows from the table "users". All fields are combined with a logical 'AND'. */
@@ -4222,15 +4773,19 @@ export type Users_Bool_Exp = {
   _and?: InputMaybe<Array<Users_Bool_Exp>>;
   _not?: InputMaybe<Users_Bool_Exp>;
   _or?: InputMaybe<Array<Users_Bool_Exp>>;
+  bio?: InputMaybe<String_Comparison_Exp>;
   display_name?: InputMaybe<String_Comparison_Exp>;
   email?: InputMaybe<String_Comparison_Exp>;
+  home?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   image?: InputMaybe<String_Comparison_Exp>;
   links?: InputMaybe<Links_Bool_Exp>;
   links_aggregate?: InputMaybe<Links_Aggregate_Bool_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
+  page?: InputMaybe<Pages_Bool_Exp>;
   pages?: InputMaybe<Pages_Bool_Exp>;
   pages_aggregate?: InputMaybe<Pages_Aggregate_Bool_Exp>;
+  social_links?: InputMaybe<Jsonb_Comparison_Exp>;
   tags?: InputMaybe<Tags_Bool_Exp>;
   tags_aggregate?: InputMaybe<Tags_Aggregate_Bool_Exp>;
   theme?: InputMaybe<Jsonb_Comparison_Exp>;
@@ -4252,16 +4807,19 @@ export enum Users_Constraint {
 
 /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 export type Users_Delete_At_Path_Input = {
+  social_links?: InputMaybe<Array<Scalars['String']['input']>>;
   theme?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 export type Users_Delete_Elem_Input = {
+  social_links?: InputMaybe<Scalars['Int']['input']>;
   theme?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** delete key/value pair or string element. key/value pairs are matched based on their key value */
 export type Users_Delete_Key_Input = {
+  social_links?: InputMaybe<Scalars['String']['input']>;
   theme?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -4590,13 +5148,17 @@ export type Users_Genres_Variance_Order_By = {
 
 /** input type for inserting data into table "users" */
 export type Users_Insert_Input = {
+  bio?: InputMaybe<Scalars['String']['input']>;
   display_name?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  home?: InputMaybe<Scalars['uuid']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
   image?: InputMaybe<Scalars['String']['input']>;
   links?: InputMaybe<Links_Arr_Rel_Insert_Input>;
   name?: InputMaybe<Scalars['String']['input']>;
+  page?: InputMaybe<Pages_Obj_Rel_Insert_Input>;
   pages?: InputMaybe<Pages_Arr_Rel_Insert_Input>;
+  social_links?: InputMaybe<Scalars['jsonb']['input']>;
   tags?: InputMaybe<Tags_Arr_Rel_Insert_Input>;
   theme?: InputMaybe<Scalars['jsonb']['input']>;
   theme_selected?: InputMaybe<Scalars['Boolean']['input']>;
@@ -4608,23 +5170,51 @@ export type Users_Insert_Input = {
 /** aggregate max on columns */
 export type Users_Max_Fields = {
   __typename?: 'users_max_fields';
+  bio?: Maybe<Scalars['String']['output']>;
   display_name?: Maybe<Scalars['String']['output']>;
   email?: Maybe<Scalars['String']['output']>;
+  home?: Maybe<Scalars['uuid']['output']>;
   id?: Maybe<Scalars['uuid']['output']>;
   image?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   url_key?: Maybe<Scalars['String']['output']>;
 };
 
+/** order by max() on columns of table "users" */
+export type Users_Max_Order_By = {
+  bio?: InputMaybe<Order_By>;
+  display_name?: InputMaybe<Order_By>;
+  email?: InputMaybe<Order_By>;
+  home?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  image?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  url_key?: InputMaybe<Order_By>;
+};
+
 /** aggregate min on columns */
 export type Users_Min_Fields = {
   __typename?: 'users_min_fields';
+  bio?: Maybe<Scalars['String']['output']>;
   display_name?: Maybe<Scalars['String']['output']>;
   email?: Maybe<Scalars['String']['output']>;
+  home?: Maybe<Scalars['uuid']['output']>;
   id?: Maybe<Scalars['uuid']['output']>;
   image?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   url_key?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by min() on columns of table "users" */
+export type Users_Min_Order_By = {
+  bio?: InputMaybe<Order_By>;
+  display_name?: InputMaybe<Order_By>;
+  email?: InputMaybe<Order_By>;
+  home?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  image?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  url_key?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "users" */
@@ -4652,13 +5242,17 @@ export type Users_On_Conflict = {
 
 /** Ordering options when selecting data from "users". */
 export type Users_Order_By = {
+  bio?: InputMaybe<Order_By>;
   display_name?: InputMaybe<Order_By>;
   email?: InputMaybe<Order_By>;
+  home?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   image?: InputMaybe<Order_By>;
   links_aggregate?: InputMaybe<Links_Aggregate_Order_By>;
   name?: InputMaybe<Order_By>;
+  page?: InputMaybe<Pages_Order_By>;
   pages_aggregate?: InputMaybe<Pages_Aggregate_Order_By>;
+  social_links?: InputMaybe<Order_By>;
   tags_aggregate?: InputMaybe<Tags_Aggregate_Order_By>;
   theme?: InputMaybe<Order_By>;
   theme_selected?: InputMaybe<Order_By>;
@@ -4674,21 +5268,28 @@ export type Users_Pk_Columns_Input = {
 
 /** prepend existing jsonb value of filtered columns with new jsonb value */
 export type Users_Prepend_Input = {
+  social_links?: InputMaybe<Scalars['jsonb']['input']>;
   theme?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** select columns of table "users" */
 export enum Users_Select_Column {
   /** column name */
+  Bio = 'bio',
+  /** column name */
   DisplayName = 'display_name',
   /** column name */
   Email = 'email',
+  /** column name */
+  Home = 'home',
   /** column name */
   Id = 'id',
   /** column name */
   Image = 'image',
   /** column name */
   Name = 'name',
+  /** column name */
+  SocialLinks = 'social_links',
   /** column name */
   Theme = 'theme',
   /** column name */
@@ -4697,13 +5298,28 @@ export enum Users_Select_Column {
   UrlKey = 'url_key'
 }
 
+/** select "users_aggregate_bool_exp_bool_and_arguments_columns" columns of table "users" */
+export enum Users_Select_Column_Users_Aggregate_Bool_Exp_Bool_And_Arguments_Columns {
+  /** column name */
+  ThemeSelected = 'theme_selected'
+}
+
+/** select "users_aggregate_bool_exp_bool_or_arguments_columns" columns of table "users" */
+export enum Users_Select_Column_Users_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns {
+  /** column name */
+  ThemeSelected = 'theme_selected'
+}
+
 /** input type for updating data in table "users" */
 export type Users_Set_Input = {
+  bio?: InputMaybe<Scalars['String']['input']>;
   display_name?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  home?: InputMaybe<Scalars['uuid']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
   image?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  social_links?: InputMaybe<Scalars['jsonb']['input']>;
   theme?: InputMaybe<Scalars['jsonb']['input']>;
   theme_selected?: InputMaybe<Scalars['Boolean']['input']>;
   url_key?: InputMaybe<Scalars['String']['input']>;
@@ -4719,11 +5335,14 @@ export type Users_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Users_Stream_Cursor_Value_Input = {
+  bio?: InputMaybe<Scalars['String']['input']>;
   display_name?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  home?: InputMaybe<Scalars['uuid']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
   image?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  social_links?: InputMaybe<Scalars['jsonb']['input']>;
   theme?: InputMaybe<Scalars['jsonb']['input']>;
   theme_selected?: InputMaybe<Scalars['Boolean']['input']>;
   url_key?: InputMaybe<Scalars['String']['input']>;
@@ -4732,15 +5351,21 @@ export type Users_Stream_Cursor_Value_Input = {
 /** update columns of table "users" */
 export enum Users_Update_Column {
   /** column name */
+  Bio = 'bio',
+  /** column name */
   DisplayName = 'display_name',
   /** column name */
   Email = 'email',
+  /** column name */
+  Home = 'home',
   /** column name */
   Id = 'id',
   /** column name */
   Image = 'image',
   /** column name */
   Name = 'name',
+  /** column name */
+  SocialLinks = 'social_links',
   /** column name */
   Theme = 'theme',
   /** column name */
@@ -4787,8 +5412,13 @@ export type Widgets = {
   id: Scalars['uuid']['output'];
   isShow?: Maybe<Scalars['Boolean']['output']>;
   name?: Maybe<Scalars['String']['output']>;
+  /** An array relationship */
+  pages_widgets: Array<Pages_Widgets>;
+  /** An aggregate relationship */
+  pages_widgets_aggregate: Pages_Widgets_Aggregate;
   sort?: Maybe<Scalars['Int']['output']>;
   type?: Maybe<Scalars['String']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
   user?: Maybe<Scalars['uuid']['output']>;
   /** An object relationship */
   userByUser?: Maybe<Users>;
@@ -4802,6 +5432,26 @@ export type Widgets = {
 /** columns and relationships of "widgets" */
 export type WidgetsConfigArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+/** columns and relationships of "widgets" */
+export type WidgetsPages_WidgetsArgs = {
+  distinct_on?: InputMaybe<Array<Pages_Widgets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Pages_Widgets_Order_By>>;
+  where?: InputMaybe<Pages_Widgets_Bool_Exp>;
+};
+
+
+/** columns and relationships of "widgets" */
+export type WidgetsPages_Widgets_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Pages_Widgets_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Pages_Widgets_Order_By>>;
+  where?: InputMaybe<Pages_Widgets_Bool_Exp>;
 };
 
 
@@ -4929,8 +5579,11 @@ export type Widgets_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   isShow?: InputMaybe<Boolean_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
+  pages_widgets?: InputMaybe<Pages_Widgets_Bool_Exp>;
+  pages_widgets_aggregate?: InputMaybe<Pages_Widgets_Aggregate_Bool_Exp>;
   sort?: InputMaybe<Int_Comparison_Exp>;
   type?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   user?: InputMaybe<Uuid_Comparison_Exp>;
   userByUser?: InputMaybe<Users_Bool_Exp>;
   widgets_links?: InputMaybe<Widgets_Links_Bool_Exp>;
@@ -4970,8 +5623,10 @@ export type Widgets_Insert_Input = {
   id?: InputMaybe<Scalars['uuid']['input']>;
   isShow?: InputMaybe<Scalars['Boolean']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  pages_widgets?: InputMaybe<Pages_Widgets_Arr_Rel_Insert_Input>;
   sort?: InputMaybe<Scalars['Int']['input']>;
   type?: InputMaybe<Scalars['String']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
   user?: InputMaybe<Scalars['uuid']['input']>;
   userByUser?: InputMaybe<Users_Obj_Rel_Insert_Input>;
   widgets_links?: InputMaybe<Widgets_Links_Arr_Rel_Insert_Input>;
@@ -5374,6 +6029,7 @@ export type Widgets_Max_Fields = {
   name?: Maybe<Scalars['String']['output']>;
   sort?: Maybe<Scalars['Int']['output']>;
   type?: Maybe<Scalars['String']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
   user?: Maybe<Scalars['uuid']['output']>;
 };
 
@@ -5384,6 +6040,7 @@ export type Widgets_Max_Order_By = {
   name?: InputMaybe<Order_By>;
   sort?: InputMaybe<Order_By>;
   type?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
   user?: InputMaybe<Order_By>;
 };
 
@@ -5395,6 +6052,7 @@ export type Widgets_Min_Fields = {
   name?: Maybe<Scalars['String']['output']>;
   sort?: Maybe<Scalars['Int']['output']>;
   type?: Maybe<Scalars['String']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
   user?: Maybe<Scalars['uuid']['output']>;
 };
 
@@ -5405,6 +6063,7 @@ export type Widgets_Min_Order_By = {
   name?: InputMaybe<Order_By>;
   sort?: InputMaybe<Order_By>;
   type?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
   user?: InputMaybe<Order_By>;
 };
 
@@ -5438,8 +6097,10 @@ export type Widgets_Order_By = {
   id?: InputMaybe<Order_By>;
   isShow?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
+  pages_widgets_aggregate?: InputMaybe<Pages_Widgets_Aggregate_Order_By>;
   sort?: InputMaybe<Order_By>;
   type?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
   user?: InputMaybe<Order_By>;
   userByUser?: InputMaybe<Users_Order_By>;
   widgets_links_aggregate?: InputMaybe<Widgets_Links_Aggregate_Order_By>;
@@ -5472,6 +6133,8 @@ export enum Widgets_Select_Column {
   /** column name */
   Type = 'type',
   /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
   User = 'user'
 }
 
@@ -5496,6 +6159,7 @@ export type Widgets_Set_Input = {
   name?: InputMaybe<Scalars['String']['input']>;
   sort?: InputMaybe<Scalars['Int']['input']>;
   type?: InputMaybe<Scalars['String']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
   user?: InputMaybe<Scalars['uuid']['input']>;
 };
 
@@ -5549,6 +6213,7 @@ export type Widgets_Stream_Cursor_Value_Input = {
   name?: InputMaybe<Scalars['String']['input']>;
   sort?: InputMaybe<Scalars['Int']['input']>;
   type?: InputMaybe<Scalars['String']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
   user?: InputMaybe<Scalars['uuid']['input']>;
 };
 
@@ -5579,6 +6244,8 @@ export enum Widgets_Update_Column {
   Sort = 'sort',
   /** column name */
   Type = 'type',
+  /** column name */
+  UpdatedAt = 'updated_at',
   /** column name */
   User = 'user'
 }
