@@ -95,6 +95,9 @@ dependencies:
   '@urql/next':
     specifier: ^1.1.0
     version: 1.1.0(next@14.0.3)(react@18.2.0)(urql@4.0.6)
+  '@vercel/edge':
+    specifier: ^1.1.1
+    version: 1.1.1
   base64-arraybuffer-es6:
     specifier: ^3.0.1
     version: 3.0.1
@@ -3271,6 +3274,10 @@ packages:
       next: 14.0.3(@babel/core@7.23.3)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       urql: 4.0.6(graphql@16.8.1)(react@18.2.0)
+    dev: false
+
+  /@vercel/edge@1.1.1:
+    resolution: {integrity: sha512-NtKiIbn9Cq6HWGy+qRudz28mz5nxfOJWls5Pnckjw1yCfSX8rhXdvY/il3Sy3Zd5n/sKCM2h7VSCCpJF/oaDrQ==}
     dev: false
 
   /@whatwg-node/events@0.0.3:

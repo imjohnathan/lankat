@@ -5,6 +5,7 @@ import Widgets from "@/components/userpage/Widgets";
 import { getClient } from "@/lib/client";
 import { gql } from "@urql/next";
 import { notFound } from "next/navigation";
+import { NextFetchEvent, NextRequest } from "next/server";
 const query = gql`
   query GetUserWidgets($userKey: String!) {
     widgets(
@@ -146,9 +147,16 @@ export async function generateMetadata({
   };
 }
 
-export default async function App({ params }: { params: { key: string } }) {
+export default async function App(
+  { params }: { params: { key: string } },
+  req: NextRequest,
+  ev: NextFetchEvent,
+) {
   const data = await getData(params.key);
   const users = data.users[0];
+  //console.log(req);
+  //await recordClick({ req, userId: users.id });
+
   return (
     <div className="bg-gray-100 p-4 sm:pt-16">
       <div className="mx-auto max-w-[480px]">

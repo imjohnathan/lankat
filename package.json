@@ -40,6 +40,7 @@
     "@urql/exchange-auth": "^2.1.6",
     "@urql/exchange-graphcache": "^6.3.3",
     "@urql/next": "^1.1.0",
+    "@vercel/edge": "^1.1.1",
     "base64-arraybuffer-es6": "^3.0.1",
     "class-variance-authority": "^0.7.0",
     "classnames": "^2.3.2",
