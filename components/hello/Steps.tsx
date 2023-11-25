@@ -1,6 +1,6 @@
 "use client";
 
-import { FormStateContext } from "@/app/hello/client";
+import { FormStateContext } from "@/app/(admin)/hello/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
