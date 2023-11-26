@@ -138,7 +138,7 @@ function SortableItem({
         listeners={listeners}
       >
         <div className="py-4">
-          <Component widget={widget} />
+          <Component widget={widget} isPreview />
         </div>
       </EditUI>
     </div>

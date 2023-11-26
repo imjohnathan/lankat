@@ -24,7 +24,10 @@ export default function Widgets({ widgets }: { widgets: Widgets[] }) {
   return (
     <div className="grid w-full gap-4">
       {widgets.map((widget) => {
-        const { type, id } = widget;
+        const { type, id, widgets_links } = widget;
+        if (type === "links" && widgets_links.length === 0) {
+          return;
+        }
         const Component = widgetsList.find((w) => w.type === type)?.render;
         if (!Component) {
           return <div key={id} />;
