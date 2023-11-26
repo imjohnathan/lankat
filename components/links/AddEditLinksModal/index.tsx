@@ -113,7 +113,7 @@ export default function AddLinksModal({ open, setOpen }: AddLinksModalProps) {
       const variables = {
         object: {
           ...data,
-          parameters: JSON.stringify(data.parameters),
+          parameters: data.parameters || {},
         },
       };
       const { data: result, error } = await addLink(variables);

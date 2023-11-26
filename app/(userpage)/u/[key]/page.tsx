@@ -35,6 +35,7 @@ const query = gql`
     link {
       url
       id
+      key
       __typename
     }
     __typename
@@ -154,8 +155,6 @@ export default async function App(
 ) {
   const data = await getData(params.key);
   const users = data.users[0];
-  //console.log(req);
-  //await recordClick({ req, userId: users.id });
 
   return (
     <div className="bg-gray-100 p-4 sm:pt-16">
