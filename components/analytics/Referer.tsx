@@ -1,17 +1,19 @@
 import { StatsContext } from "@/app/(admin)/admin/analytics/page";
 import useRouterStuff from "@/components/ui/hooks/useRouterStuff";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { fetcher, linkConstructor } from "@/lib/utils";
+import { GOOGLE_FAVICON_URL, fetcher } from "@/lib/utils";
+import { Link2 } from "lucide-react";
 import { useContext, useState } from "react";
 import useSWR from "swr";
 import IconLoading from "~icons/line-md/loading-twotone-loop";
 import BarList from "./BarList";
 
-export default function TopLinks() {
-  const { baseApiPath, queryString, modal } = useContext(StatsContext);
+export default function Referer() {
+  const { baseApiPath, queryString, totalClicks, modal } =
+    useContext(StatsContext);
 
-  const { data } = useSWR<{ domain: string; key: string; clicks: number }[]>(
-    `${baseApiPath}/top_links?${queryString}`,
+  const { data } = useSWR<{ referer: string; clicks: number }[]>(
+    `${baseApiPath}/referer?${queryString}`,
     fetcher,
   );
 
@@ -20,16 +22,25 @@ export default function TopLinks() {
 
   const barList = (limit?: number) => (
     <BarList
-      tab="Top Links"
+      tab="Referrer"
       data={
         data?.map((d) => ({
-          title: linkConstructor({
-            key: d.key,
-            pretty: true,
-          }),
+          icon:
+            d.referer === "(direct)" ? (
+              <Link2 className="h-4 w-4" />
+            ) : (
+              <img
+                src={`${GOOGLE_FAVICON_URL}${d.referer}`}
+                alt={d.referer}
+                width={20}
+                height={20}
+                className="h-4 w-4 rounded-full"
+              />
+            ),
+          title: d.referer,
           href: queryParams({
             set: {
-              key: d.key,
+              referer: d.referer,
             },
             getNewPath: true,
           }) as string,
@@ -47,14 +58,14 @@ export default function TopLinks() {
     <>
       <ScrollArea className="scrollbar-hide relative z-0 h-[400px] border border-gray-200 bg-white px-7 py-5 sm:rounded-lg sm:border-gray-100 sm:shadow-lg">
         <div className="mb-5 flex">
-          <h1 className="text-lg font-semibold">連結點擊排行</h1>
+          <h1 className="text-lg font-semibold">參照網址</h1>
         </div>
         {data ? (
           data.length > 0 ? (
             barList(9)
           ) : (
             <div className="flex h-[300px] items-center justify-center">
-              <p className="text-sm text-gray-600">No data available</p>
+              <p className="text-sm text-gray-600">沒有任何資料</p>
             </div>
           )
         ) : (

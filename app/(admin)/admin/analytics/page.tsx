@@ -1,6 +1,8 @@
 "use client";
 import Clicks from "@/components/analytics/Clicks";
+import Devices from "@/components/analytics/Devices";
 import Locations from "@/components/analytics/Locations";
+import Referer from "@/components/analytics/Referer";
 import Toggle from "@/components/analytics/Toggle";
 import TopLinks from "@/components/analytics/TopLinks";
 import { VALID_STATS_FILTERS } from "@/lib/stats";
@@ -93,6 +95,8 @@ export default function Analytics() {
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             <Locations />
             <TopLinks />
+            <Devices />
+            <Referer />
           </div>
         </div>
       </div>

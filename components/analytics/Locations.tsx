@@ -4,9 +4,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LocationTabs } from "@/lib/stats";
 import { COUNTRIES, fetcher } from "@/lib/utils";
-import { Maximize } from "lucide-react";
 import { useContext, useState } from "react";
 import useSWR from "swr";
+import IconLoading from "~icons/line-md/loading-twotone-loop";
 import BarList from "./BarList";
 
 export default function Locations() {
@@ -31,7 +31,7 @@ export default function Locations() {
             <img
               alt={d.country}
               src={`https://flag.vercel.app/m/${d.country}.svg`}
-              className="h-3 w-5"
+              className="h-3 w-5 rounded-[2px]"
             />
           ),
           title: tab === "country" ? COUNTRIES[d.country] : d.city,
@@ -45,7 +45,7 @@ export default function Locations() {
         })) || []
       }
       maxClicks={data?.[0]?.clicks || 0}
-      barBackground="bg-orange-100"
+      barBackground="bg-gray-100"
       setShowModal={setShowModal}
       {...(limit && { limit })}
     />
@@ -73,17 +73,8 @@ export default function Locations() {
           )
         ) : (
           <div className="flex h-[300px] items-center justify-center">
-            Loading...
+            <IconLoading className="h-6 w-6" />
           </div>
-        )}
-        {!modal && data && data.length > 9 && (
-          <button
-            onClick={() => setShowModal(true)}
-            className="absolute inset-x-0 bottom-4 z-10 mx-auto flex w-full items-center justify-center space-x-2 rounded-md bg-gradient-to-b from-transparent to-white py-2 text-gray-500 transition-all hover:text-gray-800 active:scale-95"
-          >
-            <Maximize className="h-4 w-4" />
-            <p className="text-xs font-semibold uppercase">看全部</p>
-          </button>
         )}
       </ScrollArea>
     </>

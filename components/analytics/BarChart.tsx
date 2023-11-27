@@ -10,6 +10,7 @@ import { useTooltip, useTooltipInPortal } from "@visx/tooltip";
 import { motion } from "framer-motion";
 import { useCallback, useContext, useMemo } from "react";
 import useSWR from "swr";
+import IconLoading from "~icons/line-md/loading-twotone-loop";
 import styles from "./bar-chart.module.css";
 
 const LEFT_AXIS_WIDTH = 30;
@@ -251,7 +252,7 @@ export default function BarChart() {
           )}
         </>
       ) : (
-        <>Loading...</>
+        <IconLoading className="h-6 w-6" />
       )}
     </figure>
   );
