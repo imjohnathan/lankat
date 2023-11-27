@@ -1,5 +1,6 @@
 "use client";
 import Clicks from "@/components/analytics/Clicks";
+import Locations from "@/components/analytics/Locations";
 import Toggle from "@/components/analytics/Toggle";
 import TopLinks from "@/components/analytics/TopLinks";
 import { VALID_STATS_FILTERS } from "@/lib/stats";
@@ -90,6 +91,7 @@ export default function Analytics() {
         <div className="mx-auto grid max-w-4xl gap-5">
           <Clicks />
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+            <Locations />
             <TopLinks />
           </div>
         </div>
