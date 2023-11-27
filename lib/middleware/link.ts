@@ -54,7 +54,7 @@ export default async function LinkMiddleware(
 
   if (isBot && proxy) {
     return NextResponse.rewrite(
-      new URL(`/proxy/${domain}/${encodeURIComponent(key)}`, req.url),
+      new URL(`/rewrite/${encodeURIComponent(key)}`, req.url),
     );
   } else {
     try {

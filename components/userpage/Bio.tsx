@@ -11,7 +11,7 @@ export default function Bio({ user }: { user: Users }) {
         <AvatarFallback className="text-4xl">{nameShort}</AvatarFallback>
       </Avatar>
       <h1 className="text-xl font-medium">{user.display_name}</h1>
-      <p className="whitespace-pre text-center">{user.bio}</p>
+      <p className="whitespace-pre-line text-center">{user.bio}</p>
       <SocialLinks user={user} />
     </div>
   );

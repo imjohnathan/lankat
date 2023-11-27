@@ -1,33 +1,16 @@
 import { auth } from "@/lib/auth";
 import { isValidUrl } from "@/lib/utils";
+import { NextResponse } from "next/server";
 import { getMetaTags } from "./metatags";
 
 export const GET = auth(async (req: any) => {
   if (!req.auth) {
-    return new Response(
-      JSON.stringify({ errors: { message: "Please Login", code: 429 } }),
-      {
-        status: 429,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      },
-    );
+    return NextResponse.json({ error: "Please Login first" }, { status: 403 });
   }
 
   const url = req.nextUrl.searchParams.get("url");
   if (!url || !isValidUrl(url)) {
-    return new Response(
-      JSON.stringify({ errors: { message: "Invalid URL", code: 400 } }),
-      {
-        status: 400,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      },
-    );
+    return NextResponse.json({ error: "Invalid URL" }, { status: 400 });
   }
 
   const metatags = await getMetaTags(url);
