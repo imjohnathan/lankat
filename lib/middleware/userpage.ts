@@ -19,7 +19,6 @@ export default async function UserMiddleware(
   const { fullKey } = parse(req);
   const key = decodeURIComponent(fullKey.split("/")[1]);
   const { data, error } = await client.query(query, { _eq: key });
-  console.log(data, error);
   if (data.users[0]?.id) {
     const userId = data.users[0]?.id;
     ev.waitUntil(recordClick({ req, fullKey, userId }));
