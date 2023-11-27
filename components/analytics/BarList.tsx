@@ -80,7 +80,9 @@ export default function BarList({
                   animate={{ transform: "scaleX(1)" }}
                 />
               </div>
-              <p className="z-10 text-sm text-gray-600">{nFormatter(clicks)}</p>
+              <p className="z-10 text-sm font-bold text-gray-600">
+                {nFormatter(clicks)}
+              </p>
             </div>
           </Link>
         );
@@ -111,7 +113,7 @@ export default function BarList({
               {tab}
             </p>
             <p className="text-xs font-semibold uppercase text-gray-600">
-              Clicks
+              點擊
             </p>
           </div>
           <div className="h-[50vh] overflow-auto p-4 md:h-[40vh]">{bars}</div>
