@@ -14,12 +14,13 @@ import {
 import { supabase } from "@/lib/supabase";
 import { dateFormat } from "@/lib/utils";
 import { gql, useMutation, useQuery } from "@urql/next";
+import Link from "next/link";
 import { Suspense, useState } from "react";
 import { toast } from "sonner";
 function DataTable() {
   const query = gql`
     query GetLinks {
-      links {
+      links(order_by: { created_at: desc, id: asc }) {
         id
         clicks
         key
@@ -68,6 +69,7 @@ function DataTable() {
             } = supabase.storage
               .from(process.env.NEXT_PUBLIC_SUPABASE_LINKS_BUCKET as string)
               .getPublicUrl(og_image);
+            const shortUrl = `${process.env.NEXT_PUBLIC_SHORT_URL}/s/${key}`;
             return (
               <TableRow key={id}>
                 <TableCell>
@@ -82,9 +84,15 @@ function DataTable() {
                 </TableCell>
                 <TableCell>
                   <p className="max-w-sm truncate">{url}</p>
-                  <p>https://lank.at/s/{key}</p>
+                  <a href={shortUrl} target="_blank">
+                    {shortUrl}
+                  </a>
                 </TableCell>
-                <TableCell>{clicks || 0}</TableCell>
+                <TableCell>
+                  <Link href={"/admin/analytics?interval=7d&key=" + key}>
+                    {clicks || 0}
+                  </Link>
+                </TableCell>
                 <TableCell className="text-right">
                   {dateFormat(created_at)}
                 </TableCell>
@@ -108,7 +116,7 @@ function DataTable() {
   );
 }
 
-export default function Links() {
+export default function LinksList() {
   const [open, setOpen] = useState(false);
   return (
     <>

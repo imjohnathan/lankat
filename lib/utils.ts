@@ -1,5 +1,11 @@
 import { clsx, type ClassValue } from "clsx";
+import { Metadata } from "next";
 import { twMerge } from "tailwind-merge";
+import {
+  SECOND_LEVEL_DOMAINS,
+  SPECIAL_APEX_DOMAINS,
+  ccTLDs,
+} from "./constants";
 
 export * from "@/lib/constants";
 
@@ -165,3 +171,161 @@ export const addParamsToURL = (
 
   return url.toString();
 };
+
+export const getSearchParams = (url: string) => {
+  // Create a params object
+  let params = {} as Record<string, string>;
+
+  new URL(url).searchParams.forEach(function (val, key) {
+    params[key] = val;
+  });
+
+  return params;
+};
+
+export function constructMetadata({
+  title = "Link Management for Modern Marketing Teams",
+  description = "link management tool for modern marketing teams to create, share, and track short links.",
+  image = "/_static/thumbnail.png",
+  icons = "/favicon.ico",
+  noIndex = false,
+}: {
+  title?: string;
+  description?: string;
+  image?: string;
+  icons?: string;
+  noIndex?: boolean;
+} = {}): Metadata {
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [
+        {
+          url: image,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+      creator: "johnathan",
+    },
+    icons,
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? ""),
+    ...(noIndex && {
+      robots: {
+        index: false,
+        follow: false,
+      },
+    }),
+  };
+}
+
+export const getApexDomain = (url: string) => {
+  let domain;
+  try {
+    // replace any custom scheme (e.g. notion://) with https://
+    // use the URL constructor to get the hostname
+    domain = new URL(url.replace(/^[a-zA-Z]+:\/\//, "https://")).hostname;
+  } catch (e) {
+    return "";
+  }
+  if (domain === "youtu.be") return "youtube.com";
+  if (domain === "raw.githubusercontent.com") return "github.com";
+  if (domain.endsWith(".vercel.app")) return "vercel.app";
+
+  const parts = domain.split(".");
+  if (parts.length > 2) {
+    if (
+      // if this is a second-level TLD (e.g. co.uk, .com.ua, .org.tt), we need to return the last 3 parts
+      (SECOND_LEVEL_DOMAINS.has(parts[parts.length - 2]) &&
+        ccTLDs.has(parts[parts.length - 1])) ||
+      // if it's a special subdomain for website builders (e.g. weathergpt.vercel.app/)
+      SPECIAL_APEX_DOMAINS.has(parts.slice(-2).join("."))
+    ) {
+      return parts.slice(-3).join(".");
+    }
+    // otherwise, it's a subdomain (e.g. dub.vercel.app), so we return the last 2 parts
+    return parts.slice(-2).join(".");
+  }
+  // if it's a normal domain (e.g. dub.co), we return the domain
+  return domain;
+};
+
+export function nFormatter(
+  num?: number,
+  opts: { digits?: number; full?: boolean } = {
+    digits: 1,
+  },
+) {
+  if (!num) return "0";
+  if (opts.full) {
+    return Intl.NumberFormat("en-US").format(num);
+  }
+  const lookup = [
+    { value: 1, symbol: "" },
+    { value: 1e3, symbol: "K" },
+    { value: 1e6, symbol: "M" },
+    { value: 1e9, symbol: "G" },
+    { value: 1e12, symbol: "T" },
+    { value: 1e15, symbol: "P" },
+    { value: 1e18, symbol: "E" },
+  ];
+  const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+  var item = lookup
+    .slice()
+    .reverse()
+    .find(function (item) {
+      return num >= item.value;
+    });
+  return item
+    ? (num / item.value).toFixed(opts.digits).replace(rx, "$1") + item.symbol
+    : "0";
+}
+
+interface SWRError extends Error {
+  status: number;
+}
+
+export async function fetcher<JSON = any>(
+  input: RequestInfo,
+  init?: RequestInit,
+): Promise<JSON> {
+  const res = await fetch(input, init);
+
+  if (!res.ok) {
+    const error = await res.text();
+    const err = new Error(error) as SWRError;
+    err.status = res.status;
+    throw err;
+  }
+
+  return res.json();
+}
+
+export function linkConstructor({
+  key,
+  domain = process.env.NEXT_PUBLIC_SHORT_URL?.replace(/^https?:\/\//, "") +
+    "/s",
+  localhost,
+  pretty,
+  noDomain,
+}: {
+  key: string;
+  domain?: string;
+  localhost?: boolean;
+  pretty?: boolean;
+  noDomain?: boolean;
+}) {
+  const link = `${
+    localhost ? "http://home.localhost:8888" : `https://${domain}`
+  }${key !== "_root" ? `/${key}` : ""}`;
+
+  if (noDomain) return `/${key}`;
+  return pretty ? link.replace(/^https?:\/\//, "") : link;
+}

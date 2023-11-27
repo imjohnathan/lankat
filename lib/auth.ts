@@ -1,10 +1,22 @@
+import { client } from "@/lib/nodeClient";
 import { SupabaseAdapter } from "@auth/supabase-adapter";
+import { gql } from "@urql/next";
 import jwt from "jsonwebtoken";
 import type { NextAuthConfig } from "next-auth";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
 const DEFAULT_ROLE_NAME = "user";
+
+const query = gql`
+  query getUserInAuth($id: uuid!) {
+    users_by_pk(id: $id) {
+      display_name
+      image
+      url_key
+    }
+  }
+`;
 
 const config = {
   providers: [
@@ -36,6 +48,11 @@ const config = {
         session.id = user.id;
         session.accessToken = jwt.sign(payload, signingSecret);
       }
+      const {
+        data: { users_by_pk: userInfo },
+        error,
+      } = await client.query(query, { id: user.id });
+      session.user = { ...session.user, ...userInfo };
       return session;
     },
   },

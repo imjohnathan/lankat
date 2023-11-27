@@ -24,6 +24,7 @@ export async function UserNav({ className }: { className?: string }) {
               {session ? (
                 <>
                   <AvatarImage
+                    className="object-cover"
                     src={session.user.image ?? ""}
                     alt={session.user.name ?? ""}
                   />
