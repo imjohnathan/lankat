@@ -68,7 +68,7 @@ export default function Locations() {
             barList(9)
           ) : (
             <div className="flex h-[300px] items-center justify-center">
-              <p className="text-sm text-gray-600">No data available</p>
+              <p className="text-sm text-gray-600">沒有任何資料</p>
             </div>
           )
         ) : (
@@ -82,7 +82,7 @@ export default function Locations() {
             className="absolute inset-x-0 bottom-4 z-10 mx-auto flex w-full items-center justify-center space-x-2 rounded-md bg-gradient-to-b from-transparent to-white py-2 text-gray-500 transition-all hover:text-gray-800 active:scale-95"
           >
             <Maximize className="h-4 w-4" />
-            <p className="text-xs font-semibold uppercase">View all</p>
+            <p className="text-xs font-semibold uppercase">看全部</p>
           </button>
         )}
       </ScrollArea>

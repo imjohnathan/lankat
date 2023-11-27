@@ -64,11 +64,12 @@ export default function Clicks() {
                 <strong className="text-gray-800">我的頁面統計</strong>
               </div>
             ))}
-          {VALID_STATS_FILTERS.map((filter) => {
+          {VALID_STATS_FILTERS.map((filter, index) => {
             const value = searchParams?.get(filter);
             if (!value) return null;
             return (
               <button
+                key={index}
                 onClick={() => {
                   queryParams({
                     del: filter,
