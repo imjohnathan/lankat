@@ -33,9 +33,12 @@ export function PreviewItem({
         onClick={recordClick}
         asChild
         variant="outline"
-        className={clsx("h-auto w-full border-2 border-black py-3 text-base", {
-          "opacity-50": !isShow,
-        })}
+        className={clsx(
+          "linkButton h-auto w-full border-2 border-black py-3 text-base",
+          {
+            "opacity-50": !isShow,
+          },
+        )}
       >
         <a href={url} target="_blank">
           {name ? name : "..."}

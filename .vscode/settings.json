@@ -5,6 +5,7 @@
     "lankat",
     "metatags",
     "nextauth",
-    "qrcode"
+    "qrcode",
+    "upsert"
   ]
 }

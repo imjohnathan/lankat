@@ -94,8 +94,7 @@ export async function recordClick({
         },
         body: JSON.stringify(recordClickVariables),
       },
-    ).then((res) => res.text());
-    console.log("tinyBird", recordClickVariables);
+    ).then((res) => res.json());
     return data;
   };
 

@@ -246,10 +246,11 @@ export function Styles(
 
   const sendForm = async (value: string) => {
     try {
+      const theme = templates.find(({ id }) => id === +value);
       const variables = {
         uid: session?.id,
         display_name: form.steps.userName.value.display_name,
-        theme: JSON.stringify(templates.find(({ id }) => id === +value)),
+        theme,
         theme_selected: true,
         url_key: form.steps.userUrl.value.url_key,
         genres: form.steps.userName.value.genres.map((genre) => ({

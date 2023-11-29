@@ -7,6 +7,7 @@ export const components = {
   LoadingModal: lazy(() => new Promise(() => {})),
   EditModal: lazy(() => import("@/components/widgets/modals")),
   QRcodeModal: lazy(() => import("@/components/userpage/modals/QRcode")),
+  AddEditLinkModal: lazy(() => import("@/components/links/AddEditLinksModal")),
 };
 
 interface State {
@@ -22,6 +23,7 @@ interface Actions {
   openLoadingModal: (props: any) => void;
   openEditModal: (props: any) => void;
   openQRcodeModal: (props: any) => void;
+  openAddEditLinkModal: (props: any) => void;
 }
 
 const initialState = {
@@ -78,6 +80,12 @@ const useModalStore = create<State & Actions>((set, get) => ({
     get().open({
       props,
       component: "QRcodeModal",
+    });
+  },
+  openAddEditLinkModal: async (props: Partial<State>) => {
+    get().open({
+      props: { ...props, className: "max-w-screen-lg sm:max-h-[90vh]" },
+      component: "AddEditLinkModal",
     });
   },
 }));

@@ -5,7 +5,7 @@ import { gql } from "@urql/next";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
 const query = gql`
-  query getLink($_eq: String!) @cached {
+  query getLink($_eq: String!) {
     links(where: { key: { _eq: $_eq } }, limit: 1) {
       key
       og_description
