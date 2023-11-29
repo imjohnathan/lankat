@@ -8,7 +8,8 @@ declare module "next-auth" {
     accessToken?: string;
     user: {
       // he user's postal address
-      address: string;
+      display_name: string;
+      url_key: string;
     } & DefaultSession["user"];
   }
 }

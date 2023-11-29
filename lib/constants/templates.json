@@ -1,22 +1,25 @@
 [
   {
+    "id": 0,
+    "name": "Default",
+    "preview": "/templates/themes/default/preview.png",
+    "settings": {}
+  },
+  {
     "id": 1,
     "name": "Smoke",
     "preview": "/templates/themes/smoke/preview.png",
     "settings": {
-      "bgId": "45",
-      "primaryColor": "#405B2E",
-      "bioLayoutId": "1",
-      "bioColorSetId": "9",
-      "bioBgBlurColor": "rgba(255, 255, 255, 0.4)",
-      "linkStyleId": "15",
-      "linkBgColorId": "1",
-      "linkBgColor1": "#FFFFFF",
-      "linkBgColor2": "#FFFFFF",
-      "linkBorderColorId": "1",
-      "linkBorderColor": "#405B2E",
-      "linkTextColor": "#405B2E",
-      "linkTextAlignId": "center"
+      "bio-background-color": "transparent",
+      "background-color": "rgb(42, 50, 53)",
+      "background-color-2": "rgb(42, 50, 53)",
+      "text-color": "rgb(255, 255, 255)",
+      "button-background-color": "rgb(255, 255, 255)",
+      "button-background-color-hover": "rgb(255, 255, 255)",
+      "button-border-color": "transparent",
+      "button-text-color": "rgb(42, 50, 53)",
+      "button-text-color-hover": "rgb(42, 50, 53)",
+      "button-radius": "14px"
     }
   },
   {
@@ -24,19 +27,17 @@
     "name": "Spray",
     "preview": "/templates/themes/spray/preview.png",
     "settings": {
-      "bgId": "45",
-      "primaryColor": "#405B2E",
-      "bioLayoutId": "1",
-      "bioColorSetId": "9",
-      "bioBgBlurColor": "rgba(255, 255, 255, 0.4)",
-      "linkStyleId": "15",
-      "linkBgColorId": "1",
-      "linkBgColor1": "#FFFFFF",
-      "linkBgColor2": "#FFFFFF",
-      "linkBorderColorId": "1",
-      "linkBorderColor": "#405B2E",
-      "linkTextColor": "#405B2E",
-      "linkTextAlignId": "center"
+      "bio-background-color": "transparent",
+      "background-color": "rgb(7, 26, 140)",
+      "background-color-2": "rgb(76, 170, 193)",
+      "text-color": "rgb(255, 255, 255)",
+      "button-background-color": "transparent",
+      "button-background-color-hover": "rgb(255, 255, 255)",
+      "button-border-color": "rgb(255, 255, 255)",
+      "button-border-width": "1px",
+      "button-text-color": "rgb(255, 255, 255)",
+      "button-text-color-hover": "rgb(7, 26, 140)",
+      "button-radius": "999px"
     }
   },
   {
@@ -44,19 +45,17 @@
     "name": "Air White",
     "preview": "/templates/themes/air-white/preview.png",
     "settings": {
-      "bgId": "45",
-      "primaryColor": "#405B2E",
-      "bioLayoutId": "1",
-      "bioColorSetId": "9",
-      "bioBgBlurColor": "rgba(255, 255, 255, 0.4)",
-      "linkStyleId": "15",
-      "linkBgColorId": "1",
-      "linkBgColor1": "#FFFFFF",
-      "linkBgColor2": "#FFFFFF",
-      "linkBorderColorId": "1",
-      "linkBorderColor": "#405B2E",
-      "linkTextColor": "#405B2E",
-      "linkTextAlignId": "center"
+      "bio-background-color": "#ebeef1",
+      "background-color": "#fff",
+      "background-color-2": "#fff",
+      "text-color": "#000",
+      "button-background-color": "#ebeef1",
+      "button-background-color-hover": "#ebeef1",
+      "button-border-color": "transparent",
+      "button-border-width": "2px",
+      "button-text-color": "#000",
+      "button-text-color-hover": "#000",
+      "button-radius": "14px"
     }
   },
   {
@@ -64,19 +63,17 @@
     "name": "Noir",
     "preview": "/templates/themes/noir/preview.png",
     "settings": {
-      "bgId": "45",
-      "primaryColor": "#405B2E",
-      "bioLayoutId": "1",
-      "bioColorSetId": "9",
-      "bioBgBlurColor": "rgba(255, 255, 255, 0.4)",
-      "linkStyleId": "15",
-      "linkBgColorId": "1",
-      "linkBgColor1": "#FFFFFF",
-      "linkBgColor2": "#FFFFFF",
-      "linkBorderColorId": "1",
-      "linkBorderColor": "#405B2E",
-      "linkTextColor": "#405B2E",
-      "linkTextAlignId": "center"
+      "bio-background-color": "transparent",
+      "background-color": "#1e2330",
+      "background-color-2": "#7f8b99",
+      "text-color": "#fff",
+      "button-background-color": "transparent",
+      "button-background-color-hover": "#fff",
+      "button-border-color": "#fff",
+      "button-border-width": "1px",
+      "button-text-color": "#fff",
+      "button-text-color-hover": "#1e2330",
+      "button-radius": "999px"
     }
   },
   {
@@ -84,19 +81,16 @@
     "name": "Air Black",
     "preview": "/templates/themes/air-black/preview.png",
     "settings": {
-      "bgId": "45",
-      "primaryColor": "#405B2E",
-      "bioLayoutId": "1",
-      "bioColorSetId": "9",
-      "bioBgBlurColor": "rgba(255, 255, 255, 0.4)",
-      "linkStyleId": "15",
-      "linkBgColorId": "1",
-      "linkBgColor1": "#FFFFFF",
-      "linkBgColor2": "#FFFFFF",
-      "linkBorderColorId": "1",
-      "linkBorderColor": "#405B2E",
-      "linkTextColor": "#405B2E",
-      "linkTextAlignId": "center"
+      "bio-background-color": "transparent",
+      "background-color": "#000",
+      "background-color-2": "#000",
+      "text-color": "#fff",
+      "button-background-color": "#222222",
+      "button-background-color-hover": "#222222",
+      "button-border-color": "transparent",
+      "button-text-color": "#fff",
+      "button-text-color-hover": "#fff",
+      "button-radius": "14px"
     }
   }
 ]

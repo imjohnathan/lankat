@@ -1,4 +1,5 @@
 import LinkMiddleware from "@/lib/middleware/link";
+import PreviewMiddleware from "@/lib/middleware/preview";
 import UserMiddleware from "@/lib/middleware/userpage";
 import { parse } from "@/lib/utils";
 import { NextFetchEvent, NextRequest } from "next/server";
@@ -20,6 +21,10 @@ export const config = {
 
 export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
   const { domain, path, key, fullKey } = parse(req);
+
+  if (key === "preview") {
+    return PreviewMiddleware(req, ev);
+  }
 
   if (key === "s") {
     return LinkMiddleware(req, ev);

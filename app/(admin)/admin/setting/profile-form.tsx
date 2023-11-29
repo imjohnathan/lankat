@@ -19,7 +19,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { type Users } from "@/gql/graphql";
 import { SOCIAL_LISTS } from "@/lib/constants/socialIcons";
 import {
   DndContext,
@@ -39,12 +38,14 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { gql, useMutation } from "@urql/next";
+import { useContext } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import IconLoading from "~icons/line-md/loading-twotone-loop";
 import IconMove from "~icons/solar/sort-outline";
 import IconDelete from "~icons/solar/trash-bin-minimalistic-outline";
+import { ProfileContext } from "./layout.client";
 
 const updateUserQuery = gql`
   mutation UpdateUser(
@@ -149,7 +150,8 @@ export function SortableItem(props: any) {
   );
 }
 
-export function ProfileForm({ user }: { user: Users }) {
+export function ProfileForm() {
+  const { user } = useContext(ProfileContext);
   const [{ fetching: updating }, updateUser] = useMutation(updateUserQuery);
   const sensors = useSensors(
     useSensor(PointerSensor),

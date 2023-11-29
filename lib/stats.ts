@@ -175,7 +175,7 @@ export const getStats = async ({
       url.searchParams.append(filter, rest[filter]);
     }
   });
-  console.log(url.toString());
+
   return await fetch(url.toString(), {
     headers: {
       Authorization: `Bearer ${process.env.TINY_BIRD_TOKEN}`,

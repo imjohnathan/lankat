@@ -1,8 +1,10 @@
 "use client";
 
-import AddLinksModal from "@/components/links/AddEditLinksModal";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { CopyButton } from "@/components/ui/copy-button";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Table,
   TableBody,
@@ -11,22 +13,95 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { supabase } from "@/lib/supabase";
-import { dateFormat } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { type Links } from "@/gql/graphql";
+import {
+  GOOGLE_FAVICON_URL,
+  dateFormat,
+  getApexDomain,
+  linkConstructor,
+  nFormatter,
+} from "@/lib/utils";
+import useModalStore from "@/stores/useModalStore";
 import { gql, useMutation, useQuery } from "@urql/next";
 import Link from "next/link";
-import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { toast } from "sonner";
+import IconEdit from "~icons/solar/pen-new-square-outline";
+import IconDelete from "~icons/solar/trash-bin-minimalistic-outline";
+
+interface LinksFilter {
+  [key: string]: any;
+}
+
+const linksFilter: LinksFilter = {
+  short: {
+    widgets_links_aggregate: { count: { predicate: { _eq: 0 } } },
+  },
+  page: {
+    widgets_links: {},
+  },
+  all: {},
+};
+
+function Filter({ filter }: { filter: string }) {
+  const basePath = "/links?filter=";
+  return (
+    <RadioGroup>
+      <Link
+        href={basePath + "all"}
+        className="flex cursor-pointer items-center space-x-2 rounded-md px-3 py-2 transition-all hover:bg-gray-100"
+      >
+        <RadioGroupItem value="all" checked={filter === "all"} id="r1" />
+        <Label className="cursor-pointer" htmlFor="r1">
+          全部
+        </Label>
+      </Link>
+      <Link
+        href={basePath + "short"}
+        className="flex cursor-pointer items-center space-x-2 rounded-md px-3 py-2 transition-all hover:bg-gray-100"
+      >
+        <RadioGroupItem value="short" checked={filter === "short"} id="r2" />
+        <Label className="cursor-pointer" htmlFor="r2">
+          只有短連結
+        </Label>
+      </Link>
+      <Link
+        href={basePath + "page"}
+        className="flex cursor-pointer items-center space-x-2 rounded-md px-3 py-2 transition-all hover:bg-gray-100"
+      >
+        <RadioGroupItem value="page" checked={filter === "page"} id="r3" />
+        <Label className="cursor-pointer" htmlFor="r3">
+          只有名片連結
+        </Label>
+      </Link>
+    </RadioGroup>
+  );
+}
+
 function DataTable() {
+  const { openAddEditLinkModal } = useModalStore();
   const query = gql`
-    query GetLinks {
-      links(order_by: { created_at: desc, id: asc }) {
+    query GetLinks($where: links_bool_exp) {
+      links(order_by: { created_at: desc, id: asc }, where: $where) {
         id
+        url
         clicks
         key
-        url
         created_at
         og_image
+        og_description
+        og_title
+        parameters
+        widgets_links {
+          name
+        }
       }
     }
   `;
@@ -39,7 +114,10 @@ function DataTable() {
     }
   `;
 
-  const [result] = useQuery({ query });
+  const searchParams = useSearchParams();
+  const searchFilter = searchParams?.get("filter") || "short";
+  const variables = linksFilter[searchFilter] || linksFilter["short"];
+  const [result] = useQuery({ query, variables: { where: variables } });
   const [deleteLinkResult, deleteLink] = useMutation(deleteMutation);
   const { data, fetching, error } = result;
   const handleDelete = async (id: string) => {
@@ -50,11 +128,103 @@ function DataTable() {
       console.error(e);
     }
   };
+
+  return (
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-7">
+      <Card className="scrollbar-hide sticky top-32 col-span-2 hidden max-h-[calc(100vh-150px)] self-start overflow-auto p-5 lg:block">
+        <Filter filter={searchFilter} />
+      </Card>
+      <div className="col-span-1 auto-rows-min grid-cols-1 lg:col-span-5">
+        <div className="grid gap-4">
+          {data?.links.length &&
+            data.links.map((link: Links) => {
+              const { clicks, created_at, id, key, url, widgets_links } = link;
+              const shortUrl = `${process.env.NEXT_PUBLIC_SHORT_URL}/s/${key}`;
+              return (
+                <Card key={id} className="flex justify-between p-3">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={GOOGLE_FAVICON_URL + getApexDomain(url ?? "")}
+                      alt={getApexDomain(url ?? "")}
+                      className="h-[40px] w-[40px] rounded-lg object-contain"
+                    />
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <a
+                          className="font-medium"
+                          href={shortUrl}
+                          target="_blank"
+                        >
+                          {linkConstructor({
+                            key: key ?? "",
+                            pretty: true,
+                          })}
+                        </a>
+                        <CopyButton className="text-xs" value={shortUrl} />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {widgets_links && widgets_links.length > 0 && (
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger className="flex items-center">
+                                <div className="flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-xs md:inline-flex">
+                                  {widgets_links[0].name}
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>這個連結是從社群名片中建立的</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        )}
+                        <p className="flex h-full max-w-[250px] items-center truncate text-xs text-gray-400">
+                          {url}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="flex w-full justify-between">
+                      <Link
+                        href={"/admin/analytics?interval=7d&key=" + key}
+                        className="flex items-center space-x-1 rounded-md bg-gray-100 px-2 py-0.5 transition-all duration-75 hover:scale-105 active:scale-100 md:inline-flex"
+                      >
+                        <p className="whitespace-nowrap text-sm text-gray-500">
+                          成效 {nFormatter(clicks) || 0}
+                        </p>
+                      </Link>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => openAddEditLinkModal({ link })}
+                          className="text-slate-400 hover:text-black"
+                        >
+                          <IconEdit />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(id)}
+                          className="text-slate-400 hover:text-red-500"
+                        >
+                          <IconDelete />
+                        </button>
+                      </div>
+                    </div>
+
+                    <p className="whitespace-nowrap text-xs text-gray-500">
+                      {dateFormat(created_at)}
+                    </p>
+                  </div>
+                </Card>
+              );
+            })}
+        </div>
+      </div>
+    </div>
+  );
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-2100px]">預覽圖</TableHead>
+          <TableHead className="w-[80px]"></TableHead>
           <TableHead className="w-[100px]">網址</TableHead>
           <TableHead>成效</TableHead>
           <TableHead className="text-right">時間</TableHead>
@@ -63,23 +233,16 @@ function DataTable() {
       </TableHeader>
       <TableBody>
         {data?.links.length &&
-          data.links.map(({ clicks, created_at, id, key, url, og_image }) => {
-            const {
-              data: { publicUrl },
-            } = supabase.storage
-              .from(process.env.NEXT_PUBLIC_SUPABASE_LINKS_BUCKET as string)
-              .getPublicUrl(og_image);
+          data.links.map((link: Links) => {
+            const { clicks, created_at, id, key, url } = link;
             const shortUrl = `${process.env.NEXT_PUBLIC_SHORT_URL}/s/${key}`;
             return (
               <TableRow key={id}>
                 <TableCell>
                   <img
-                    src={
-                      og_image ||
-                      "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs="
-                    }
-                    alt={"OG image"}
-                    className="h-[100px] w-[100px] rounded-lg border object-cover"
+                    src={GOOGLE_FAVICON_URL + getApexDomain(url ?? "")}
+                    alt={getApexDomain(url ?? "")}
+                    className="h-[50px] w-[50px] rounded-lg object-contain"
                   />
                 </TableCell>
                 <TableCell>
@@ -98,7 +261,12 @@ function DataTable() {
                 </TableCell>
                 <TableCell className="grid h-full w-full place-items-center gap-1">
                   <div className="flex gap-1">
-                    <Button size={"sm"}>編輯</Button>
+                    <Button
+                      onClick={() => openAddEditLinkModal({ link })}
+                      size={"sm"}
+                    >
+                      編輯
+                    </Button>
                     <Button
                       size={"sm"}
                       onClick={() => handleDelete(id)}
@@ -117,20 +285,19 @@ function DataTable() {
 }
 
 export default function LinksList() {
-  const [open, setOpen] = useState(false);
+  const { openAddEditLinkModal } = useModalStore();
   return (
     <>
-      <div className="mt-10 p-6">
-        <div className="mb-6 flex justify-end">
-          <Button onClick={() => setOpen(!open)}>新增</Button>
-        </div>
-        <Card>
+      <div className="my-10">
+        <div className="mx-auto w-full max-w-screen-xl px-2.5 lg:px-20">
+          <div className="mb-6 flex justify-end">
+            <Button onClick={openAddEditLinkModal}>新增</Button>
+          </div>
           <Suspense>
             <DataTable />
           </Suspense>
-        </Card>
+        </div>
       </div>
-      <AddLinksModal open={open} setOpen={setOpen} />
     </>
   );
 }
