@@ -1,10 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import PreviewPage from "@/components/userpage/Preview";
 import EditUI from "@/components/widgets/admin/EditUI";
 import BannerPreview from "@/components/widgets/preview/Banner";
 import LinksPreview from "@/components/widgets/preview/Buttons";
+import { type MakeOptional, type Widgets } from "@/gql/graphql";
 import {
   DndContext,
+  DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   closestCenter,
@@ -24,6 +27,16 @@ import { gql, useMutation, useQuery } from "@urql/next";
 import { produce } from "immer";
 import { useSession } from "next-auth/react";
 import { Suspense, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+
+type OptionalWidgets = MakeOptional<
+  Widgets,
+  | "created_at"
+  | "pages_widgets"
+  | "pages_widgets_aggregate"
+  | "widgets_links"
+  | "widgets_links_aggregate"
+>;
 
 const insertWidgetQuery = gql`
   mutation insertWidget($object: widgets_insert_input = {}) {
@@ -150,8 +163,8 @@ function DnD() {
   const [insertWidgetResult, insertWidget] = useMutation(insertWidgetQuery);
   const [updateWidgetsResult, updateWidgets] = useMutation(updateWidgetsQuery);
   const [deleteWidgetResult, deleteWidget] = useMutation(deleteWidgetQuery);
-  const [widgets, setWidgets] = useState([]);
-  const previousWidgetsRef = useRef([]);
+  const [widgets, setWidgets] = useState<OptionalWidgets[]>([]);
+  const previousWidgetsRef = useRef<OptionalWidgets[]>([]);
   const isWidgetInit = useRef(false);
 
   const [{ data, fetching, error }, reexecuteQuery] = useQuery({
@@ -170,14 +183,14 @@ function DnD() {
       const variables = {
         object: {
           type,
-          user: session?.id ?? "",
+          //user: session?.id ?? "",
           sort: -1,
         },
       };
       const { data, error } = await insertWidget(variables);
 
       if (error) {
-        throw new Error(error);
+        throw new Error(error.message);
       }
 
       const widget = {
@@ -188,23 +201,29 @@ function DnD() {
       };
 
       setWidgets(
-        produce((widgets) => {
-          widgets.unshift(widget);
+        produce((draftWidgets) => {
+          draftWidgets.unshift(widget);
         }),
       );
     } catch (e) {
-      console.error("Error updating database:", e);
-      throw new Error(e);
+      if (e instanceof Error) {
+        console.error(e.message);
+        toast.error("錯誤：" + e.message);
+        throw new Error(e.message);
+      } else {
+        console.error("An unknown error occurred");
+        throw new Error("An unknown error occurred");
+      }
     }
   };
 
-  const handleDragEnd = (event) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (active.id !== over.id) {
+    if (active.id !== over?.id) {
       setWidgets((items) => {
         const oldIndex = items.findIndex(({ id }) => id === active.id);
-        const newIndex = items.findIndex(({ id }) => id === over.id);
+        const newIndex = items.findIndex(({ id }) => id === over?.id);
         return arrayMove(items, oldIndex, newIndex);
       });
     }
@@ -217,11 +236,17 @@ function DnD() {
       const { data, error } = await deleteWidget(variables);
 
       if (error) {
-        throw new Error(error);
+        throw new Error(error.message);
       }
     } catch (e) {
-      console.error("Error updating database:", e);
-      throw new Error(e);
+      if (e instanceof Error) {
+        console.error(e.message);
+        toast.error("錯誤：" + e.message);
+        throw new Error(e.message);
+      } else {
+        console.error("An unknown error occurred");
+        throw new Error("An unknown error occurred");
+      }
     }
   };
 
@@ -236,11 +261,17 @@ function DnD() {
       const { data, error } = await updateWidgets({ updates });
 
       if (error) {
-        throw new Error(error);
+        throw new Error(error.message);
       }
     } catch (e) {
-      console.error("Error updating database:", e);
-      throw new Error(e);
+      if (e instanceof Error) {
+        console.error(e.message);
+        toast.error("錯誤：" + e.message);
+        throw new Error(e.message);
+      } else {
+        console.error("An unknown error occurred");
+        throw new Error("An unknown error occurred");
+      }
     }
   };
 
@@ -252,10 +283,16 @@ function DnD() {
           _set: { sort: index },
         }));
         const { data, error } = await updateWidgets({ updates });
-        if (error) throw new Error(error);
+        if (error) throw new Error(error.message);
       } catch (e) {
-        console.error("Error updating database:", e);
-        throw new Error(e);
+        if (e instanceof Error) {
+          console.error(e.message);
+          toast.error("錯誤：" + e.message);
+          throw new Error(e.message);
+        } else {
+          console.error("An unknown error occurred");
+          throw new Error("An unknown error occurred");
+        }
       }
     };
 
@@ -273,43 +310,50 @@ function DnD() {
   }, [data]);
 
   return (
-    <div className="mt-20 grid place-items-center gap-5">
-      <div className="flex gap-4">
-        <Button onClick={() => handleAddWidget("links")}>新增連結按鈕</Button>
-        <Button onClick={() => handleAddWidget("banner")}>新增圖片看板</Button>
-      </div>
-      <div className="flex w-[350px] flex-col gap-4">
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-          modifiers={[restrictToVerticalAxis]}
-        >
-          <SortableContext
-            items={widgets.map((widget) => widget.id)}
-            strategy={verticalListSortingStrategy}
+    <div className="mt-20 grid grid-cols-2">
+      <div className="grid place-items-center gap-5">
+        <div className="flex gap-4">
+          <Button onClick={() => handleAddWidget("links")}>新增連結按鈕</Button>
+          <Button onClick={() => handleAddWidget("banner")}>
+            新增圖片看板
+          </Button>
+        </div>
+        <div className="flex w-[350px] flex-col gap-4">
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis]}
           >
-            {widgets.map((widget) => {
-              const { type, id } = widget;
-              const component = widgetsList.find((w) => w.type === type)
-                ?.render;
-              return (
-                <SortableItem
-                  handleDeleteWidget={handleDeleteWidget}
-                  handleToggleWidgetShow={handleToggleWidgetShow}
-                  widget={widget}
-                  {...widget}
-                  render={component}
-                  key={id}
-                />
-              );
-            })}
-          </SortableContext>
-        </DndContext>
+            <SortableContext
+              items={widgets.map((widget) => widget.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              {widgets.map((widget) => {
+                const { type, id } = widget;
+                const component = widgetsList.find((w) => w.type === type)
+                  ?.render;
+                return (
+                  <SortableItem
+                    handleDeleteWidget={handleDeleteWidget}
+                    handleToggleWidgetShow={handleToggleWidgetShow}
+                    widget={widget}
+                    {...widget}
+                    render={component}
+                    key={id}
+                  />
+                );
+              })}
+            </SortableContext>
+          </DndContext>
+        </div>
+        <code className="mt-20 block max-w-sm overflow-hidden whitespace-pre">
+          {JSON.stringify(widgets, null, 2)}
+        </code>
       </div>
-      <code className="mt-20 block max-w-sm overflow-hidden whitespace-pre">
-        {JSON.stringify(widgets, null, 2)}
-      </code>
+      <div>
+        <PreviewPage wrapperClass="static" />
+      </div>
     </div>
   );
 }

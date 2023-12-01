@@ -1,8 +1,12 @@
 import LinkMiddleware from "@/lib/middleware/link";
-import PreviewMiddleware from "@/lib/middleware/preview";
+import {
+  CheckUserMiddleware,
+  PreviewMiddleware,
+} from "@/lib/middleware/preview";
 import UserMiddleware from "@/lib/middleware/userpage";
 import { parse } from "@/lib/utils";
 import { NextFetchEvent, NextRequest } from "next/server";
+// export { auth as middleware } from "@/lib/auth";
 
 export const config = {
   matcher: [
@@ -22,8 +26,8 @@ export const config = {
 export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
   const { domain, path, key, fullKey } = parse(req);
 
-  if (key === "preview") {
-    return PreviewMiddleware(req, ev);
+  if (fullKey === "admin/preview") {
+    return PreviewMiddleware(req);
   }
 
   if (key === "s") {
@@ -32,5 +36,10 @@ export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
 
   if (key === "u") {
     return UserMiddleware(req, ev);
+  }
+
+  if (key === "admin") {
+    //check if user have key
+    return CheckUserMiddleware(req);
   }
 }

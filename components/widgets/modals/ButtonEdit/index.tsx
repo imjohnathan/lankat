@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { PreviewItem } from "@/components/widgets/preview/Buttons";
+import { isValidUrl } from "@/lib/utils";
 import useModalStore from "@/stores/useModalStore";
 import {
   DndContext,
@@ -202,6 +203,10 @@ export default function ButtonEdit({ widget }: { widget: WidgetLinkProps }) {
 
   const sendForm = async () => {
     try {
+      form.widgets_links.forEach(({ name, url }) => {
+        if (!name || !url) throw new Error("文字或連結不得為空");
+        if (!isValidUrl(url)) throw new Error("連結格式錯誤");
+      });
       const variablesLinks = form.widgets_links.map((field, index) => {
         const fieldData = {
           name: field.name,
@@ -216,7 +221,7 @@ export default function ButtonEdit({ widget }: { widget: WidgetLinkProps }) {
               //更新時才把link_id帶入
               ...(field.link_id && { id: field.link_id }),
               //新增時才帶入key和user
-              ...(!field.id && { key: nanoid(7), user: session?.id }),
+              ...(!field.id && { key: nanoid(7) }),
             },
             on_conflict: {
               constraint: "links_pkey",
@@ -243,8 +248,8 @@ export default function ButtonEdit({ widget }: { widget: WidgetLinkProps }) {
         },
         deleteIds: { id: { _in: deletedFields.current } },
       };
-      console.log(variables);
-      await upsertWidgetLinks(variables);
+      const { error } = await upsertWidgetLinks(variables);
+      if (error) throw new Error(error.message);
       toast.success("儲存成功！");
       close();
     } catch (e) {

@@ -1,7 +1,7 @@
 import { client } from "@/lib/nodeClient";
 import { SupabaseAdapter } from "@auth/supabase-adapter";
 import { gql } from "@urql/next";
-import jwt from "jsonwebtoken";
+import * as jose from "jose";
 import type { NextAuthConfig } from "next-auth";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
@@ -32,13 +32,20 @@ const config = {
   callbacks: {
     async session({ session, user }) {
       const signingSecret = process.env.SUPABASE_JWT_SECRET;
+      const secret = new TextEncoder().encode(signingSecret);
+      //console.log(session, user, session.accessToken);
+      if (session.accessToken) {
+        const jwt = await jose.jwtVerify(session.accessToken, secret, {
+          issuer: "lankat",
+        });
+        console.log(jwt);
+      }
       if (signingSecret) {
         const payload = {
           //aud: "authenticated",
           exp: Math.floor(new Date(session.expires).getTime() / 1000),
           sub: user.id,
           email: user.email,
-          issuer: "lankat",
           "https://hasura.io/jwt/claims": {
             "x-hasura-default-role": DEFAULT_ROLE_NAME,
             "x-hasura-allowed-roles": [DEFAULT_ROLE_NAME],
@@ -46,13 +53,19 @@ const config = {
           },
         };
         session.id = user.id;
-        session.accessToken = jwt.sign(payload, signingSecret);
+        const jwt = await new jose.SignJWT(payload)
+          .setProtectedHeader({ alg: "HS256" })
+          .setIssuedAt()
+          .setIssuer("lankat")
+          .sign(secret);
+        session.accessToken = jwt;
+        //session.accessToken = jwt.sign(payload, signingSecret);
+        const {
+          data: { users_by_pk: userInfo },
+          error,
+        } = await client.query(query, { id: user.id });
+        session.user = { ...session.user, ...userInfo };
       }
-      const {
-        data: { users_by_pk: userInfo },
-        error,
-      } = await client.query(query, { id: user.id });
-      session.user = { ...session.user, ...userInfo };
       return session;
     },
   },

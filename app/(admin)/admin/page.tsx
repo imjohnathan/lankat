@@ -1,4 +1,4 @@
-import PageClient from "./page.client";
+import DnD from "@/app/(admin)/admin/dnd/page";
 export default function Hello() {
-  return <PageClient />;
+  return <DnD />;
 }

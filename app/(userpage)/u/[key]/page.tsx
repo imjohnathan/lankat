@@ -1,12 +1,8 @@
-import { Card } from "@/components/ui/card";
-import Bio from "@/components/userpage/Bio";
-import BioButtons from "@/components/userpage/BioButtons";
-import Widgets from "@/components/userpage/Widgets";
-import { getClient } from "@/lib/client";
+import UserPage from "@/components/userpage";
+import { client } from "@/lib/nodeClient";
 import { gql } from "@urql/next";
 import { notFound } from "next/navigation";
 import { NextFetchEvent, NextRequest } from "next/server";
-import StyleWrapper from "./page.client";
 const query = gql`
   query GetUserWidgets($userKey: String!) {
     widgets(
@@ -55,11 +51,10 @@ const query = gql`
   }
 `;
 
-export const revalidate = 1;
 export const dynamic = "force-dynamic";
 
 const getData = async (key: string) => {
-  const { data, error } = await getClient().query(
+  const { data, error } = await client.query(
     query,
     {
       userKey: key,
@@ -103,21 +98,6 @@ export default async function App(
   const isPreview = Object.hasOwn(searchParams, "preview");
 
   return (
-    <StyleWrapper theme={users.theme} isPreview={isPreview}>
-      <div className="masterBackground bg-gray-100 p-4 transition-all duration-150 sm:py-16">
-        <div className="mx-auto max-w-[480px]">
-          <Card className="bioSection p-6 shadow-none transition-all duration-150">
-            <BioButtons urlKey={users.url_key} />
-            <Bio user={users} />
-          </Card>
-          <div className="mt-4">
-            <Widgets widgets={data.widgets} />
-          </div>
-        </div>
-        {/* <code className="block overflow-hidden whitespace-break-spaces">
-          {JSON.stringify(data, null, 2)}
-        </code> */}
-      </div>
-    </StyleWrapper>
+    <UserPage users={users} widgets={data.widgets} isPreview={isPreview} />
   );
 }

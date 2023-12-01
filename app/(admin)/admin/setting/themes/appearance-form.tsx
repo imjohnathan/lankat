@@ -11,6 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import PreviewPage from "@/components/userpage/Preview";
 import templates from "@/lib/constants/templates.json";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { gql, useMutation } from "@urql/next";
@@ -21,7 +22,6 @@ import { toast } from "sonner";
 import * as z from "zod";
 import IconLoading from "~icons/line-md/loading-twotone-loop";
 import { ProfileContext } from "../layout.client";
-
 const updateUserQuery = gql`
   mutation UpdateUser(
     $_set: users_set_input! = {
@@ -49,6 +49,54 @@ const appearanceFormSchema = z.object({
 type AppearanceFormValues = z.infer<typeof appearanceFormSchema>;
 
 // This can come from your database or API.
+
+export function ThemeSelector({ form, name }: { form: any; name: string }) {
+  return (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="space-y-1">
+          <FormLabel>頁面風格</FormLabel>
+          <FormDescription>
+            選擇您的喜愛的主題，搭配您的個人風格
+          </FormDescription>
+          <FormMessage />
+
+          <RadioGroup
+            onValueChange={field.onChange}
+            defaultValue={String(field.value)}
+            className="grid max-w-md grid-cols-3 gap-5 pt-2"
+          >
+            {templates.map((theme) => {
+              const { id, name, preview } = theme;
+              return (
+                <FormItem key={id} className="flex cursor-pointer">
+                  <FormLabel className="[&:has([data-state=checked])>div]:border-primary">
+                    <FormControl>
+                      <RadioGroupItem value={String(id)} className="sr-only" />
+                    </FormControl>
+                    <div className="select-none items-center rounded-md border-2 border-muted p-1 hover:border-accent">
+                      <Image
+                        src={preview}
+                        alt={name}
+                        width={150}
+                        height={300}
+                      />
+                    </div>
+                    <span className="block w-full p-2 text-center font-normal">
+                      {name}
+                    </span>
+                  </FormLabel>
+                </FormItem>
+              );
+            })}
+          </RadioGroup>
+        </FormItem>
+      )}
+    />
+  );
+}
 
 export function AppearanceForm() {
   const [{ fetching: updating }, updateUser] = useMutation(updateUserQuery);
@@ -105,82 +153,7 @@ export function AppearanceForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="theme"
-          render={({ field }) => (
-            <FormItem className="space-y-1">
-              <FormLabel>頁面風格</FormLabel>
-              <FormDescription>
-                選擇您的喜愛的主題，搭配您的個人風格
-              </FormDescription>
-              <FormMessage />
-
-              <RadioGroup
-                onValueChange={field.onChange}
-                defaultValue={String(field.value)}
-                className="grid max-w-md grid-cols-3 gap-5 pt-2"
-              >
-                {templates.map((theme) => {
-                  const { id, name, preview } = theme;
-                  return (
-                    <FormItem key={id} className="flex cursor-pointer">
-                      <FormLabel className="[&:has([data-state=checked])>div]:border-primary">
-                        <FormControl>
-                          <RadioGroupItem
-                            value={String(id)}
-                            className="sr-only"
-                          />
-                        </FormControl>
-                        <div className="select-none items-center rounded-md border-2 border-muted p-1 hover:border-accent">
-                          <Image
-                            src={preview}
-                            alt={name}
-                            width={150}
-                            height={300}
-                          />
-                        </div>
-                        <span className="block w-full p-2 text-center font-normal">
-                          {name}
-                        </span>
-                      </FormLabel>
-                    </FormItem>
-                  );
-                })}
-              </RadioGroup>
-            </FormItem>
-          )}
-        />
-        <>
-          <div
-            className="fixed right-8 top-24"
-            style={{ transform: "scale3d(0.733333, 0.733333, 1)" }}
-          >
-            <iframe
-              title="preview"
-              ref={preview}
-              src={`/u/${user.url_key}?preview`}
-              frameBorder="0"
-              scrolling="no"
-              width="360"
-              height="722.41875"
-              className="rounded-[40px] p-4"
-            />
-          </div>
-          <style jsx>{`
-            ::after {
-              content: "";
-              background-image: url(https://assets.production.linktr.ee/15104faa6bf0555358fb69473b607dbca09813e0/images/preview-device.svg);
-              background-position: center;
-              background-size: contain;
-              background-repeat: no-repeat;
-              position: absolute;
-              inset: 0;
-              pointer-events: none;
-            }
-          `}</style>
-        </>
-
+        <ThemeSelector form={form} name="theme" />
         <Button disabled={updating} type="submit">
           {updating ? (
             <>
@@ -192,6 +165,7 @@ export function AppearanceForm() {
           )}
         </Button>
       </form>
+      <PreviewPage ref={preview} />
     </Form>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Styles, UserName, UserUrl } from "@/components/hello/Steps";
+import { Finish, Styles, UserName, UserUrl } from "@/components/hello/Steps";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { produce } from "immer";
 import {
@@ -10,6 +10,7 @@ import {
   useContext,
   useState,
 } from "react";
+import IconLoading from "~icons/line-md/loading-twotone-loop";
 
 const FORM_STATE = {
   selectedIndex: 0,
@@ -29,12 +30,16 @@ const FORM_STATE = {
         genres: [],
       },
     },
-    styles: {
+    theme: {
       valid: false,
       dirty: false,
       value: {
-        style: "",
+        theme: "0",
       },
+    },
+    finish: {
+      valid: false,
+      dirty: false,
     },
   },
 };
@@ -48,6 +53,9 @@ const FORM_STEPS = [
   },
   {
     label: `選擇風格`,
+  },
+  {
+    label: `完成`,
   },
 ];
 
@@ -72,6 +80,14 @@ function CreateTaskMultiStepFormContainer() {
     </FormStateContext.Provider>
   );
 }
+
+export const Loading = () => {
+  return (
+    <div className="grid h-32 w-full place-items-center">
+      <IconLoading className="h-10 w-10" />
+    </div>
+  );
+};
 
 const CreateTaskMultiStepForm = () => {
   const { form, setForm } = useContext(FormStateContext);
@@ -121,10 +137,13 @@ const CreateTaskMultiStepForm = () => {
       >
         <div className="flex justify-center">
           <TabsList>
+            <TabsTrigger disabled value="reg">
+              1. 註冊
+            </TabsTrigger>
             {FORM_STEPS.map((step, index) => {
               return (
                 <TabsTrigger key={index} value={String(index)}>
-                  {index + 1 + ". " + step.label}
+                  {index + 2 + ". " + step.label}
                 </TabsTrigger>
               );
             })}
@@ -136,12 +155,15 @@ const CreateTaskMultiStepForm = () => {
             <UserUrl onNext={next} />
           </TabsContent>
           <TabsContent value="1">
-            <Suspense>
+            <Suspense fallback={<Loading />}>
               <UserName onNext={next} onPrev={prev} />
             </Suspense>
           </TabsContent>
           <TabsContent value="2">
             <Styles onNext={next} onPrev={prev} />
+          </TabsContent>
+          <TabsContent value="3">
+            <Finish onNext={next} onPrev={prev} />
           </TabsContent>
         </div>
       </Tabs>
