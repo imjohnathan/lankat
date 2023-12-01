@@ -26,7 +26,6 @@ export default async function Home() {
       <SignIn provider="google">
         <Button>登入</Button>
       </SignIn>
-      <SignOut />
       <SignOut>
         <Button>登出</Button>
       </SignOut>

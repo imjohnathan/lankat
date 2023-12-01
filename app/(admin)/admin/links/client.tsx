@@ -6,14 +6,6 @@ import { CopyButton } from "@/components/ui/copy-button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -51,7 +43,7 @@ const linksFilter: LinksFilter = {
 };
 
 function Filter({ filter }: { filter: string }) {
-  const basePath = "/links?filter=";
+  const basePath = "/admin/links?filter=";
   return (
     <RadioGroup>
       <Link
@@ -136,6 +128,11 @@ function DataTable() {
       </Card>
       <div className="col-span-1 auto-rows-min grid-cols-1 lg:col-span-5">
         <div className="grid gap-4">
+          {!data?.links.length && (
+            <div className="grid place-items-center p-6 text-xl font-medium opacity-50">
+              目前還沒有連結
+            </div>
+          )}
           {data?.links.length &&
             data.links.map((link: Links) => {
               const { clicks, created_at, id, key, url, widgets_links } = link;
@@ -219,68 +216,6 @@ function DataTable() {
         </div>
       </div>
     </div>
-  );
-  return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[80px]"></TableHead>
-          <TableHead className="w-[100px]">網址</TableHead>
-          <TableHead>成效</TableHead>
-          <TableHead className="text-right">時間</TableHead>
-          <TableHead>操作</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data?.links.length &&
-          data.links.map((link: Links) => {
-            const { clicks, created_at, id, key, url } = link;
-            const shortUrl = `${process.env.NEXT_PUBLIC_SHORT_URL}/s/${key}`;
-            return (
-              <TableRow key={id}>
-                <TableCell>
-                  <img
-                    src={GOOGLE_FAVICON_URL + getApexDomain(url ?? "")}
-                    alt={getApexDomain(url ?? "")}
-                    className="h-[50px] w-[50px] rounded-lg object-contain"
-                  />
-                </TableCell>
-                <TableCell>
-                  <p className="max-w-sm truncate">{url}</p>
-                  <a href={shortUrl} target="_blank">
-                    {shortUrl}
-                  </a>
-                </TableCell>
-                <TableCell>
-                  <Link href={"/admin/analytics?interval=7d&key=" + key}>
-                    {clicks || 0}
-                  </Link>
-                </TableCell>
-                <TableCell className="text-right">
-                  {dateFormat(created_at)}
-                </TableCell>
-                <TableCell className="grid h-full w-full place-items-center gap-1">
-                  <div className="flex gap-1">
-                    <Button
-                      onClick={() => openAddEditLinkModal({ link })}
-                      size={"sm"}
-                    >
-                      編輯
-                    </Button>
-                    <Button
-                      size={"sm"}
-                      onClick={() => handleDelete(id)}
-                      variant="destructive"
-                    >
-                      刪除
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-      </TableBody>
-    </Table>
   );
 }
 

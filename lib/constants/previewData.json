@@ -1,0 +1,75 @@
+{
+  "widgets": [
+    {
+      "id": "73deb9e0-b6a5-489e-80c8-c39f05e60d4c",
+      "config": null,
+      "type": "links",
+      "updated_at": "2023-11-30T09:56:55.559294+00:00",
+      "widgets_links": [
+        {
+          "name": "...",
+          "id": 41,
+          "isShow": true,
+          "link": {
+            "url": "",
+            "id": "e537f270-836a-4b79-8fdf-8d440a41495b",
+            "key": "d40j-7O"
+          }
+        },
+        {
+          "name": "...",
+          "id": 42,
+          "isShow": true,
+          "link": {
+            "url": "",
+            "id": "6bb90cba-5561-4cf6-91bd-912c38920b34",
+            "key": "r3n7MGJ"
+          }
+        },
+        {
+          "name": "...",
+          "id": 43,
+          "isShow": true,
+          "link": {
+            "url": "",
+            "id": "07ff2b09-d2a2-4453-a787-450c4ded6847",
+            "key": "WUk6fCq"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "display_name": "Johnathan Liu",
+      "theme": {
+        "id": 3,
+        "settings": {}
+      },
+      "theme_selected": true,
+      "id": "4a5e811c-e66b-4b3a-afe0-5c0e8dbdd447",
+      "name": "你的名字",
+      "url_key": "urlKey",
+      "image": "",
+      "bio": "這是一段社群名片的說明文字",
+      "social_links": [
+        {
+          "value": "",
+          "service": "instagram"
+        },
+        {
+          "value": "",
+          "service": "twitter"
+        },
+        {
+          "value": "",
+          "service": "lineAt"
+        },
+        {
+          "value": "",
+          "service": "website"
+        }
+      ]
+    }
+  ]
+}

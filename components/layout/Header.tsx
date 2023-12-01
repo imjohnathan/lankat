@@ -12,13 +12,13 @@ export default async function Header() {
         </Link>
         <ul className="flex gap-8 text-lg font-medium">
           <li>
-            <Link href="/hello">你好</Link>
+            <Link href="/admin/hello">你好</Link>
           </li>
           <li>
-            <Link href="/dnd">頁面</Link>
+            <Link href="/admin">頁面</Link>
           </li>
           <li>
-            <Link href="/links">連結</Link>
+            <Link href="/admin/links">連結</Link>
           </li>
           <li>
             <Link href="/admin/analytics">分析</Link>

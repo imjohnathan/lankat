@@ -213,11 +213,19 @@ export default function AddLinksModal({ link }: { link: any }) {
           parameters: data.parameters || {},
         },
       };
-      const { data: result, error } = await addLink(variables);
+      const { error } = await addLink(variables);
+      if (error) throw new Error(error.message);
       toast.success("連結新增成功！");
       close();
     } catch (e) {
-      console.error(e);
+      if (e instanceof Error) {
+        console.error(e.message);
+        toast.error("錯誤：" + e.message);
+        throw new Error(e.message);
+      } else {
+        console.error("An unknown error occurred");
+        throw new Error("An unknown error occurred");
+      }
     }
   };
   return (

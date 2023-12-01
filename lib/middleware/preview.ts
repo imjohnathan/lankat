@@ -1,13 +1,23 @@
 import { auth } from "@/lib/auth";
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from "next/server";
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const session = await auth(req, res);
-  if (session) {
-    console.log(session);
-    // Do something with the session
-    // return res.json("This is protected content.");
-  }
-  console.log(session.user);
-  //   res.status(401).json("You must be signed in.");
-};
+export const PreviewMiddleware = auth((req) => {
+  if (!req.auth)
+    return NextResponse.json({ error: "please login." }, { status: 403 });
+  const { user } = req.auth;
+  if (!user.url_key)
+    return NextResponse.json(
+      { error: "please set url_key first." },
+      { status: 400 },
+    );
+  return NextResponse.rewrite(new URL(`/u/${user.url_key}/preview`, req.url));
+});
+
+export const CheckUserMiddleware = auth((req) => {
+  if (!req.auth)
+    return NextResponse.json({ error: "please login." }, { status: 403 });
+  const { user } = req.auth;
+  if (!user.url_key)
+    return NextResponse.redirect(new URL("/admin/hello", req.url));
+  return NextResponse.next();
+});
