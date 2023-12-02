@@ -16,8 +16,7 @@ export const PreviewMiddleware = auth((req) => {
 
 export const CheckUserMiddleware = auth((req) => {
   if (!req.auth) return NextResponse.redirect(new URL("/", req.url));
-  const { user } = req.auth;
-  if (!user.url_key)
+  if (req.auth && req.auth?.user && !req.auth?.user?.url_key)
     return NextResponse.redirect(new URL("/admin/hello", req.url));
   return NextResponse.next();
 });
