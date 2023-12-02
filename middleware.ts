@@ -38,7 +38,7 @@ export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
     return UserMiddleware(req, ev);
   }
 
-  if (key === "admin") {
+  if (key === "admin" && !path.includes("hello")) {
     //check if user have key
     return CheckUserMiddleware(req);
   }

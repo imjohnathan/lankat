@@ -136,17 +136,16 @@ export function UserPagePreview() {
     setData((prev) => ({ ...prev, widgets: response.widgets }));
     return [response];
   };
-  if (!isMocking) {
-    const [res] = useSubscription(
-      {
-        query: subscription,
-        variables: {
-          userKey: key,
-        },
+  const [res] = useSubscription(
+    {
+      query: subscription,
+      variables: {
+        userKey: key,
       },
-      handleSubscription,
-    );
-  }
+      pause: isMocking,
+    },
+    handleSubscription,
+  );
   const users = data.users[0];
   if (!users || fetching) return <Loading />;
   return (
