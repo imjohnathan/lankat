@@ -1,8 +1,5 @@
 import LinkMiddleware from "@/lib/middleware/link";
-import {
-  CheckUserMiddleware,
-  PreviewMiddleware,
-} from "@/lib/middleware/preview";
+import { PreviewMiddleware } from "@/lib/middleware/preview";
 import UserMiddleware from "@/lib/middleware/userpage";
 import { parse } from "@/lib/utils";
 import { NextFetchEvent, NextRequest } from "next/server";
@@ -38,8 +35,8 @@ export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
     return UserMiddleware(req, ev);
   }
 
-  if (key === "admin" && !path.includes("hello")) {
-    //check if user have key
-    return CheckUserMiddleware(req);
-  }
+  // if (key === "admin" && !path.includes("hello")) {
+  //   //check if user have key
+  //   return CheckUserMiddleware(req);
+  // }
 }
