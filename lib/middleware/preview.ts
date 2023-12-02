@@ -5,7 +5,8 @@ export const PreviewMiddleware = auth((req) => {
   if (!req.auth)
     return NextResponse.json({ error: "please login." }, { status: 403 });
   const { user } = req.auth;
-  if (!user.url_key)
+  const isMocking = req.nextUrl.searchParams.has("mocking");
+  if (!user.url_key && !isMocking)
     return NextResponse.json(
       { error: "please set url_key first." },
       { status: 400 },
@@ -14,8 +15,7 @@ export const PreviewMiddleware = auth((req) => {
 });
 
 export const CheckUserMiddleware = auth((req) => {
-  if (!req.auth)
-    return NextResponse.json({ error: "please login." }, { status: 403 });
+  if (!req.auth) return NextResponse.redirect(new URL("/", req.url));
   const { user } = req.auth;
   if (!user.url_key)
     return NextResponse.redirect(new URL("/admin/hello", req.url));

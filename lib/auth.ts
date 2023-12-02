@@ -1,9 +1,11 @@
 import { client } from "@/lib/nodeClient";
+import { supabase } from "@/lib/supabase";
 import { SupabaseAdapter } from "@auth/supabase-adapter";
 import { gql } from "@urql/next";
 import * as jose from "jose";
 import type { NextAuthConfig } from "next-auth";
 import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
 const DEFAULT_ROLE_NAME = "user";
@@ -20,6 +22,34 @@ const query = gql`
 
 const config = {
   providers: [
+    CredentialsProvider({
+      credentials: {
+        email: {
+          label: "email",
+          type: "email",
+          placeholder: "example@email.com",
+        },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        const { email, password } = credentials;
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) {
+          return null;
+        }
+        const user = {
+          id: data?.user?.id,
+          email: data?.user?.email,
+          emailVerified: data?.user?.email_confirmed_at,
+        };
+
+        return user;
+      },
+    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,

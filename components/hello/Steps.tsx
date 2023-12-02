@@ -23,7 +23,7 @@ import { useAnimate } from "framer-motion";
 import { produce } from "immer";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useCallback, useContext, useEffect, useRef } from "react";
 import ReactCanvasConfetti from "react-canvas-confetti";
 import { useForm, useFormState } from "react-hook-form";
 import { toast } from "sonner";
@@ -383,6 +383,11 @@ export function Styles(
         toast.error("錯誤：" + e.message);
         throw new Error(e.message);
       } else {
+        setForm(
+          produce((form) => {
+            form.steps.theme.valid = false;
+          }),
+        );
         console.error("An unknown error occurred");
         throw new Error("An unknown error occurred");
       }
@@ -460,11 +465,12 @@ export function Finish(
   const [isIframeLoaded, setIsIframeLoaded] = React.useState(false);
   const [scope, animate] = useAnimate();
   const preview = useRef<HTMLIFrameElement>(null);
-  const refAnimationInstance = useRef(null);
+  const refAnimationInstance = useRef<HTMLCanvasElement>(null);
   const router = useRouter();
   const FormSchema = z.object({
     finish: z.boolean(),
   });
+  const { update } = useSession();
 
   const formField = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -477,8 +483,18 @@ export function Finish(
     control: formField.control,
   });
 
-  const getInstance = React.useCallback((instance: any) => {
+  const getInstance = useCallback((instance: any) => {
     refAnimationInstance.current = instance;
+  }, []);
+
+  const makeShot = useCallback((particleRatio: number, opts: {}) => {
+    const confetti = refAnimationInstance.current as any;
+    confetti &&
+      confetti({
+        ...opts,
+        origin: { y: 0.7 },
+        particleCount: Math.floor(200 * particleRatio),
+      });
   }, []);
 
   useEffect(() => {
@@ -504,14 +520,10 @@ export function Finish(
         },
         { ease: "easeOut", duration: 2 },
       );
-      if (refAnimationInstance.current) {
-        const confetti = refAnimationInstance.current as any;
-        confetti({
-          particleCount: 300,
-          spread: 120,
-          origin: { y: 0.6 },
-        });
-      }
+      makeShot(2, {
+        spread: 100,
+        startVelocity: 55,
+      });
       await animate(
         ".finish",
         { opacity: 1, x: 0, y: 0, scale: 1 },
@@ -542,7 +554,7 @@ export function Finish(
       <form
         className={cn({ "h-0 opacity-0": !isIframeLoaded })}
         ref={scope}
-        onSubmit={formField.handleSubmit((value) => {
+        onSubmit={formField.handleSubmit(async (value) => {
           setForm(
             produce((formState) => {
               formState.steps.finish = {
@@ -551,7 +563,9 @@ export function Finish(
               };
             }),
           );
-          router.push("/admin");
+          await update();
+          //router.push("/admin");
+          window.location.replace("/admin");
         })}
       >
         <div className={"flex flex-col"}>
