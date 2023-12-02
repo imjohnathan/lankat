@@ -26,8 +26,14 @@ export const config = {
 export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
   const { domain, path, key, fullKey } = parse(req);
 
+  const {
+    nextUrl: { search },
+  } = req;
+  const urlSearchParams = new URLSearchParams(search);
+  const params = Object.fromEntries(urlSearchParams.entries());
+
   if (fullKey === "admin/preview") {
-    return PreviewMiddleware(req);
+    return PreviewMiddleware(req, { params });
   }
 
   if (key === "s") {
@@ -40,6 +46,6 @@ export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
 
   if (key === "admin" && !path.includes("hello")) {
     //check if user have key
-    return CheckUserMiddleware(req);
+    return CheckUserMiddleware(req, { params });
   }
 }
