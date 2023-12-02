@@ -44,7 +44,11 @@ export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
     return UserMiddleware(req, ev);
   }
 
-  if (key === "admin" && !path.includes("hello")) {
+  if (
+    key === "admin" &&
+    !path.includes("hello") &&
+    !req.headers.has("Next-Router-Prefetch")
+  ) {
     //check if user have key
     return CheckUserMiddleware(req, { params });
   }
