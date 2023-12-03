@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api",
+      "destination": "https://together-pangolin-86.hasura.app/v1/graphql"
+    }
+  ]
+}
