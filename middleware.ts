@@ -19,7 +19,14 @@ export const config = {
      * 5. /_vercel (Vercel internals)
      * 6. /favicon.ico, /sitemap.xml, /robots.txt (static files)
      */
-    "/((?!api/|_next/|_proxy/|_static|_vercel|favicon.ico|sitemap.xml|robots.txt).*)",
+    {
+      source:
+        "/((?!api/|_next/|_proxy/|_static|_vercel|favicon.ico|sitemap.xml|robots.txt).*)",
+      missing: [
+        { type: "header", key: "next-router-prefetch" },
+        { type: "header", key: "purpose", value: "prefetch" },
+      ],
+    },
   ],
 };
 
@@ -44,11 +51,7 @@ export default async function middleware(req: NextRequest, ev: NextFetchEvent) {
     return UserMiddleware(req, ev);
   }
 
-  if (
-    key === "admin" &&
-    !path.includes("hello") &&
-    !req.headers.has("Next-Router-Prefetch")
-  ) {
+  if (key === "admin" && !path.includes("hello")) {
     //check if user have key
     return CheckUserMiddleware(req, { params });
   }
