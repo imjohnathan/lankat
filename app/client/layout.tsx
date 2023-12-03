@@ -18,11 +18,6 @@ export default function Layout({ children }: React.PropsWithChildren) {
   const { data: session } = useSession();
   const [client, ssr] = useMemo(() => {
     const ssr = ssrExchange();
-    const headers = {
-      "x-hasura-admin-secret":
-        "7lQAMFpyeVollj1jalVlpTTBQn7m7odbfSP6w29fHqIJY6b0C7g4K0cyFhG9AyYj",
-    };
-
     const authHeader = authExchange(async (utils) => {
       return {
         addAuthToOperation(operation) {
