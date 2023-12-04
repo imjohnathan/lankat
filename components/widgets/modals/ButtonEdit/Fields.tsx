@@ -1,11 +1,19 @@
 import { Card } from "@/components/ui/card";
 import { classes } from "@/components/ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { clsx } from "clsx";
+import Link from "next/link";
 import IconDrag from "~icons/mingcute/dots-fill";
 import IconCopy from "~icons/solar/copy-outline";
+import SolarCursorBold from "~icons/solar/cursor-bold";
 import IconEyeHide from "~icons/solar/eye-line-duotone";
 import IconEye from "~icons/solar/eye-outline";
 import IconDelete from "~icons/solar/trash-bin-minimalistic-outline";
@@ -108,6 +116,27 @@ export default function Field({
             onChange={(e) => handleFieldChange(index, { url: e.target.value })}
           />
         </div>
+        {Boolean(field?.key) && (
+          <div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    href={"/admin/analytics?key=" + field.key}
+                    target="_blank"
+                    className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-sm text-gray-400"
+                  >
+                    <SolarCursorBold />
+                    <span>{field.clicks}</span>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>點擊次數</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        )}
       </div>
     </Card>
   );

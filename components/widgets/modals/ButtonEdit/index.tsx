@@ -31,11 +31,14 @@ import { nanoid } from "nanoid";
 import { useSession } from "next-auth/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
+import IconLoading from "~icons/line-md/loading-twotone-loop";
 import Fields from "./Fields";
 
 interface Link {
   id?: string; //links的id，更新需要
   url: string | undefined | null;
+  clicks?: number;
+  key?: string;
 }
 
 export interface WidgetLink {
@@ -46,6 +49,8 @@ export interface WidgetLink {
   url: string;
   isShow?: boolean;
   link?: Link;
+  clicks?: number;
+  key?: string;
 }
 
 interface Form {
@@ -145,9 +150,7 @@ export default function ButtonEdit({ widget }: { widget: WidgetLinkProps }) {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
   );
-  const [upsertWidgetLinksResult, upsertWidgetLinks] = useMutation(
-    upsertWidgetLinksQuery,
-  );
+  const [{ fetching }, upsertWidgetLinks] = useMutation(upsertWidgetLinksQuery);
 
   // 處理新增欄位組的功能
   const addField = () => {
@@ -301,6 +304,8 @@ export default function ButtonEdit({ widget }: { widget: WidgetLinkProps }) {
               isShow,
               url: link?.url || "",
               link_id: link?.id,
+              clicks: link?.clicks,
+              key: link?.key,
             };
           },
         );
@@ -355,8 +360,20 @@ export default function ButtonEdit({ widget }: { widget: WidgetLinkProps }) {
         </div>
       </div>
       <DialogFooter>
-        <Button onClick={sendForm} form="linkForm" type="submit">
-          儲存
+        <Button
+          onClick={sendForm}
+          disabled={fetching}
+          form="linkForm"
+          type="submit"
+        >
+          {fetching ? (
+            <>
+              <IconLoading className="mr-3 h-4 w-4" />
+              請稍候
+            </>
+          ) : (
+            "儲存"
+          )}
         </Button>
       </DialogFooter>
     </>

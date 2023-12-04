@@ -133,7 +133,7 @@ function DataTable() {
               目前還沒有連結
             </div>
           )}
-          {data?.links.length &&
+          {Boolean(data?.links.length) &&
             data.links.map((link: Links) => {
               const { clicks, created_at, id, key, url, widgets_links } = link;
               const shortUrl = `${process.env.NEXT_PUBLIC_SHORT_URL}/s/${key}`;

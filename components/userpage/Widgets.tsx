@@ -1,24 +1,5 @@
-import Banner from "@/components/widgets/preview/Banner";
-import Links from "@/components/widgets/preview/Buttons";
 import { type Widgets } from "@/gql/graphql";
-
-type WidgetListType = {
-  type: string;
-  render: React.ComponentType<{ widget: Widgets }>;
-};
-
-const widgetsList: WidgetListType[] = [
-  {
-    type: "links",
-    render: (props: any) => (
-      <Links type="page" className="w-full max-w-full" {...props} />
-    ),
-  },
-  {
-    type: "banner",
-    render: (props: any) => <Banner {...props} />,
-  },
-];
+import { widgetsList } from "@/lib/constants/widgets";
 
 export default function Widgets({ widgets }: { widgets: Widgets[] }) {
   return (
@@ -32,7 +13,7 @@ export default function Widgets({ widgets }: { widgets: Widgets[] }) {
         if (!Component) {
           return <div key={id} />;
         }
-        return <Component key={id} widget={widget} />;
+        return <Component key={id} type="page" widget={widget} />;
       })}
     </div>
   );

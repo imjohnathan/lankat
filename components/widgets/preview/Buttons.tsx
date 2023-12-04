@@ -66,7 +66,7 @@ export default function ButtonPreview({
       ? [{ isShow: true, id: 1, name: "", link: { url: "" } }]
       : [];
   return (
-    <div className={cn("mx-auto grid max-w-xs gap-4", className)}>
+    <div className={cn("mx-auto grid w-full max-w-full gap-4", className)}>
       {widgetData.map(({ link: { url, key }, ...rest }, index) => (
         <PreviewItem
           key={index}

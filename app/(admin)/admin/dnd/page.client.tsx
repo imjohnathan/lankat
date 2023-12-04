@@ -3,9 +3,8 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import LoadingFallback from "@/components/ui/loading-fallback";
 import PreviewPage from "@/components/userpage/Preview";
 import EditUI from "@/components/widgets/admin/EditUI";
-import BannerPreview from "@/components/widgets/preview/Banner";
-import LinksPreview from "@/components/widgets/preview/Buttons";
 import { type MakeOptional, type Widgets } from "@/gql/graphql";
+import { widgetsList } from "@/lib/constants/widgets";
 import { cn } from "@/lib/utils";
 import {
   DndContext,
@@ -71,6 +70,7 @@ const getWidgetsQuery = gql`
       isShow
       name
       type
+      config
       widgets_links(order_by: { sort: asc_nulls_first }) {
         id
         isShow
@@ -78,6 +78,8 @@ const getWidgetsQuery = gql`
         link {
           id
           url
+          clicks
+          key
         }
       }
     }
@@ -92,43 +94,6 @@ const deleteWidgetQuery = gql`
   }
 `;
 
-const widgetsList = [
-  {
-    type: "links",
-    title: "Links",
-    render: (props) => <LinksPreview {...props} />,
-  },
-  {
-    type: "banner",
-    title: "Banner",
-    render: (props) => <BannerPreview {...props} />,
-  },
-  {
-    type: "input",
-    title: "Text Input",
-    render: () => <input type="text" />,
-  },
-  {
-    type: "select",
-    title: "Select",
-    render: () => <select />,
-  },
-  {
-    type: "text",
-    title: "Text",
-    render: () => <p>Text</p>,
-  },
-  {
-    type: "button",
-    title: "Button",
-    render: () => <Button>Button</Button>,
-  },
-  {
-    type: "textarea",
-    title: "Text Area",
-    render: () => <textarea />,
-  },
-];
 interface SortableItemProps {
   render: any;
   handleDeleteWidget: (id: string) => void;
@@ -260,7 +225,7 @@ function DnD() {
       const variables = { id };
 
       const { data, error } = await deleteWidget(variables);
-
+      setWidgets((items) => items.filter((item) => item.id !== id));
       if (error) {
         throw new Error(error.message);
       }
@@ -335,21 +300,19 @@ function DnD() {
     }
   }, [data]);
 
-  if (widgets.length === 0) return <LoadingFallback />;
+  if (fetching) return <LoadingFallback />;
 
   return (
     <div className="container my-20 max-w-4xl">
       <div className="grid grid-cols-2">
         <div className="grid place-items-center gap-5">
           <div className="flex gap-4">
-            <Button onClick={() => handleAddWidget("links")}>
-              <SolarAddCircleBold className="mr-2 h-4 w-4" />
-              連結按鈕
-            </Button>
-            <Button onClick={() => handleAddWidget("banner")}>
-              <SolarAddCircleBold className="mr-2 h-4 w-4" />
-              圖片看板
-            </Button>
+            {widgetsList.map(({ type, title }) => (
+              <Button key={type} onClick={() => handleAddWidget(type)}>
+                <SolarAddCircleBold className="mr-2 h-4 w-4" />
+                {title}
+              </Button>
+            ))}
           </div>
           <div className="flex w-[350px] flex-col gap-4">
             <DndContext
