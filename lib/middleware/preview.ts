@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { parse } from "@/lib/utils";
 import { NextResponse } from "next/server";
 
 export const PreviewMiddleware = auth((req) => {
@@ -15,8 +16,10 @@ export const PreviewMiddleware = auth((req) => {
 });
 
 export const CheckUserMiddleware = auth((req) => {
+  const { path } = parse(req);
   if (!req.auth) return NextResponse.redirect(new URL("/", req.url));
-  if (req.auth && req.auth?.user && !req.auth?.user?.url_key)
+  const isHello = path.includes("hello");
+  if (req.auth && req.auth?.user && !req.auth?.user?.url_key && !isHello)
     return NextResponse.redirect(new URL("/admin/hello", req.url));
   return NextResponse.next();
 });

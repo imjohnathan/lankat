@@ -1,12 +1,15 @@
 import { client } from "@/lib/nodeClient";
 import { supabase } from "@/lib/supabase";
 import { SupabaseAdapter } from "@auth/supabase-adapter";
+import { createClient } from "@supabase/supabase-js";
 import { gql } from "@urql/next";
 import * as jose from "jose";
 import type { NextAuthConfig } from "next-auth";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import { cookies } from "next/headers";
+import { v4 as uuidv4 } from "uuid";
 
 const DEFAULT_ROLE_NAME = "user";
 
@@ -19,12 +22,25 @@ const query = gql`
     }
   }
 `;
+const fromDate = (time: number, date = Date.now()) =>
+  new Date(date + time * 1000);
+const supabaseAd = SupabaseAdapter({
+  url: process.env.NEXT_PUBLIC_SUPABASE_URL as string,
+  secret: process.env.SUPABASE_SERVICE_ROLE_KEY as string,
+});
+
+const supabaseAuth = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL as string,
+  process.env.SUPABASE_SERVICE_ROLE_KEY as string,
+  {
+    db: { schema: "next_auth" },
+    global: { headers: { "X-Client-Info": "@auth/supabase-adapter" } },
+  },
+);
 
 const config = {
   providers: [
     CredentialsProvider({
-      id: "saml-idp",
-      name: "IdP Login",
       credentials: {
         email: {
           label: "email",
@@ -58,17 +74,50 @@ const config = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
   ],
-  adapter: SupabaseAdapter({
-    url: process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-    secret: process.env.SUPABASE_SERVICE_ROLE_KEY as string,
-  }),
+  adapter: supabaseAd,
+  // session: {
+  //   strategy: "jwt",
+  // },
+  jwt: {
+    encode: async () => {
+      const cookie = cookies().get("next-auth.session-token");
+      if (cookie) return cookie;
+      else return "";
+    },
+    decode: async () => {
+      return null;
+    },
+  },
   callbacks: {
-    signIn: async ({ user, account, profile }) => {
-      console.log({ user, account, profile });
+    async signIn({ user, account, profile, email, credentials }) {
+      if (user && credentials) {
+        const sessionToken = uuidv4();
+        const sessionMaxAge = 60 * 60 * 24 * 30; //30Daysconst sessionMaxAge = 60 * 60 * 24 * 30; //30Days
+        const sessionExpiry = fromDate(sessionMaxAge);
+        const { data, error } = await supabaseAuth
+          .from("sessions")
+          .insert({
+            sessionToken: sessionToken,
+            userId: user.id,
+            expires: sessionExpiry,
+          })
+          .select()
+          .single();
+        if (error) return false;
+
+        const setCookie = cookies().set(
+          "next-auth.session-token",
+          sessionToken,
+          {
+            expires: sessionExpiry,
+          },
+        );
+      }
+
       return true;
     },
-    session: async ({ session, user }) => {
-      console.log({ session, user });
+    session: async ({ session, token, user }) => {
+      // user = token?.user;
       const signingSecret = process.env.SUPABASE_JWT_SECRET;
       const secret = new TextEncoder().encode(signingSecret);
       //console.log(session, user, session.accessToken);

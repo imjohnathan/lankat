@@ -80,6 +80,455 @@ export type String_Comparison_Exp = {
   _similar?: InputMaybe<Scalars['String']['input']>;
 };
 
+/** columns and relationships of "analytics" */
+export type Analytics = {
+  __typename?: 'analytics';
+  bot?: Maybe<Scalars['Boolean']['output']>;
+  browser?: Maybe<Scalars['String']['output']>;
+  browser_version?: Maybe<Scalars['String']['output']>;
+  city?: Maybe<Scalars['String']['output']>;
+  country?: Maybe<Scalars['String']['output']>;
+  cpu_architecture?: Maybe<Scalars['String']['output']>;
+  created_at: Scalars['timestamptz']['output'];
+  device?: Maybe<Scalars['String']['output']>;
+  device_model?: Maybe<Scalars['String']['output']>;
+  device_vendor?: Maybe<Scalars['String']['output']>;
+  engine?: Maybe<Scalars['String']['output']>;
+  engine_version?: Maybe<Scalars['String']['output']>;
+  id: Scalars['bigint']['output'];
+  key?: Maybe<Scalars['String']['output']>;
+  latitude?: Maybe<Scalars['String']['output']>;
+  longitude?: Maybe<Scalars['String']['output']>;
+  os?: Maybe<Scalars['String']['output']>;
+  os_version?: Maybe<Scalars['String']['output']>;
+  referer?: Maybe<Scalars['String']['output']>;
+  referer_url?: Maybe<Scalars['String']['output']>;
+  region?: Maybe<Scalars['String']['output']>;
+  ua?: Maybe<Scalars['String']['output']>;
+  user_key?: Maybe<Scalars['String']['output']>;
+};
+
+/** aggregated selection of "analytics" */
+export type Analytics_Aggregate = {
+  __typename?: 'analytics_aggregate';
+  aggregate?: Maybe<Analytics_Aggregate_Fields>;
+  nodes: Array<Analytics>;
+};
+
+/** aggregate fields of "analytics" */
+export type Analytics_Aggregate_Fields = {
+  __typename?: 'analytics_aggregate_fields';
+  avg?: Maybe<Analytics_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Analytics_Max_Fields>;
+  min?: Maybe<Analytics_Min_Fields>;
+  stddev?: Maybe<Analytics_Stddev_Fields>;
+  stddev_pop?: Maybe<Analytics_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Analytics_Stddev_Samp_Fields>;
+  sum?: Maybe<Analytics_Sum_Fields>;
+  var_pop?: Maybe<Analytics_Var_Pop_Fields>;
+  var_samp?: Maybe<Analytics_Var_Samp_Fields>;
+  variance?: Maybe<Analytics_Variance_Fields>;
+};
+
+
+/** aggregate fields of "analytics" */
+export type Analytics_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Analytics_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Analytics_Avg_Fields = {
+  __typename?: 'analytics_avg_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "analytics". All fields are combined with a logical 'AND'. */
+export type Analytics_Bool_Exp = {
+  _and?: InputMaybe<Array<Analytics_Bool_Exp>>;
+  _not?: InputMaybe<Analytics_Bool_Exp>;
+  _or?: InputMaybe<Array<Analytics_Bool_Exp>>;
+  bot?: InputMaybe<Boolean_Comparison_Exp>;
+  browser?: InputMaybe<String_Comparison_Exp>;
+  browser_version?: InputMaybe<String_Comparison_Exp>;
+  city?: InputMaybe<String_Comparison_Exp>;
+  country?: InputMaybe<String_Comparison_Exp>;
+  cpu_architecture?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  device?: InputMaybe<String_Comparison_Exp>;
+  device_model?: InputMaybe<String_Comparison_Exp>;
+  device_vendor?: InputMaybe<String_Comparison_Exp>;
+  engine?: InputMaybe<String_Comparison_Exp>;
+  engine_version?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Bigint_Comparison_Exp>;
+  key?: InputMaybe<String_Comparison_Exp>;
+  latitude?: InputMaybe<String_Comparison_Exp>;
+  longitude?: InputMaybe<String_Comparison_Exp>;
+  os?: InputMaybe<String_Comparison_Exp>;
+  os_version?: InputMaybe<String_Comparison_Exp>;
+  referer?: InputMaybe<String_Comparison_Exp>;
+  referer_url?: InputMaybe<String_Comparison_Exp>;
+  region?: InputMaybe<String_Comparison_Exp>;
+  ua?: InputMaybe<String_Comparison_Exp>;
+  user_key?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "analytics" */
+export enum Analytics_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  AnalyticsIdKey = 'analytics_id_key',
+  /** unique or primary key constraint on columns "id" */
+  AnalyticsPkey = 'analytics_pkey'
+}
+
+/** input type for incrementing numeric columns in table "analytics" */
+export type Analytics_Inc_Input = {
+  id?: InputMaybe<Scalars['bigint']['input']>;
+};
+
+/** input type for inserting data into table "analytics" */
+export type Analytics_Insert_Input = {
+  bot?: InputMaybe<Scalars['Boolean']['input']>;
+  browser?: InputMaybe<Scalars['String']['input']>;
+  browser_version?: InputMaybe<Scalars['String']['input']>;
+  city?: InputMaybe<Scalars['String']['input']>;
+  country?: InputMaybe<Scalars['String']['input']>;
+  cpu_architecture?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  device?: InputMaybe<Scalars['String']['input']>;
+  device_model?: InputMaybe<Scalars['String']['input']>;
+  device_vendor?: InputMaybe<Scalars['String']['input']>;
+  engine?: InputMaybe<Scalars['String']['input']>;
+  engine_version?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['bigint']['input']>;
+  key?: InputMaybe<Scalars['String']['input']>;
+  latitude?: InputMaybe<Scalars['String']['input']>;
+  longitude?: InputMaybe<Scalars['String']['input']>;
+  os?: InputMaybe<Scalars['String']['input']>;
+  os_version?: InputMaybe<Scalars['String']['input']>;
+  referer?: InputMaybe<Scalars['String']['input']>;
+  referer_url?: InputMaybe<Scalars['String']['input']>;
+  region?: InputMaybe<Scalars['String']['input']>;
+  ua?: InputMaybe<Scalars['String']['input']>;
+  user_key?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate max on columns */
+export type Analytics_Max_Fields = {
+  __typename?: 'analytics_max_fields';
+  browser?: Maybe<Scalars['String']['output']>;
+  browser_version?: Maybe<Scalars['String']['output']>;
+  city?: Maybe<Scalars['String']['output']>;
+  country?: Maybe<Scalars['String']['output']>;
+  cpu_architecture?: Maybe<Scalars['String']['output']>;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  device?: Maybe<Scalars['String']['output']>;
+  device_model?: Maybe<Scalars['String']['output']>;
+  device_vendor?: Maybe<Scalars['String']['output']>;
+  engine?: Maybe<Scalars['String']['output']>;
+  engine_version?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['bigint']['output']>;
+  key?: Maybe<Scalars['String']['output']>;
+  latitude?: Maybe<Scalars['String']['output']>;
+  longitude?: Maybe<Scalars['String']['output']>;
+  os?: Maybe<Scalars['String']['output']>;
+  os_version?: Maybe<Scalars['String']['output']>;
+  referer?: Maybe<Scalars['String']['output']>;
+  referer_url?: Maybe<Scalars['String']['output']>;
+  region?: Maybe<Scalars['String']['output']>;
+  ua?: Maybe<Scalars['String']['output']>;
+  user_key?: Maybe<Scalars['String']['output']>;
+};
+
+/** aggregate min on columns */
+export type Analytics_Min_Fields = {
+  __typename?: 'analytics_min_fields';
+  browser?: Maybe<Scalars['String']['output']>;
+  browser_version?: Maybe<Scalars['String']['output']>;
+  city?: Maybe<Scalars['String']['output']>;
+  country?: Maybe<Scalars['String']['output']>;
+  cpu_architecture?: Maybe<Scalars['String']['output']>;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  device?: Maybe<Scalars['String']['output']>;
+  device_model?: Maybe<Scalars['String']['output']>;
+  device_vendor?: Maybe<Scalars['String']['output']>;
+  engine?: Maybe<Scalars['String']['output']>;
+  engine_version?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['bigint']['output']>;
+  key?: Maybe<Scalars['String']['output']>;
+  latitude?: Maybe<Scalars['String']['output']>;
+  longitude?: Maybe<Scalars['String']['output']>;
+  os?: Maybe<Scalars['String']['output']>;
+  os_version?: Maybe<Scalars['String']['output']>;
+  referer?: Maybe<Scalars['String']['output']>;
+  referer_url?: Maybe<Scalars['String']['output']>;
+  region?: Maybe<Scalars['String']['output']>;
+  ua?: Maybe<Scalars['String']['output']>;
+  user_key?: Maybe<Scalars['String']['output']>;
+};
+
+/** response of any mutation on the table "analytics" */
+export type Analytics_Mutation_Response = {
+  __typename?: 'analytics_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Analytics>;
+};
+
+/** on_conflict condition type for table "analytics" */
+export type Analytics_On_Conflict = {
+  constraint: Analytics_Constraint;
+  update_columns?: Array<Analytics_Update_Column>;
+  where?: InputMaybe<Analytics_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "analytics". */
+export type Analytics_Order_By = {
+  bot?: InputMaybe<Order_By>;
+  browser?: InputMaybe<Order_By>;
+  browser_version?: InputMaybe<Order_By>;
+  city?: InputMaybe<Order_By>;
+  country?: InputMaybe<Order_By>;
+  cpu_architecture?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  device?: InputMaybe<Order_By>;
+  device_model?: InputMaybe<Order_By>;
+  device_vendor?: InputMaybe<Order_By>;
+  engine?: InputMaybe<Order_By>;
+  engine_version?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  key?: InputMaybe<Order_By>;
+  latitude?: InputMaybe<Order_By>;
+  longitude?: InputMaybe<Order_By>;
+  os?: InputMaybe<Order_By>;
+  os_version?: InputMaybe<Order_By>;
+  referer?: InputMaybe<Order_By>;
+  referer_url?: InputMaybe<Order_By>;
+  region?: InputMaybe<Order_By>;
+  ua?: InputMaybe<Order_By>;
+  user_key?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: analytics */
+export type Analytics_Pk_Columns_Input = {
+  id: Scalars['bigint']['input'];
+};
+
+/** select columns of table "analytics" */
+export enum Analytics_Select_Column {
+  /** column name */
+  Bot = 'bot',
+  /** column name */
+  Browser = 'browser',
+  /** column name */
+  BrowserVersion = 'browser_version',
+  /** column name */
+  City = 'city',
+  /** column name */
+  Country = 'country',
+  /** column name */
+  CpuArchitecture = 'cpu_architecture',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Device = 'device',
+  /** column name */
+  DeviceModel = 'device_model',
+  /** column name */
+  DeviceVendor = 'device_vendor',
+  /** column name */
+  Engine = 'engine',
+  /** column name */
+  EngineVersion = 'engine_version',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Key = 'key',
+  /** column name */
+  Latitude = 'latitude',
+  /** column name */
+  Longitude = 'longitude',
+  /** column name */
+  Os = 'os',
+  /** column name */
+  OsVersion = 'os_version',
+  /** column name */
+  Referer = 'referer',
+  /** column name */
+  RefererUrl = 'referer_url',
+  /** column name */
+  Region = 'region',
+  /** column name */
+  Ua = 'ua',
+  /** column name */
+  UserKey = 'user_key'
+}
+
+/** input type for updating data in table "analytics" */
+export type Analytics_Set_Input = {
+  bot?: InputMaybe<Scalars['Boolean']['input']>;
+  browser?: InputMaybe<Scalars['String']['input']>;
+  browser_version?: InputMaybe<Scalars['String']['input']>;
+  city?: InputMaybe<Scalars['String']['input']>;
+  country?: InputMaybe<Scalars['String']['input']>;
+  cpu_architecture?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  device?: InputMaybe<Scalars['String']['input']>;
+  device_model?: InputMaybe<Scalars['String']['input']>;
+  device_vendor?: InputMaybe<Scalars['String']['input']>;
+  engine?: InputMaybe<Scalars['String']['input']>;
+  engine_version?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['bigint']['input']>;
+  key?: InputMaybe<Scalars['String']['input']>;
+  latitude?: InputMaybe<Scalars['String']['input']>;
+  longitude?: InputMaybe<Scalars['String']['input']>;
+  os?: InputMaybe<Scalars['String']['input']>;
+  os_version?: InputMaybe<Scalars['String']['input']>;
+  referer?: InputMaybe<Scalars['String']['input']>;
+  referer_url?: InputMaybe<Scalars['String']['input']>;
+  region?: InputMaybe<Scalars['String']['input']>;
+  ua?: InputMaybe<Scalars['String']['input']>;
+  user_key?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate stddev on columns */
+export type Analytics_Stddev_Fields = {
+  __typename?: 'analytics_stddev_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Analytics_Stddev_Pop_Fields = {
+  __typename?: 'analytics_stddev_pop_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Analytics_Stddev_Samp_Fields = {
+  __typename?: 'analytics_stddev_samp_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "analytics" */
+export type Analytics_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Analytics_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Analytics_Stream_Cursor_Value_Input = {
+  bot?: InputMaybe<Scalars['Boolean']['input']>;
+  browser?: InputMaybe<Scalars['String']['input']>;
+  browser_version?: InputMaybe<Scalars['String']['input']>;
+  city?: InputMaybe<Scalars['String']['input']>;
+  country?: InputMaybe<Scalars['String']['input']>;
+  cpu_architecture?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  device?: InputMaybe<Scalars['String']['input']>;
+  device_model?: InputMaybe<Scalars['String']['input']>;
+  device_vendor?: InputMaybe<Scalars['String']['input']>;
+  engine?: InputMaybe<Scalars['String']['input']>;
+  engine_version?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['bigint']['input']>;
+  key?: InputMaybe<Scalars['String']['input']>;
+  latitude?: InputMaybe<Scalars['String']['input']>;
+  longitude?: InputMaybe<Scalars['String']['input']>;
+  os?: InputMaybe<Scalars['String']['input']>;
+  os_version?: InputMaybe<Scalars['String']['input']>;
+  referer?: InputMaybe<Scalars['String']['input']>;
+  referer_url?: InputMaybe<Scalars['String']['input']>;
+  region?: InputMaybe<Scalars['String']['input']>;
+  ua?: InputMaybe<Scalars['String']['input']>;
+  user_key?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Analytics_Sum_Fields = {
+  __typename?: 'analytics_sum_fields';
+  id?: Maybe<Scalars['bigint']['output']>;
+};
+
+/** update columns of table "analytics" */
+export enum Analytics_Update_Column {
+  /** column name */
+  Bot = 'bot',
+  /** column name */
+  Browser = 'browser',
+  /** column name */
+  BrowserVersion = 'browser_version',
+  /** column name */
+  City = 'city',
+  /** column name */
+  Country = 'country',
+  /** column name */
+  CpuArchitecture = 'cpu_architecture',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Device = 'device',
+  /** column name */
+  DeviceModel = 'device_model',
+  /** column name */
+  DeviceVendor = 'device_vendor',
+  /** column name */
+  Engine = 'engine',
+  /** column name */
+  EngineVersion = 'engine_version',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Key = 'key',
+  /** column name */
+  Latitude = 'latitude',
+  /** column name */
+  Longitude = 'longitude',
+  /** column name */
+  Os = 'os',
+  /** column name */
+  OsVersion = 'os_version',
+  /** column name */
+  Referer = 'referer',
+  /** column name */
+  RefererUrl = 'referer_url',
+  /** column name */
+  Region = 'region',
+  /** column name */
+  Ua = 'ua',
+  /** column name */
+  UserKey = 'user_key'
+}
+
+export type Analytics_Updates = {
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<Analytics_Inc_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Analytics_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Analytics_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type Analytics_Var_Pop_Fields = {
+  __typename?: 'analytics_var_pop_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Analytics_Var_Samp_Fields = {
+  __typename?: 'analytics_var_samp_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Analytics_Variance_Fields = {
+  __typename?: 'analytics_variance_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
 /** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
 export type Bigint_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['bigint']['input']>;
@@ -1713,6 +2162,10 @@ export type Links_Variance_Order_By = {
 /** mutation root */
 export type Mutation_Root = {
   __typename?: 'mutation_root';
+  /** delete data from the table: "analytics" */
+  delete_analytics?: Maybe<Analytics_Mutation_Response>;
+  /** delete single row from the table: "analytics" */
+  delete_analytics_by_pk?: Maybe<Analytics>;
   /** delete data from the table: "genres" */
   delete_genres?: Maybe<Genres_Mutation_Response>;
   /** delete single row from the table: "genres" */
@@ -1761,6 +2214,10 @@ export type Mutation_Root = {
   delete_widgets_links?: Maybe<Widgets_Links_Mutation_Response>;
   /** delete single row from the table: "widgets_links" */
   delete_widgets_links_by_pk?: Maybe<Widgets_Links>;
+  /** insert data into the table: "analytics" */
+  insert_analytics?: Maybe<Analytics_Mutation_Response>;
+  /** insert a single row into the table: "analytics" */
+  insert_analytics_one?: Maybe<Analytics>;
   /** insert data into the table: "genres" */
   insert_genres?: Maybe<Genres_Mutation_Response>;
   /** insert a single row into the table: "genres" */
@@ -1809,6 +2266,12 @@ export type Mutation_Root = {
   insert_widgets_links_one?: Maybe<Widgets_Links>;
   /** insert a single row into the table: "widgets" */
   insert_widgets_one?: Maybe<Widgets>;
+  /** update data of the table: "analytics" */
+  update_analytics?: Maybe<Analytics_Mutation_Response>;
+  /** update single row of the table: "analytics" */
+  update_analytics_by_pk?: Maybe<Analytics>;
+  /** update multiples rows of table: "analytics" */
+  update_analytics_many?: Maybe<Array<Maybe<Analytics_Mutation_Response>>>;
   /** update data of the table: "genres" */
   update_genres?: Maybe<Genres_Mutation_Response>;
   /** update single row of the table: "genres" */
@@ -1881,6 +2344,18 @@ export type Mutation_Root = {
   update_widgets_links_many?: Maybe<Array<Maybe<Widgets_Links_Mutation_Response>>>;
   /** update multiples rows of table: "widgets" */
   update_widgets_many?: Maybe<Array<Maybe<Widgets_Mutation_Response>>>;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_AnalyticsArgs = {
+  where: Analytics_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Analytics_By_PkArgs = {
+  id: Scalars['bigint']['input'];
 };
 
 
@@ -2025,6 +2500,20 @@ export type Mutation_RootDelete_Widgets_LinksArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Widgets_Links_By_PkArgs = {
   id: Scalars['bigint']['input'];
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_AnalyticsArgs = {
+  objects: Array<Analytics_Insert_Input>;
+  on_conflict?: InputMaybe<Analytics_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Analytics_OneArgs = {
+  object: Analytics_Insert_Input;
+  on_conflict?: InputMaybe<Analytics_On_Conflict>;
 };
 
 
@@ -2193,6 +2682,28 @@ export type Mutation_RootInsert_Widgets_Links_OneArgs = {
 export type Mutation_RootInsert_Widgets_OneArgs = {
   object: Widgets_Insert_Input;
   on_conflict?: InputMaybe<Widgets_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_AnalyticsArgs = {
+  _inc?: InputMaybe<Analytics_Inc_Input>;
+  _set?: InputMaybe<Analytics_Set_Input>;
+  where: Analytics_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Analytics_By_PkArgs = {
+  _inc?: InputMaybe<Analytics_Inc_Input>;
+  _set?: InputMaybe<Analytics_Set_Input>;
+  pk_columns: Analytics_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Analytics_ManyArgs = {
+  updates: Array<Analytics_Updates>;
 };
 
 
@@ -2386,6 +2897,7 @@ export type Mutation_RootUpdate_UsersArgs = {
   _delete_at_path?: InputMaybe<Users_Delete_At_Path_Input>;
   _delete_elem?: InputMaybe<Users_Delete_Elem_Input>;
   _delete_key?: InputMaybe<Users_Delete_Key_Input>;
+  _inc?: InputMaybe<Users_Inc_Input>;
   _prepend?: InputMaybe<Users_Prepend_Input>;
   _set?: InputMaybe<Users_Set_Input>;
   where: Users_Bool_Exp;
@@ -2398,6 +2910,7 @@ export type Mutation_RootUpdate_Users_By_PkArgs = {
   _delete_at_path?: InputMaybe<Users_Delete_At_Path_Input>;
   _delete_elem?: InputMaybe<Users_Delete_Elem_Input>;
   _delete_key?: InputMaybe<Users_Delete_Key_Input>;
+  _inc?: InputMaybe<Users_Inc_Input>;
   _prepend?: InputMaybe<Users_Prepend_Input>;
   _set?: InputMaybe<Users_Set_Input>;
   pk_columns: Users_Pk_Columns_Input;
@@ -3114,6 +3627,12 @@ export type Pages_Widgets_Variance_Order_By = {
 
 export type Query_Root = {
   __typename?: 'query_root';
+  /** fetch data from the table: "analytics" */
+  analytics: Array<Analytics>;
+  /** fetch aggregated fields from the table: "analytics" */
+  analytics_aggregate: Analytics_Aggregate;
+  /** fetch data from the table: "analytics" using primary key columns */
+  analytics_by_pk?: Maybe<Analytics>;
   /** fetch data from the table: "genres" */
   genres: Array<Genres>;
   /** fetch aggregated fields from the table: "genres" */
@@ -3186,6 +3705,29 @@ export type Query_Root = {
   widgets_links_aggregate: Widgets_Links_Aggregate;
   /** fetch data from the table: "widgets_links" using primary key columns */
   widgets_links_by_pk?: Maybe<Widgets_Links>;
+};
+
+
+export type Query_RootAnalyticsArgs = {
+  distinct_on?: InputMaybe<Array<Analytics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Analytics_Order_By>>;
+  where?: InputMaybe<Analytics_Bool_Exp>;
+};
+
+
+export type Query_RootAnalytics_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Analytics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Analytics_Order_By>>;
+  where?: InputMaybe<Analytics_Bool_Exp>;
+};
+
+
+export type Query_RootAnalytics_By_PkArgs = {
+  id: Scalars['bigint']['input'];
 };
 
 
@@ -3728,6 +4270,14 @@ export type Styles_Variance_Fields = {
 
 export type Subscription_Root = {
   __typename?: 'subscription_root';
+  /** fetch data from the table: "analytics" */
+  analytics: Array<Analytics>;
+  /** fetch aggregated fields from the table: "analytics" */
+  analytics_aggregate: Analytics_Aggregate;
+  /** fetch data from the table: "analytics" using primary key columns */
+  analytics_by_pk?: Maybe<Analytics>;
+  /** fetch data from the table in a streaming manner: "analytics" */
+  analytics_stream: Array<Analytics>;
   /** fetch data from the table: "genres" */
   genres: Array<Genres>;
   /** fetch aggregated fields from the table: "genres" */
@@ -3824,6 +4374,36 @@ export type Subscription_Root = {
   widgets_links_stream: Array<Widgets_Links>;
   /** fetch data from the table in a streaming manner: "widgets" */
   widgets_stream: Array<Widgets>;
+};
+
+
+export type Subscription_RootAnalyticsArgs = {
+  distinct_on?: InputMaybe<Array<Analytics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Analytics_Order_By>>;
+  where?: InputMaybe<Analytics_Bool_Exp>;
+};
+
+
+export type Subscription_RootAnalytics_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Analytics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Analytics_Order_By>>;
+  where?: InputMaybe<Analytics_Bool_Exp>;
+};
+
+
+export type Subscription_RootAnalytics_By_PkArgs = {
+  id: Scalars['bigint']['input'];
+};
+
+
+export type Subscription_RootAnalytics_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Analytics_Stream_Cursor_Input>>;
+  where?: InputMaybe<Analytics_Bool_Exp>;
 };
 
 
@@ -4553,6 +5133,7 @@ export type Timestamptz_Comparison_Exp = {
 export type Users = {
   __typename?: 'users';
   bio?: Maybe<Scalars['String']['output']>;
+  clicks?: Maybe<Scalars['bigint']['output']>;
   display_name?: Maybe<Scalars['String']['output']>;
   email?: Maybe<Scalars['String']['output']>;
   home?: Maybe<Scalars['uuid']['output']>;
@@ -4736,9 +5317,17 @@ export type Users_Aggregate_Bool_Exp_Count = {
 /** aggregate fields of "users" */
 export type Users_Aggregate_Fields = {
   __typename?: 'users_aggregate_fields';
+  avg?: Maybe<Users_Avg_Fields>;
   count: Scalars['Int']['output'];
   max?: Maybe<Users_Max_Fields>;
   min?: Maybe<Users_Min_Fields>;
+  stddev?: Maybe<Users_Stddev_Fields>;
+  stddev_pop?: Maybe<Users_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Users_Stddev_Samp_Fields>;
+  sum?: Maybe<Users_Sum_Fields>;
+  var_pop?: Maybe<Users_Var_Pop_Fields>;
+  var_samp?: Maybe<Users_Var_Samp_Fields>;
+  variance?: Maybe<Users_Variance_Fields>;
 };
 
 
@@ -4750,9 +5339,17 @@ export type Users_Aggregate_FieldsCountArgs = {
 
 /** order by aggregate values of table "users" */
 export type Users_Aggregate_Order_By = {
+  avg?: InputMaybe<Users_Avg_Order_By>;
   count?: InputMaybe<Order_By>;
   max?: InputMaybe<Users_Max_Order_By>;
   min?: InputMaybe<Users_Min_Order_By>;
+  stddev?: InputMaybe<Users_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Users_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Users_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Users_Sum_Order_By>;
+  var_pop?: InputMaybe<Users_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Users_Var_Samp_Order_By>;
+  variance?: InputMaybe<Users_Variance_Order_By>;
 };
 
 /** append existing jsonb value of filtered columns with new jsonb value */
@@ -4768,12 +5365,24 @@ export type Users_Arr_Rel_Insert_Input = {
   on_conflict?: InputMaybe<Users_On_Conflict>;
 };
 
+/** aggregate avg on columns */
+export type Users_Avg_Fields = {
+  __typename?: 'users_avg_fields';
+  clicks?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "users" */
+export type Users_Avg_Order_By = {
+  clicks?: InputMaybe<Order_By>;
+};
+
 /** Boolean expression to filter rows from the table "users". All fields are combined with a logical 'AND'. */
 export type Users_Bool_Exp = {
   _and?: InputMaybe<Array<Users_Bool_Exp>>;
   _not?: InputMaybe<Users_Bool_Exp>;
   _or?: InputMaybe<Array<Users_Bool_Exp>>;
   bio?: InputMaybe<String_Comparison_Exp>;
+  clicks?: InputMaybe<Bigint_Comparison_Exp>;
   display_name?: InputMaybe<String_Comparison_Exp>;
   email?: InputMaybe<String_Comparison_Exp>;
   home?: InputMaybe<Uuid_Comparison_Exp>;
@@ -5146,9 +5755,15 @@ export type Users_Genres_Variance_Order_By = {
   id?: InputMaybe<Order_By>;
 };
 
+/** input type for incrementing numeric columns in table "users" */
+export type Users_Inc_Input = {
+  clicks?: InputMaybe<Scalars['bigint']['input']>;
+};
+
 /** input type for inserting data into table "users" */
 export type Users_Insert_Input = {
   bio?: InputMaybe<Scalars['String']['input']>;
+  clicks?: InputMaybe<Scalars['bigint']['input']>;
   display_name?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   home?: InputMaybe<Scalars['uuid']['input']>;
@@ -5171,6 +5786,7 @@ export type Users_Insert_Input = {
 export type Users_Max_Fields = {
   __typename?: 'users_max_fields';
   bio?: Maybe<Scalars['String']['output']>;
+  clicks?: Maybe<Scalars['bigint']['output']>;
   display_name?: Maybe<Scalars['String']['output']>;
   email?: Maybe<Scalars['String']['output']>;
   home?: Maybe<Scalars['uuid']['output']>;
@@ -5183,6 +5799,7 @@ export type Users_Max_Fields = {
 /** order by max() on columns of table "users" */
 export type Users_Max_Order_By = {
   bio?: InputMaybe<Order_By>;
+  clicks?: InputMaybe<Order_By>;
   display_name?: InputMaybe<Order_By>;
   email?: InputMaybe<Order_By>;
   home?: InputMaybe<Order_By>;
@@ -5196,6 +5813,7 @@ export type Users_Max_Order_By = {
 export type Users_Min_Fields = {
   __typename?: 'users_min_fields';
   bio?: Maybe<Scalars['String']['output']>;
+  clicks?: Maybe<Scalars['bigint']['output']>;
   display_name?: Maybe<Scalars['String']['output']>;
   email?: Maybe<Scalars['String']['output']>;
   home?: Maybe<Scalars['uuid']['output']>;
@@ -5208,6 +5826,7 @@ export type Users_Min_Fields = {
 /** order by min() on columns of table "users" */
 export type Users_Min_Order_By = {
   bio?: InputMaybe<Order_By>;
+  clicks?: InputMaybe<Order_By>;
   display_name?: InputMaybe<Order_By>;
   email?: InputMaybe<Order_By>;
   home?: InputMaybe<Order_By>;
@@ -5243,6 +5862,7 @@ export type Users_On_Conflict = {
 /** Ordering options when selecting data from "users". */
 export type Users_Order_By = {
   bio?: InputMaybe<Order_By>;
+  clicks?: InputMaybe<Order_By>;
   display_name?: InputMaybe<Order_By>;
   email?: InputMaybe<Order_By>;
   home?: InputMaybe<Order_By>;
@@ -5276,6 +5896,8 @@ export type Users_Prepend_Input = {
 export enum Users_Select_Column {
   /** column name */
   Bio = 'bio',
+  /** column name */
+  Clicks = 'clicks',
   /** column name */
   DisplayName = 'display_name',
   /** column name */
@@ -5313,6 +5935,7 @@ export enum Users_Select_Column_Users_Aggregate_Bool_Exp_Bool_Or_Arguments_Colum
 /** input type for updating data in table "users" */
 export type Users_Set_Input = {
   bio?: InputMaybe<Scalars['String']['input']>;
+  clicks?: InputMaybe<Scalars['bigint']['input']>;
   display_name?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   home?: InputMaybe<Scalars['uuid']['input']>;
@@ -5323,6 +5946,39 @@ export type Users_Set_Input = {
   theme?: InputMaybe<Scalars['jsonb']['input']>;
   theme_selected?: InputMaybe<Scalars['Boolean']['input']>;
   url_key?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate stddev on columns */
+export type Users_Stddev_Fields = {
+  __typename?: 'users_stddev_fields';
+  clicks?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev() on columns of table "users" */
+export type Users_Stddev_Order_By = {
+  clicks?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Users_Stddev_Pop_Fields = {
+  __typename?: 'users_stddev_pop_fields';
+  clicks?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev_pop() on columns of table "users" */
+export type Users_Stddev_Pop_Order_By = {
+  clicks?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Users_Stddev_Samp_Fields = {
+  __typename?: 'users_stddev_samp_fields';
+  clicks?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev_samp() on columns of table "users" */
+export type Users_Stddev_Samp_Order_By = {
+  clicks?: InputMaybe<Order_By>;
 };
 
 /** Streaming cursor of the table "users" */
@@ -5336,6 +5992,7 @@ export type Users_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type Users_Stream_Cursor_Value_Input = {
   bio?: InputMaybe<Scalars['String']['input']>;
+  clicks?: InputMaybe<Scalars['bigint']['input']>;
   display_name?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   home?: InputMaybe<Scalars['uuid']['input']>;
@@ -5348,10 +6005,23 @@ export type Users_Stream_Cursor_Value_Input = {
   url_key?: InputMaybe<Scalars['String']['input']>;
 };
 
+/** aggregate sum on columns */
+export type Users_Sum_Fields = {
+  __typename?: 'users_sum_fields';
+  clicks?: Maybe<Scalars['bigint']['output']>;
+};
+
+/** order by sum() on columns of table "users" */
+export type Users_Sum_Order_By = {
+  clicks?: InputMaybe<Order_By>;
+};
+
 /** update columns of table "users" */
 export enum Users_Update_Column {
   /** column name */
   Bio = 'bio',
+  /** column name */
+  Clicks = 'clicks',
   /** column name */
   DisplayName = 'display_name',
   /** column name */
@@ -5383,12 +6053,47 @@ export type Users_Updates = {
   _delete_elem?: InputMaybe<Users_Delete_Elem_Input>;
   /** delete key/value pair or string element. key/value pairs are matched based on their key value */
   _delete_key?: InputMaybe<Users_Delete_Key_Input>;
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<Users_Inc_Input>;
   /** prepend existing jsonb value of filtered columns with new jsonb value */
   _prepend?: InputMaybe<Users_Prepend_Input>;
   /** sets the columns of the filtered rows to the given values */
   _set?: InputMaybe<Users_Set_Input>;
   /** filter the rows which have to be updated */
   where: Users_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type Users_Var_Pop_Fields = {
+  __typename?: 'users_var_pop_fields';
+  clicks?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by var_pop() on columns of table "users" */
+export type Users_Var_Pop_Order_By = {
+  clicks?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Users_Var_Samp_Fields = {
+  __typename?: 'users_var_samp_fields';
+  clicks?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by var_samp() on columns of table "users" */
+export type Users_Var_Samp_Order_By = {
+  clicks?: InputMaybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Users_Variance_Fields = {
+  __typename?: 'users_variance_fields';
+  clicks?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "users" */
+export type Users_Variance_Order_By = {
+  clicks?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'. */

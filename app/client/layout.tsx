@@ -1,5 +1,6 @@
 "use client";
 
+import { getDeployGraphqlEndpoint } from "@/lib/utils";
 import { devtoolsExchange } from "@urql/devtools";
 import { authExchange } from "@urql/exchange-auth";
 import {
@@ -47,7 +48,7 @@ export default function Layout({ children }: React.PropsWithChildren) {
     });
 
     const client = createClient({
-      url: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT ?? "",
+      url: getDeployGraphqlEndpoint() ?? "",
       fetchOptions: () => ({}),
       exchanges: [
         devtoolsExchange,

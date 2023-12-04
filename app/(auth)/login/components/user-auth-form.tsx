@@ -1,7 +1,5 @@
 "use client";
 
-import * as React from "react";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,11 +14,13 @@ import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
+import * as React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import IonLogoGoogle from "~icons/ion/logo-google";
 import IconLoading from "~icons/line-md/loading-twotone-loop";
+import SolarUserHeartBold from "~icons/solar/user-heart-bold";
 
 const formSchema = z.object({
   email: z.string().email().min(2).max(50),
@@ -140,11 +140,32 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   async function loginWithProvider(provider: string) {
     setIsLoading(true);
     await signIn(provider, { callbackUrl: "/admin" });
-    setIsLoading(false);
+  }
+
+  async function loginTestUser() {
+    setIsLoading(true);
+    await signIn("credentials", {
+      email: "test@lank.at",
+      password: "testtest",
+      callbackUrl: "/admin",
+    });
   }
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
+      <Button
+        onClick={loginTestUser}
+        variant="outline"
+        type="button"
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <IconLoading className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <SolarUserHeartBold className="mr-2 h-4 w-4" />
+        )}{" "}
+        測試使用者登入
+      </Button>
       <Button
         onClick={() => {
           loginWithProvider("google");

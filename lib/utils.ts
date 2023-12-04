@@ -329,3 +329,9 @@ export function linkConstructor({
   if (noDomain) return `/${key}`;
   return pretty ? link.replace(/^https?:\/\//, "") : link;
 }
+
+export const getDeployGraphqlEndpoint = () => {
+  const isDev = process.env.NODE_ENV === "development";
+  if (isDev) return process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
+  return "https://" + process.env.NEXT_PUBLIC_VERCEL_URL + "/api";
+};
