@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input, classes } from "@/components/ui/input";
 import PreviewPage from "@/components/userpage/Preview";
+import type { Genres } from "@/gql/graphql";
 import templates from "@/lib/constants/templates.json";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -197,7 +198,7 @@ export function UserName(
                   <FormDescription>以下哪些分類最能描述您呢？</FormDescription>
                 </div>
                 <div className="grid grid-cols-3 gap-3">
-                  {data?.genres.map(({ id, name }) => (
+                  {data?.genres.map(({ id, name }: Genres) => (
                     <FormField
                       key={id}
                       control={formField.control}
@@ -418,7 +419,8 @@ export function Styles(
               <ThemeSelector form={formField} name="theme" />
             </div>
             <PreviewPage
-              wrapperClass="top-28"
+              wrapperClass="mt-[-80px]"
+              isFloating={false}
               src={`/admin/preview?mocking&username=${form.steps.userName.value.display_name}`}
               ref={preview}
             />
@@ -465,7 +467,7 @@ export function Finish(
   const [isIframeLoaded, setIsIframeLoaded] = React.useState(false);
   const [scope, animate] = useAnimate();
   const preview = useRef<HTMLIFrameElement>(null);
-  const refAnimationInstance = useRef<HTMLCanvasElement>(null);
+  const refAnimationInstance = useRef(null);
   const router = useRouter();
   const FormSchema = z.object({
     finish: z.boolean(),

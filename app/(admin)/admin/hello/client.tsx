@@ -12,7 +12,39 @@ import {
 } from "react";
 import IconLoading from "~icons/line-md/loading-twotone-loop";
 
-const FORM_STATE = {
+interface FormState {
+  selectedIndex: number;
+  steps: {
+    userUrl: {
+      valid: boolean;
+      dirty: boolean;
+      value: {
+        url_key: string;
+      };
+    };
+    userName: {
+      valid: boolean;
+      dirty: boolean;
+      value: {
+        display_name: string;
+        genres: number[];
+      };
+    };
+    theme: {
+      valid: boolean;
+      dirty: boolean;
+      value: {
+        theme: string;
+      };
+    };
+    finish: {
+      valid: boolean;
+      dirty: boolean;
+    };
+  };
+}
+
+const FORM_STATE: FormState = {
   selectedIndex: 0,
   steps: {
     userUrl: {

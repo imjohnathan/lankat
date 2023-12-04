@@ -23,6 +23,8 @@ const query = gql`
 const config = {
   providers: [
     CredentialsProvider({
+      id: "saml-idp",
+      name: "IdP Login",
       credentials: {
         email: {
           label: "email",
@@ -45,6 +47,7 @@ const config = {
           id: data?.user?.id,
           email: data?.user?.email,
           emailVerified: data?.user?.email_confirmed_at,
+          profile: data?.user,
         };
 
         return user;
@@ -60,7 +63,12 @@ const config = {
     secret: process.env.SUPABASE_SERVICE_ROLE_KEY as string,
   }),
   callbacks: {
-    async session({ session, user }) {
+    signIn: async ({ user, account, profile }) => {
+      console.log({ user, account, profile });
+      return true;
+    },
+    session: async ({ session, user }) => {
+      console.log({ session, user });
       const signingSecret = process.env.SUPABASE_JWT_SECRET;
       const secret = new TextEncoder().encode(signingSecret);
       //console.log(session, user, session.accessToken);

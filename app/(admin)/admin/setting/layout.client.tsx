@@ -1,4 +1,5 @@
 "use client";
+import LoadingFallback from "@/components/ui/loading-fallback";
 import { type Users } from "@/gql/graphql";
 import { gql, useQuery } from "@urql/next";
 import { useSession } from "next-auth/react";
@@ -59,7 +60,7 @@ export function SettingClient({ children }: { children: React.ReactNode }) {
 
 export default function Client({ children }: { children: React.ReactNode }) {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<LoadingFallback />}>
       <SettingClient>{children}</SettingClient>
     </Suspense>
   );

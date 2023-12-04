@@ -2,9 +2,8 @@
 
 import { ProfileForm } from "@/app/(admin)/admin/setting/profile-form";
 import { Separator } from "@/components/ui/separator";
-import { Suspense } from "react";
 
-function SettingsProfilePage() {
+export default function SettingsProfilePage() {
   return (
     <div className="space-y-6">
       <div>
@@ -16,13 +15,5 @@ function SettingsProfilePage() {
       <Separator />
       <ProfileForm />
     </div>
-  );
-}
-
-export default function App() {
-  return (
-    <Suspense>
-      <SettingsProfilePage />
-    </Suspense>
   );
 }
