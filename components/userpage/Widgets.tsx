@@ -22,7 +22,7 @@ const widgetsList: WidgetListType[] = [
 
 export default function Widgets({ widgets }: { widgets: Widgets[] }) {
   return (
-    <div className="grid w-full gap-4">
+    <div className="grid w-full gap-4 transition-all duration-300">
       {widgets.map((widget) => {
         const { type, id, widgets_links } = widget;
         if (type === "links" && widgets_links.length === 0) {

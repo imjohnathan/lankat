@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import * as z from "zod";
 import IconLoading from "~icons/line-md/loading-twotone-loop";
 import { ProfileContext } from "../layout.client";
+
 const updateUserQuery = gql`
   mutation UpdateUser(
     $_set: users_set_input! = {
@@ -151,21 +152,26 @@ export function AppearanceForm() {
   });
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <ThemeSelector form={form} name="theme" />
-        <Button disabled={updating} type="submit">
-          {updating ? (
-            <>
-              <IconLoading className="mr-3 h-4 w-4" />
-              請稍候
-            </>
-          ) : (
-            "儲存"
-          )}
-        </Button>
-      </form>
-      <PreviewPage ref={preview} />
-    </Form>
+    <div className="grid grid-cols-5">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="col-span-4 space-y-8"
+        >
+          <ThemeSelector form={form} name="theme" />
+          <Button disabled={updating} type="submit">
+            {updating ? (
+              <>
+                <IconLoading className="mr-3 h-4 w-4" />
+                請稍候
+              </>
+            ) : (
+              "儲存"
+            )}
+          </Button>
+        </form>
+      </Form>
+      <PreviewPage wrapperClass="mt-[-80px]" isFloating={false} ref={preview} />
+    </div>
   );
 }

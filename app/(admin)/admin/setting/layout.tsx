@@ -5,8 +5,8 @@ import { Separator } from "@/components/ui/separator";
 import Client from "./layout.client";
 
 export const metadata: Metadata = {
-  title: "Forms",
-  description: "Advanced form example using react-hook-form and Zod.",
+  title: "個人設定 | Lank.at 任意門",
+  description: "個人設定 | Lank.at 任意門",
 };
 
 const sidebarNavItems = [

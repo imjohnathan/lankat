@@ -1,10 +1,12 @@
 "use client";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import LoadingFallback from "@/components/ui/loading-fallback";
 import PreviewPage from "@/components/userpage/Preview";
 import EditUI from "@/components/widgets/admin/EditUI";
 import BannerPreview from "@/components/widgets/preview/Banner";
 import LinksPreview from "@/components/widgets/preview/Buttons";
 import { type MakeOptional, type Widgets } from "@/gql/graphql";
+import { cn } from "@/lib/utils";
 import {
   DndContext,
   DragEndEvent,
@@ -26,8 +28,12 @@ import { CSS } from "@dnd-kit/utilities";
 import { gql, useMutation, useQuery } from "@urql/next";
 import { produce } from "immer";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import IconLoading from "~icons/line-md/loading-twotone-loop";
+import SolarAddCircleBold from "~icons/solar/add-circle-bold";
+import SolarPenNewSquareOutline from "~icons/solar/pen-new-square-outline";
 
 type OptionalWidgets = MakeOptional<
   Widgets,
@@ -123,14 +129,23 @@ const widgetsList = [
     render: () => <textarea />,
   },
 ];
+interface SortableItemProps {
+  render: any;
+  handleDeleteWidget: (id: string) => void;
+  handleToggleWidgetShow: (id: string, value: boolean) => void;
+  widget: OptionalWidgets;
+  isLoading?: boolean;
+  id: string;
+}
 
 function SortableItem({
   render,
   handleDeleteWidget,
   handleToggleWidgetShow,
   widget,
+  isLoading = false,
   ...props
-}) {
+}: SortableItemProps) {
   const { id } = props;
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
@@ -141,7 +156,7 @@ function SortableItem({
   };
   const Component = render;
   return (
-    <div ref={setNodeRef} style={style} className="flex">
+    <div ref={setNodeRef} style={style} className="relative flex">
       <EditUI
         {...props}
         widget={widget}
@@ -150,6 +165,14 @@ function SortableItem({
         attributes={attributes}
         listeners={listeners}
       >
+        <div
+          className={cn(
+            "absolute inset-0 hidden place-items-center bg-white/70 transition-opacity duration-200",
+            { "!grid": isLoading },
+          )}
+        >
+          <IconLoading className="h-8 w-8" />
+        </div>
         <div className="py-4">
           <Component widget={widget} isPreview />
         </div>
@@ -166,11 +189,14 @@ function DnD() {
   const [widgets, setWidgets] = useState<OptionalWidgets[]>([]);
   const previousWidgetsRef = useRef<OptionalWidgets[]>([]);
   const isWidgetInit = useRef(false);
-
   const [{ data, fetching, error }, reexecuteQuery] = useQuery({
     query: getWidgetsQuery,
   });
-
+  const isFetching =
+    fetching ||
+    insertWidgetResult.fetching ||
+    updateWidgetsResult.fetching ||
+    deleteWidgetResult.fetching;
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -309,50 +335,67 @@ function DnD() {
     }
   }, [data]);
 
+  if (widgets.length === 0) return <LoadingFallback />;
+
   return (
-    <div className="mt-20 grid grid-cols-2">
-      <div className="grid place-items-center gap-5">
-        <div className="flex gap-4">
-          <Button onClick={() => handleAddWidget("links")}>新增連結按鈕</Button>
-          <Button onClick={() => handleAddWidget("banner")}>
-            新增圖片看板
-          </Button>
-        </div>
-        <div className="flex w-[350px] flex-col gap-4">
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-            modifiers={[restrictToVerticalAxis]}
-          >
-            <SortableContext
-              items={widgets.map((widget) => widget.id)}
-              strategy={verticalListSortingStrategy}
+    <div className="container my-20 max-w-4xl">
+      <div className="grid grid-cols-2">
+        <div className="grid place-items-center gap-5">
+          <div className="flex gap-4">
+            <Button onClick={() => handleAddWidget("links")}>
+              <SolarAddCircleBold className="mr-2 h-4 w-4" />
+              連結按鈕
+            </Button>
+            <Button onClick={() => handleAddWidget("banner")}>
+              <SolarAddCircleBold className="mr-2 h-4 w-4" />
+              圖片看板
+            </Button>
+          </div>
+          <div className="flex w-[350px] flex-col gap-4">
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+              modifiers={[restrictToVerticalAxis]}
             >
-              {widgets.map((widget) => {
-                const { type, id } = widget;
-                const component = widgetsList.find((w) => w.type === type)
-                  ?.render;
-                return (
-                  <SortableItem
-                    handleDeleteWidget={handleDeleteWidget}
-                    handleToggleWidgetShow={handleToggleWidgetShow}
-                    widget={widget}
-                    {...widget}
-                    render={component}
-                    key={id}
-                  />
-                );
-              })}
-            </SortableContext>
-          </DndContext>
+              <SortableContext
+                items={widgets.map((widget) => widget.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {widgets.map((widget) => {
+                  const { type, id } = widget;
+                  const component = widgetsList.find((w) => w.type === type)
+                    ?.render;
+                  return (
+                    <SortableItem
+                      handleDeleteWidget={handleDeleteWidget}
+                      handleToggleWidgetShow={handleToggleWidgetShow}
+                      widget={widget}
+                      {...widget}
+                      render={component}
+                      key={id}
+                      isLoading={isFetching}
+                    />
+                  );
+                })}
+              </SortableContext>
+            </DndContext>
+          </div>
         </div>
-        <code className="mt-20 block max-w-sm overflow-hidden whitespace-pre">
-          {JSON.stringify(widgets, null, 2)}
-        </code>
-      </div>
-      <div>
-        <PreviewPage wrapperClass="static" />
+        <div className="relative">
+          <div className="sticky top-5 grid place-items-center">
+            <PreviewPage isFloating={false} />
+            <Link
+              href="/admin/setting"
+              className={cn(
+                buttonVariants({ variant: "ghost" }),
+                "mt-[-111px]",
+              )}
+            >
+              <SolarPenNewSquareOutline className="mr-2 h-4 w-4" /> 編輯個人檔案
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -360,7 +403,7 @@ function DnD() {
 
 export default function App() {
   return (
-    <Suspense>
+    <Suspense fallback={<LoadingFallback />}>
       <DnD />
     </Suspense>
   );
