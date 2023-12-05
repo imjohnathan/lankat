@@ -4,5 +4,25 @@
       "source": "/api",
       "destination": "https://together-pangolin-86.hasura.app/v1/graphql"
     }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, s-maxage=1, stale-while-revalidate=59"
+        }
+      ]
+    },
+    {
+      "source": "/api",
+      "headers": [
+        {
+          "key": "Cross-Origin-Resource-Policy",
+          "value": "same-origin"
+        }
+      ]
+    }
   ]
 }

@@ -331,14 +331,9 @@ export function linkConstructor({
 }
 
 export const getDeployGraphqlEndpoint = () => {
-  console.log("process.env.NODE_ENV", process.env.NODE_ENV);
-  const isDev = process.env.NODE_ENV === "development";
   const isVercelProduction = Boolean(
     process.env.NEXT_PUBLIC_VERCEL_ENV === "production",
   );
-  console.log("isDev", isDev, "isVercelProduction", isVercelProduction);
-  if (isDev && process.env?.NEXT_PUBLIC_GRAPHQL_ENDPOINT)
-    return process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
-  if (!isDev && isVercelProduction) return "https://lank.at/api";
-  return "https://" + process.env.NEXT_PUBLIC_VERCEL_URL + "/api";
+  if (isVercelProduction) return "https://lank.at/api";
+  return process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
 };
