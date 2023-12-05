@@ -332,6 +332,8 @@ export function linkConstructor({
 
 export const getDeployGraphqlEndpoint = () => {
   const isDev = process.env.NODE_ENV === "development";
+  const isVercelProduction = Boolean(process.env.VERCEL_ENV === "production");
   if (isDev) return process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
+  if (!isDev && isVercelProduction) return "https://lanke.app/api";
   return "https://" + process.env.NEXT_PUBLIC_VERCEL_URL + "/api";
 };
