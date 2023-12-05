@@ -66,10 +66,14 @@ export default async function LinkMiddleware(
           url: getFinalUrl(target, { req }),
         });
       }
-      return NextResponse.json({
-        url: getFinalUrl(target, { req }),
-      });
-      //return NextResponse.redirect(getFinalUrl(target, { req }));}
+      const isVercelProduction = Boolean(
+        process.env.NEXT_PUBLIC_VERCEL_ENV === "production",
+      );
+      if (isVercelProduction)
+        return NextResponse.json({
+          url: getFinalUrl(target, { req }),
+        });
+      return NextResponse.redirect(getFinalUrl(target, { req }));
     } catch (e: any) {
       return NextResponse.json({
         error: "invalid url",
