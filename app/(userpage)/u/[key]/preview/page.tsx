@@ -100,8 +100,7 @@ function Loading() {
 }
 
 export function UserPagePreview() {
-  const { data: sessionData } = useSession();
-  if (!sessionData) return <Loading />;
+  const { data: session } = useSession();
   const { key } = useParams();
   const searchParams = useSearchParams();
   const isMocking = searchParams.has("mocking");
@@ -150,6 +149,7 @@ export function UserPagePreview() {
     handleSubscription,
   );
   const users = data.users[0];
+  if (!session) return <Loading />;
   if (!users || fetching) return <Loading />;
   return (
     <ScrollArea className="fixed inset-0 h-screen">
