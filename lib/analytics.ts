@@ -52,6 +52,7 @@ export async function recordClick({
   const isUserPage = decodeURIComponent(fullKey.split("/")[0]) === "u";
   const geo =
     process.env.node_env === "production" ? req.geo : LOCALHOST_GEO_DATA;
+  console.log(geo, req.geo);
   const ua = userAgent(req);
   const referer = req.headers.get("referer");
   const recordClickVariables = {

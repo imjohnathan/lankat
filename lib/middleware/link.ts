@@ -69,7 +69,7 @@ export default async function LinkMiddleware(
       const isVercelProduction = Boolean(
         process.env.NEXT_PUBLIC_VERCEL_ENV === "production",
       );
-      if (isVercelProduction)
+      if (!isVercelProduction)
         return NextResponse.json({
           url: getFinalUrl(target, { req }),
         });
