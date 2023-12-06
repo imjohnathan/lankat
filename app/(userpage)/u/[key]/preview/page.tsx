@@ -5,6 +5,7 @@ import UserPage from "@/components/userpage";
 import PreviewData from "@/lib/constants/previewData.json";
 import templates from "@/lib/constants/templates.json";
 import { gql, useQuery, useSubscription } from "@urql/next";
+import { useSession } from "next-auth/react";
 import { useParams, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import IconLoading from "~icons/line-md/loading-twotone-loop";
@@ -99,6 +100,8 @@ function Loading() {
 }
 
 export function UserPagePreview() {
+  const { data: sessionData } = useSession();
+  if (!sessionData) return <Loading />;
   const { key } = useParams();
   const searchParams = useSearchParams();
   const isMocking = searchParams.has("mocking");

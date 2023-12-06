@@ -31,7 +31,7 @@ export default async function Home() {
             <div className="mx-auto max-w-md px-4 sm:max-w-2xl sm:px-6 sm:text-center lg:flex lg:items-center lg:px-0 lg:text-left">
               <div className="lg:py-24">
                 <h1 className="mt-4 text-4xl font-bold  !leading-[1.2] text-white sm:mt-5 sm:text-6xl lg:mt-6 xl:text-6xl">
-                  <span className="block">一個全新的方式</span>
+                  <span className="block">用你最喜歡的樣子</span>
                   <span className="block text-indigo-400">
                     展現你的網路人格
                   </span>

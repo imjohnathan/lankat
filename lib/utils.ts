@@ -1,3 +1,4 @@
+import ogImage from "@/public/og.jpg";
 import { clsx, type ClassValue } from "clsx";
 import { Metadata } from "next";
 import { twMerge } from "tailwind-merge";
@@ -6,7 +7,6 @@ import {
   SPECIAL_APEX_DOMAINS,
   ccTLDs,
 } from "./constants";
-
 export * from "@/lib/constants";
 
 export function cn(...inputs: ClassValue[]) {
@@ -184,9 +184,9 @@ export const getSearchParams = (url: string) => {
 };
 
 export function constructMetadata({
-  title = "Link Management for Modern Marketing Teams",
-  description = "link management tool for modern marketing teams to create, share, and track short links.",
-  image = "/_static/thumbnail.png",
+  title = "Lank.at 任意門 | 用你最喜歡的樣子，展現你的網路人格",
+  description = "Lank.at 任意門 使用在宣傳個人社群媒體的管道、或是正在開團購的連結全部放這一個頁面中，簡單的分享給你的朋友們",
+  image = ogImage.src,
   icons = "/favicon.ico",
   noIndex = false,
 }: {
