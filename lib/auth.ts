@@ -80,7 +80,6 @@ const config = {
   jwt: {
     encode: () => {
       const cookie = cookies().get(sessionCookieName);
-      console.log("cookie", cookie);
       if (cookie) return cookie;
       else return "";
     },
