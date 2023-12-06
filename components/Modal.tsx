@@ -22,7 +22,7 @@ const Modal = () => {
           if (!open) close();
         }}
       >
-        <DialogContent className={props.className}>
+        <DialogContent className={props.className + " overflow-y-auto"}>
           {component && <ModalComponent {...props} isLoading={isLoading} />}
         </DialogContent>
       </Dialog>

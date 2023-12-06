@@ -1,4 +1,5 @@
 "use client";
+import Banner from "@/components/widgets/modals/Banner";
 import ButtonEdit from "@/components/widgets/modals/ButtonEdit";
 import Separator from "@/components/widgets/modals/Separator";
 
@@ -12,6 +13,7 @@ interface WidgetEditModalProps {
 const modals = {
   links: ButtonEdit,
   separator: Separator,
+  banner: Banner,
 };
 
 export default function WidgetEditModal({

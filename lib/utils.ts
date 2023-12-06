@@ -337,3 +337,7 @@ export const getDeployGraphqlEndpoint = () => {
   if (isVercelProduction) return "https://lank.at/api";
   return process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
 };
+
+export const getUserPageUrl = (url_key: string) => {
+  return `${process.env.NEXT_PUBLIC_SHORT_URL}/u/${url_key}`;
+};
