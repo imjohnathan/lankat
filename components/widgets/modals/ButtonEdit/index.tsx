@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import {
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -318,7 +317,6 @@ export default function ButtonEdit({ widget }: { widget: WidgetLinkProps }) {
     <>
       <DialogHeader>
         <DialogTitle>編輯連結列表</DialogTitle>
-        <DialogDescription>新增完成後就可顯示在頁面裡面啦！</DialogDescription>
       </DialogHeader>
       <div className="flex">
         <ScrollArea className="max-h-[500px] flex-1 px-4">

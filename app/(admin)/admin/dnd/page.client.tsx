@@ -1,11 +1,13 @@
 "use client";
+import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { CopyButton } from "@/components/ui/copy-button";
 import LoadingFallback from "@/components/ui/loading-fallback";
 import PreviewPage from "@/components/userpage/Preview";
 import EditUI from "@/components/widgets/admin/EditUI";
 import { type MakeOptional, type Widgets } from "@/gql/graphql";
 import { widgetsList } from "@/lib/constants/widgets";
-import { cn } from "@/lib/utils";
+import { cn, getUserPageUrl } from "@/lib/utils";
 import {
   DndContext,
   DragEndEvent,
@@ -346,7 +348,24 @@ function DnD() {
           </div>
         </div>
         <div className="relative">
-          <div className="sticky top-5 grid place-items-center">
+          <div className="sticky top-12 grid place-items-center">
+            <Badge
+              className="mb-[-111px] flex gap-2 px-3 py-1"
+              variant="outline"
+            >
+              <Link
+                className="max-w-[200px] truncate"
+                target="_blank"
+                href={getUserPageUrl(session?.user?.url_key ?? "")}
+              >
+                {getUserPageUrl(session?.user?.url_key ?? "")}
+              </Link>
+              <div>
+                <CopyButton
+                  value={getUserPageUrl(session?.user?.url_key ?? "")}
+                />
+              </div>
+            </Badge>
             <PreviewPage isFloating={false} />
             <Link
               href="/admin/setting"
