@@ -17,7 +17,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
 import Preview from "@/components/widgets/preview/Banners";
-import placeholder from "@/components/widgets/preview/assets/banner-placeholder.jpg";
 import type { Widgets } from "@/gql/graphql";
 import { cn } from "@/lib/utils";
 import useModalStore from "@/stores/useModalStore";
@@ -59,7 +58,7 @@ export const defaultData = {
       isShow: true,
       link_id: "",
       key: "",
-      image: placeholder.src,
+      image: "",
     },
     {
       id: "",
@@ -68,7 +67,7 @@ export const defaultData = {
       isShow: true,
       link_id: "",
       key: "",
-      image: placeholder.src,
+      image: "",
     },
     {
       id: "",
@@ -77,7 +76,7 @@ export const defaultData = {
       isShow: true,
       link_id: "",
       key: "",
-      image: placeholder.src,
+      image: "",
     },
   ],
 };
@@ -94,7 +93,7 @@ export const FormSchema = z.object({
       url: z.string().url(),
       isShow: z.boolean(),
       link_id: z.string().optional(),
-      clicks: z.number(),
+      clicks: z.number().optional(),
       key: z.string().optional(),
       image: z.string(),
     }),
@@ -116,9 +115,10 @@ export default function Banner({ widget }: { widget: Widgets }) {
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
+      console.log(data);
       // if (error) throw new Error(error.message);
       toast.success("已儲存成功！");
-      close();
+      //close();
     } catch (e) {
       if (e instanceof Error) {
         console.error(e.message);
@@ -131,7 +131,7 @@ export default function Banner({ widget }: { widget: Widgets }) {
     }
   }
   const values = form.watch();
-
+  console.log(form.formState.errors);
   return (
     <>
       <DialogHeader>
@@ -165,7 +165,12 @@ export default function Banner({ widget }: { widget: Widgets }) {
                 control={form.control}
                 name="autoPlaySpeed"
                 render={({ field }) => (
-                  <FormItem className="flex h-10 flex-row items-center justify-between space-y-0 rounded-lg border px-4 py-2">
+                  <FormItem
+                    className={cn(
+                      "flex h-10 flex-row items-center justify-between space-y-0 rounded-lg border px-4 py-2",
+                      { hidden: !values.autoPlay },
+                    )}
+                  >
                     <FormLabel>播放速度</FormLabel>
                     <FormControl>
                       <RadioGroup
@@ -240,9 +245,9 @@ export default function Banner({ widget }: { widget: Widgets }) {
                 )}
               />
               <ImagesForm form={form} removeIds={removeIds} />
-              <code className="block whitespace-pre-wrap">
+              {/* <code className="block whitespace-pre-wrap">
                 {JSON.stringify(values, null, 2)}
-              </code>
+              </code> */}
             </form>
           </Form>
         </ScrollArea>
