@@ -38,6 +38,12 @@ const supabaseAuth = createClient(
   },
 );
 
+const sessionCookieName = Boolean(
+  process.env.NEXT_PUBLIC_VERCEL_ENV === "production",
+)
+  ? "__Secure-next-auth.session-token"
+  : "next-auth.session-token";
+
 const config = {
   providers: [
     CredentialsProvider({
@@ -75,12 +81,9 @@ const config = {
     }),
   ],
   adapter: supabaseAd,
-  // session: {
-  //   strategy: "jwt",
-  // },
   jwt: {
-    encode: async () => {
-      const cookie = cookies().get("next-auth.session-token");
+    encode: () => {
+      const cookie = cookies().get(sessionCookieName);
       console.log("cookie", cookie);
       if (cookie) return cookie;
       else return "";
@@ -107,13 +110,9 @@ const config = {
         console.log("credentials login", data, error);
         if (error) return false;
 
-        const setCookie = cookies().set(
-          "next-auth.session-token",
-          sessionToken,
-          {
-            expires: sessionExpiry,
-          },
-        );
+        const setCookie = cookies().set(sessionCookieName, sessionToken, {
+          expires: sessionExpiry,
+        });
       }
 
       return true;

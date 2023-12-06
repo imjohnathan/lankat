@@ -50,8 +50,8 @@ export async function recordClick({
 }) {
   const key = decodeURIComponent(fullKey.split("/")[1]);
   const isUserPage = decodeURIComponent(fullKey.split("/")[0]) === "u";
-  const geo =
-    process.env.node_env === "production" ? req.geo : LOCALHOST_GEO_DATA;
+  const isDev = Boolean(process.env.NEXT_PUBLIC_VERCEL_ENV === "production");
+  const geo = isDev ? req.geo : LOCALHOST_GEO_DATA;
   console.log(geo, req.geo);
   const ua = userAgent(req);
   const referer = req.headers.get("referer");
