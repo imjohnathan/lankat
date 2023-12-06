@@ -8,6 +8,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
+import { useDebounce } from "use-debounce";
 import * as z from "zod";
 import placeholder from "./assets/banner-placeholder.jpg";
 
@@ -26,6 +27,7 @@ export default function Banner({
   isPreview: boolean;
   data: z.infer<typeof FormSchema>;
 }) {
+  const [debouncedData] = useDebounce(data, 500);
   const [swiperKey, setSwiperKey] = useState(0);
   const swiperRef = useRef<SwiperClass>();
   const { autoPlay, autoPlaySpeed, aspectRatio, dots, links } = {
@@ -36,7 +38,7 @@ export default function Banner({
 
   useEffect(() => {
     setSwiperKey((prev) => prev + 1);
-  }, [data]);
+  }, [debouncedData]);
 
   return (
     <div className="grid">
