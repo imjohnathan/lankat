@@ -81,6 +81,7 @@ const config = {
   jwt: {
     encode: async () => {
       const cookie = cookies().get("next-auth.session-token");
+      console.log("cookie", cookie);
       if (cookie) return cookie;
       else return "";
     },
@@ -103,6 +104,7 @@ const config = {
           })
           .select()
           .single();
+        console.log("credentials login", data, error);
         if (error) return false;
 
         const setCookie = cookies().set(
