@@ -38,11 +38,7 @@ const supabaseAuth = createClient(
   },
 );
 
-const sessionCookieName = Boolean(
-  process.env.NEXT_PUBLIC_VERCEL_ENV === "production",
-)
-  ? "__Secure-next-auth.session-token"
-  : "next-auth.session-token";
+const sessionCookieName = "next-auth.session-token";
 
 const config = {
   providers: [
@@ -158,6 +154,7 @@ const config = {
     },
   },
   trustHost: true,
+  useSecureCookies: false,
 } satisfies NextAuthConfig;
 
 export const { handlers, auth, signIn, signOut } = NextAuth(config);
