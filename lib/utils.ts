@@ -187,7 +187,7 @@ export function constructMetadata({
   title = "Lank.at 任意門 | 用你最喜歡的樣子，展現你的網路人格",
   description = "Lank.at 任意門 使用在宣傳個人社群媒體的管道、或是正在開團購的連結全部放這一個頁面中，簡單的分享給你的朋友們",
   image = ogImage.src,
-  icons = "/favicon.ico",
+  icons = "/favicon.png",
   noIndex = false,
 }: {
   title?: string;

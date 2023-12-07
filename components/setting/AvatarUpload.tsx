@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { nanoid } from "nanoid";
 import { useCallback, useEffect, useState } from "react";
 import IconUploadCloud from "~icons/solar/cloud-upload-outline";
 
@@ -18,7 +19,7 @@ export default function AvatarUpload({
   const { image } = data;
 
   const uploadImage = async (file: File) => {
-    const fileName = `${userId}.${file.type.split("/")[1]}`;
+    const fileName = `${userId}_${nanoid(12)}.${file.type.split("/")[1]}`;
     const { data: avatar, error } = await supabase.storage
       .from("avatars")
       .upload(fileName, file, {

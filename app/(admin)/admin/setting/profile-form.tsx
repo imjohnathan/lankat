@@ -38,6 +38,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { gql, useMutation } from "@urql/next";
+import { useSession } from "next-auth/react";
 import { useContext } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -151,6 +152,7 @@ export function SortableItem(props: any) {
 }
 
 export function ProfileForm() {
+  const { update } = useSession();
   const { user } = useContext(ProfileContext);
   const [{ fetching: updating }, updateUser] = useMutation(updateUserQuery);
   const sensors = useSensors(
@@ -198,6 +200,7 @@ export function ProfileForm() {
       const { data: updateData, error } = await updateUser(variables);
       if (error) throw new Error(error.message);
       toast.success("更新成功");
+      update();
     } catch (e) {
       console.error(e);
       toast.error("更新失敗");
