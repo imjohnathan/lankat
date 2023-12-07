@@ -42,6 +42,8 @@
     "@types/jsonwebtoken": "^9.0.5",
     "@uiw/react-color": "^2.0.3",
     "@uiw/react-color-sketch": "^2.0.3",
+    "@uppy/core": "^3.7.1",
+    "@uppy/tus": "^3.4.0",
     "@urql/devtools": "^2.0.3",
     "@urql/exchange-auth": "^2.1.6",
     "@urql/exchange-graphcache": "^6.3.3",

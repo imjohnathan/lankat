@@ -844,6 +844,7 @@ export type Links = {
   date_end?: Maybe<Scalars['timestamptz']['output']>;
   date_start?: Maybe<Scalars['timestamptz']['output']>;
   id: Scalars['uuid']['output'];
+  image?: Maybe<Scalars['String']['output']>;
   key?: Maybe<Scalars['String']['output']>;
   /** An object relationship */
   link?: Maybe<Links>;
@@ -1060,6 +1061,7 @@ export type Links_Bool_Exp = {
   date_end?: InputMaybe<Timestamptz_Comparison_Exp>;
   date_start?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  image?: InputMaybe<String_Comparison_Exp>;
   key?: InputMaybe<String_Comparison_Exp>;
   link?: InputMaybe<Links_Bool_Exp>;
   links?: InputMaybe<Links_Bool_Exp>;
@@ -1124,6 +1126,7 @@ export type Links_Insert_Input = {
   date_end?: InputMaybe<Scalars['timestamptz']['input']>;
   date_start?: InputMaybe<Scalars['timestamptz']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
+  image?: InputMaybe<Scalars['String']['input']>;
   key?: InputMaybe<Scalars['String']['input']>;
   link?: InputMaybe<Links_Obj_Rel_Insert_Input>;
   links?: InputMaybe<Links_Arr_Rel_Insert_Input>;
@@ -1151,6 +1154,7 @@ export type Links_Max_Fields = {
   date_end?: Maybe<Scalars['timestamptz']['output']>;
   date_start?: Maybe<Scalars['timestamptz']['output']>;
   id?: Maybe<Scalars['uuid']['output']>;
+  image?: Maybe<Scalars['String']['output']>;
   key?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   og_description?: Maybe<Scalars['String']['output']>;
@@ -1170,6 +1174,7 @@ export type Links_Max_Order_By = {
   date_end?: InputMaybe<Order_By>;
   date_start?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  image?: InputMaybe<Order_By>;
   key?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   og_description?: InputMaybe<Order_By>;
@@ -1190,6 +1195,7 @@ export type Links_Min_Fields = {
   date_end?: Maybe<Scalars['timestamptz']['output']>;
   date_start?: Maybe<Scalars['timestamptz']['output']>;
   id?: Maybe<Scalars['uuid']['output']>;
+  image?: Maybe<Scalars['String']['output']>;
   key?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   og_description?: Maybe<Scalars['String']['output']>;
@@ -1209,6 +1215,7 @@ export type Links_Min_Order_By = {
   date_end?: InputMaybe<Order_By>;
   date_start?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  image?: InputMaybe<Order_By>;
   key?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   og_description?: InputMaybe<Order_By>;
@@ -1252,6 +1259,7 @@ export type Links_Order_By = {
   date_end?: InputMaybe<Order_By>;
   date_start?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  image?: InputMaybe<Order_By>;
   key?: InputMaybe<Order_By>;
   link?: InputMaybe<Links_Order_By>;
   links_aggregate?: InputMaybe<Links_Aggregate_Order_By>;
@@ -1629,6 +1637,8 @@ export enum Links_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
+  Image = 'image',
+  /** column name */
   Key = 'key',
   /** column name */
   Name = 'name',
@@ -1660,6 +1670,7 @@ export type Links_Set_Input = {
   date_end?: InputMaybe<Scalars['timestamptz']['input']>;
   date_start?: InputMaybe<Scalars['timestamptz']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
+  image?: InputMaybe<Scalars['String']['input']>;
   key?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   og_description?: InputMaybe<Scalars['String']['input']>;
@@ -1722,6 +1733,7 @@ export type Links_Stream_Cursor_Value_Input = {
   date_end?: InputMaybe<Scalars['timestamptz']['input']>;
   date_start?: InputMaybe<Scalars['timestamptz']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
+  image?: InputMaybe<Scalars['String']['input']>;
   key?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   og_description?: InputMaybe<Scalars['String']['input']>;
@@ -2083,6 +2095,8 @@ export enum Links_Update_Column {
   DateStart = 'date_start',
   /** column name */
   Id = 'id',
+  /** column name */
+  Image = 'image',
   /** column name */
   Key = 'key',
   /** column name */
