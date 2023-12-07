@@ -1,4 +1,4 @@
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import useModalStore from "@/stores/useModalStore";
@@ -13,6 +13,16 @@ export default function WidgetUI({
   handleDeleteWidget,
   handleToggleWidgetShow,
   ...props
+}: {
+  children: React.ReactNode;
+  listeners: any;
+  attributes: any;
+  handleDeleteWidget: any;
+  handleToggleWidgetShow: any;
+  id: string;
+  isShow: boolean;
+  type: string;
+  widget: any;
 }) {
   const { openEditModal } = useModalStore();
   const { id, isShow, type, widget } = props;
@@ -55,7 +65,6 @@ export default function WidgetUI({
       >
         {children}
       </CardContent>
-      <CardFooter className="flex justify-between"></CardFooter>
     </Card>
   );
 }

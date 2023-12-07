@@ -33,6 +33,7 @@ import Link from "next/link";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import IconLoading from "~icons/line-md/loading-twotone-loop";
+import PhArrowBendRightUp from "~icons/ph/arrow-bend-right-up";
 import SolarAddCircleBold from "~icons/solar/add-circle-bold";
 import SolarPenNewSquareOutline from "~icons/solar/pen-new-square-outline";
 
@@ -82,6 +83,7 @@ const getWidgetsQuery = gql`
           url
           clicks
           key
+          image
         }
       }
     }
@@ -123,7 +125,11 @@ function SortableItem({
   };
   const Component = render;
   return (
-    <div ref={setNodeRef} style={style} className="relative flex">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={cn("relative flex", { "animate-pulse": isLoading })}
+    >
       <EditUI
         {...props}
         widget={widget}
@@ -134,7 +140,7 @@ function SortableItem({
       >
         <div
           className={cn(
-            "absolute inset-0 hidden place-items-center bg-white/70 transition-opacity duration-200",
+            "absolute inset-0 z-10 hidden place-items-center bg-white/80  transition-opacity duration-200",
             { "!grid": isLoading },
           )}
         >
@@ -155,7 +161,6 @@ function DnD() {
   const [deleteWidgetResult, deleteWidget] = useMutation(deleteWidgetQuery);
   const [widgets, setWidgets] = useState<OptionalWidgets[]>([]);
   const previousWidgetsRef = useRef<OptionalWidgets[]>([]);
-  const isWidgetInit = useRef(false);
   const [{ data, fetching, error }, reexecuteQuery] = useQuery({
     query: getWidgetsQuery,
   });
@@ -307,8 +312,8 @@ function DnD() {
   return (
     <div className="container my-20 max-w-4xl">
       <div className="grid grid-cols-2">
-        <div className="grid place-items-center gap-5">
-          <div className="flex gap-4">
+        <div className="flex flex-col items-center gap-8">
+          <div className="flex justify-center gap-4">
             {widgetsList.map(({ type, title }) => (
               <Button key={type} onClick={() => handleAddWidget(type)}>
                 <SolarAddCircleBold className="mr-2 h-4 w-4" />
@@ -316,7 +321,7 @@ function DnD() {
               </Button>
             ))}
           </div>
-          <div className="flex w-[350px] flex-col gap-4">
+          <div className="flex w-[350px] flex-col justify-center gap-4">
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
@@ -343,6 +348,16 @@ function DnD() {
                     />
                   );
                 })}
+                {widgets.length === 0 && (
+                  <div className="grid place-items-center text-gray-800">
+                    <div className="mt-8 flex">
+                      <div className="flex items-end pb-1 text-xl font-medium">
+                        開始增小工具
+                      </div>
+                      <PhArrowBendRightUp className="ml-[-12px] h-32 w-32" />
+                    </div>
+                  </div>
+                )}
               </SortableContext>
             </DndContext>
           </div>

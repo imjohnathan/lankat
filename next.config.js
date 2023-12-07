@@ -27,7 +27,17 @@ const nextConfig = {
                 'http://127.0.0.1:3000'
             ]
         }
-    }
+    },
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'akbggkpvgcoobuczoagm.supabase.co',
+                port: '',
+                pathname: '/storage/v1/**',
+            },
+        ],
+    },
 };
 
 module.exports = nextConfig;

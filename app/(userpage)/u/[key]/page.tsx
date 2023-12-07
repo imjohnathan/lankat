@@ -33,9 +33,8 @@ const query = gql`
       url
       id
       key
-      __typename
+      image
     }
-    __typename
   }
 
   fragment usersFragment on users {

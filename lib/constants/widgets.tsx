@@ -1,4 +1,4 @@
-import Banner from "@/components/widgets/preview/Banner";
+import Banners from "@/components/widgets/preview/Banners";
 import Links from "@/components/widgets/preview/Buttons";
 import Separator from "@/components/widgets/preview/Separator";
 import { type Widgets } from "@/gql/graphql";
@@ -18,7 +18,23 @@ export const widgetsList: WidgetListType[] = [
   {
     type: "banner",
     title: "圖片看板",
-    render: (props: any) => <Banner {...props} />,
+    render: (props) => {
+      const { widget }: { widget: Widgets } = props;
+      const { config, widgets_links } = widget;
+      const data = {
+        config,
+        links: widgets_links.map(({ name, isShow, link }) => {
+          return {
+            name,
+            image: link?.image,
+            url: link?.url,
+            key: link?.key,
+            isShow,
+          };
+        }),
+      };
+      return <Banners data={data} {...props} />;
+    },
   },
   {
     type: "separator",
