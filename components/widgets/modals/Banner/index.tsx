@@ -33,8 +33,13 @@ import { gql, useMutation } from "@urql/next";
 import { motion } from "framer-motion";
 import { nanoid } from "nanoid";
 import Link from "next/link";
-import { useId, useRef, useState } from "react";
-import { UseFormReturn, useFieldArray, useForm } from "react-hook-form";
+import { useEffect, useId, useRef, useState } from "react";
+import {
+  UseFormReturn,
+  useFieldArray,
+  useForm,
+  useFormState,
+} from "react-hook-form";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import * as z from "zod";
@@ -141,7 +146,7 @@ export const FormSchema = z.object({
 });
 
 export default function Banner({ widget }: { widget: Widgets }) {
-  const { close } = useModalStore();
+  const { close, setUnSavedChanges } = useModalStore();
   const removeIds = useRef<number[]>([]);
   const formId = useId();
   const dataFromWidget: z.infer<typeof FormSchema> = {
@@ -166,6 +171,9 @@ export default function Banner({ widget }: { widget: Widgets }) {
       ...defaultData,
       ...dataFromWidget,
     },
+  });
+  const { isDirty } = useFormState({
+    control: form.control,
   });
 
   const [{ fetching }, upsertWidgetLinks] = useMutation(upsertWidgetLinksQuery);
@@ -329,6 +337,11 @@ export default function Banner({ widget }: { widget: Widgets }) {
       setIsSubmitting(false);
     }
   }
+
+  useEffect(() => {
+    if (isDirty) setUnSavedChanges(true);
+  }, [isDirty]);
+
   const values = form.watch();
   console.log("form errors", form.formState.errors);
   return (

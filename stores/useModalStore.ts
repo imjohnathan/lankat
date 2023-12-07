@@ -15,11 +15,13 @@ interface State {
   props: any;
   isLoading: boolean;
   isOpen: boolean;
+  unSavedChanges: boolean;
 }
 
 interface Actions {
   open: (payload: Partial<State>) => void;
   close: () => void;
+  setUnSavedChanges: (unSavedChanges: boolean) => void;
   openLoadingModal: (props: any) => void;
   openEditModal: (props: any) => void;
   openQRcodeModal: (props: any) => void;
@@ -31,6 +33,7 @@ const initialState = {
   isOpen: false,
   props: {},
   isLoading: false,
+  unSavedChanges: false,
 };
 
 const useModalStore = create<State & Actions>((set, get) => ({
@@ -63,6 +66,9 @@ const useModalStore = create<State & Actions>((set, get) => ({
     setTimeout(() => {
       set(initialState);
     }, 300);
+  },
+  setUnSavedChanges: (unSavedChanges: boolean) => {
+    set({ unSavedChanges });
   },
   openEditModal: async (props: Partial<State>) => {
     get().open({
