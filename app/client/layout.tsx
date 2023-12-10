@@ -63,7 +63,6 @@ export default function Layout({ children }: React.PropsWithChildren) {
 
     return [client, ssr];
   }, []);
-
   return (
     <UrqlProvider client={client} ssr={ssr}>
       {children}

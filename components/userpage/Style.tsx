@@ -58,9 +58,11 @@ export default function StyleClient({
             .masterBackground {
               min-height: 100dvh;
               background-color: var(--background-color, inherit);
-              ${isGradient
-                ? `background: linear-gradient(0deg, var(--background-color), var(--background-color-2));`
-                : ""}
+              ${
+                isGradient
+                  ? `background: linear-gradient(0deg, var(--background-color), var(--background-color-2));`
+                  : ""
+              }
               background-position: center center;
               background-size: cover;
               background-repeat: no-repeat;
@@ -72,7 +74,7 @@ export default function StyleClient({
             .bioSection {
               border-color: var(--bio-background-color, inherit);
               background-color: var(--bio-background-color, inherit);
-              border-width: var(--button-border-width, 2px);
+              {/* border-width: var(--button-border-width, 2px); */}
             }
             .linkButton {
               background-color: var(--button-background-color, inherit);
@@ -86,15 +88,10 @@ export default function StyleClient({
                 --button-background-color-hover,
                 transparent
               );
-              color: var(
-                --button-text-color-hover,
-                --button-background-color,
-                inherit
-              );
-              border-color: var(--button-background-color, inherit);
+              color: var(--button-text-color-hover, inherit);
+              border-color: var(--button-border-color, inherit);
             }
           `}</style>
-          <style jsx>{``}</style>
         </>
       )}
       {children}

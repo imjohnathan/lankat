@@ -35,6 +35,7 @@ import { toast } from "sonner";
 import IconLoading from "~icons/line-md/loading-twotone-loop";
 import PhArrowBendRightUp from "~icons/ph/arrow-bend-right-up";
 import SolarAddCircleBold from "~icons/solar/add-circle-bold";
+import SolarPaintRollerLinear from "~icons/solar/paint-roller-linear";
 import SolarPenNewSquareOutline from "~icons/solar/pen-new-square-outline";
 
 type OptionalWidgets = MakeOptional<
@@ -382,15 +383,22 @@ function DnD() {
               </div>
             </Badge>
             <PreviewPage isFloating={false} />
-            <Link
-              href="/admin/setting"
-              className={cn(
-                buttonVariants({ variant: "ghost" }),
-                "mt-[-111px]",
-              )}
-            >
-              <SolarPenNewSquareOutline className="mr-2 h-4 w-4" /> 編輯個人檔案
-            </Link>
+            <div className="mt-[-111px]">
+              <Link
+                href="/admin/setting"
+                className={cn(buttonVariants({ variant: "ghost" }), "px-3")}
+              >
+                <SolarPenNewSquareOutline className="mr-2 h-4 w-4" />
+                編輯個人檔案
+              </Link>
+              <Link
+                href="/admin/setting/themes"
+                className={cn(buttonVariants({ variant: "ghost" }), "px-3")}
+              >
+                <SolarPaintRollerLinear className="mr-2 h-4 w-4" />
+                自訂風格
+              </Link>
+            </div>
           </div>
         </div>
       </div>

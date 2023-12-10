@@ -4,7 +4,7 @@ import { type Users } from "@/gql/graphql";
 import { gql, useQuery } from "@urql/next";
 import { useSession } from "next-auth/react";
 import { Suspense, createContext } from "react";
-
+import { DialogProvider } from "./themes/confirm-dialog";
 const getUserQuery = gql`
   query GetUserInfo($id: uuid!) {
     users_by_pk(id: $id) {
@@ -61,7 +61,9 @@ export function SettingClient({ children }: { children: React.ReactNode }) {
 export default function Client({ children }: { children: React.ReactNode }) {
   return (
     <Suspense fallback={<LoadingFallback />}>
-      <SettingClient>{children}</SettingClient>
+      <SettingClient>
+        <DialogProvider>{children}</DialogProvider>
+      </SettingClient>
     </Suspense>
   );
 }
