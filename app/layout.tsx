@@ -2,12 +2,9 @@ import Modal from "@/components/Modal";
 import { auth } from "@/lib/auth";
 import { constructMetadata } from "@/lib/utils";
 import { SessionProvider } from "next-auth/react";
-import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import ClientLayout from "./client/layout";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
 
 // export const metadata: Metadata = {
 //   title: "Lank.at 任意門 | 用你最喜歡的樣子，展現你的網路人格",
@@ -32,7 +29,7 @@ export default async function RootLayout({
     <SessionProvider session={session} refetchOnWindowFocus={false}>
       <ClientLayout>
         <html lang="en">
-          <body className={inter.className}>
+          <body>
             {children}
             <Toaster />
             <Modal />

@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import IconLoading from "~icons/line-md/loading-twotone-loop";
 interface PreviewProps {
   wrapperClass?: string;
@@ -21,6 +21,11 @@ const Preview = forwardRef<HTMLIFrameElement, PreviewProps>(
     ref,
   ) => {
     const [isLoaded, setIsLoaded] = useState(false);
+    useEffect(() => {
+      setTimeout(() => {
+        setIsLoaded(true);
+      }, 5000);
+    }, []);
     return (
       <div
         className={cn(
