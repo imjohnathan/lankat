@@ -4,30 +4,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Form } from "@/components/ui/form";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+  ColorForm,
+  RadioForm,
+  SliderForm,
+} from "@/components/ui/form/form-elements";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Slider } from "@/components/ui/slider";
 import Preview from "@/components/widgets/preview/Separator";
 import type { Widgets } from "@/gql/graphql";
 import useModalStore from "@/stores/useModalStore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Sketch from "@uiw/react-color-sketch";
 import { gql, useMutation } from "@urql/next";
-import { useId } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useId } from "react";
+import { useForm, useFormState } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import IconLoading from "~icons/line-md/loading-twotone-loop";
@@ -73,7 +63,7 @@ const FormSchema = z.object({
 });
 
 export default function Separator({ widget }: { widget: Widgets }) {
-  const { close } = useModalStore();
+  const { close, setUnSavedChanges } = useModalStore();
   const formId = useId();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -117,6 +107,14 @@ export default function Separator({ widget }: { widget: Widgets }) {
     widthValue: number;
   };
 
+  const { isDirty } = useFormState({
+    control: form.control,
+  });
+
+  useEffect(() => {
+    if (isDirty) setUnSavedChanges(true);
+  }, [isDirty]);
+
   return (
     <>
       <DialogHeader>
@@ -130,163 +128,56 @@ export default function Separator({ widget }: { widget: Widgets }) {
               onSubmit={form.handleSubmit(onSubmit)}
               className="grid gap-3"
             >
-              <FormField
-                control={form.control}
+              <RadioForm<z.infer<typeof FormSchema>>
+                form={form}
+                label="樣式"
                 name="style"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>樣式</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex flex-row gap-5"
-                      >
-                        {separatorStyles.map(({ label, value }) => (
-                          <FormItem
-                            key={value}
-                            className="flex items-center space-x-2 space-y-0"
-                          >
-                            <FormControl>
-                              <RadioGroupItem value={value} />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              {label}
-                            </FormLabel>
-                          </FormItem>
-                        ))}
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                items={separatorStyles}
               />
-              <FormField
-                control={form.control}
+              <SliderForm
+                form={form}
+                label="粗細"
                 name="width"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>粗細</FormLabel>
-                    <FormControl>
-                      <div>
-                        <Slider
-                          onValueChange={(v) => field.onChange(v[0])}
-                          defaultValue={[field.value]}
-                          max={20}
-                          min={1}
-                          step={1}
-                        />
-                        <div className="pt-2 text-base font-medium">
-                          {config.width}px
-                        </div>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                max={20}
+                min={1}
+                step={1}
+                unit={"px"}
+                classNames="h-auto py-2"
               />
-              <FormField
-                control={form.control}
+              <ColorForm<z.infer<typeof FormSchema>>
+                form={form}
+                label="顏色"
                 name="color"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>顏色</FormLabel>
-                    <FormControl>
-                      <Popover>
-                        <PopoverTrigger className="block">
-                          <div
-                            className="h-10 w-10 rounded-full border-2 border-solid border-gray-300"
-                            style={{ backgroundColor: config.color }}
-                          />
-                        </PopoverTrigger>
-                        <PopoverContent align="start" className="w-[218px] p-1">
-                          <Sketch
-                            style={{
-                              width: "100%",
-                              borderRadius: 0,
-                              boxShadow: "none",
-                            }}
-                            color={field.value}
-                            onChange={(color) => field.onChange(color.hexa)}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
               />
-              <FormField
-                control={form.control}
+              <SliderForm<z.infer<typeof FormSchema>>
+                form={form}
+                label="上間距"
                 name="marginTop"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>上間距</FormLabel>
-                    <FormControl>
-                      <div>
-                        <Slider
-                          onValueChange={(v) => field.onChange(v[0])}
-                          defaultValue={[field.value]}
-                          max={100}
-                          min={0}
-                          step={1}
-                        />
-                        <div className="pt-2 text-base font-medium">
-                          {config.marginTop}px
-                        </div>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                max={100}
+                min={0}
+                step={1}
+                unit={"px"}
+                classNames="h-auto py-2"
               />
-              <FormField
-                control={form.control}
+              <SliderForm<z.infer<typeof FormSchema>>
+                form={form}
+                label="下間距"
                 name="marginBottom"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>下間距</FormLabel>
-                    <FormControl>
-                      <div>
-                        <Slider
-                          onValueChange={(v) => field.onChange(v[0])}
-                          defaultValue={[field.value]}
-                          max={100}
-                          min={0}
-                          step={1}
-                        />
-                        <div className="pt-2 text-base font-medium">
-                          {config.marginBottom}px
-                        </div>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                max={100}
+                min={0}
+                step={1}
+                unit={"px"}
+                classNames="h-auto py-2"
               />
-              <FormField
-                control={form.control}
+              <SliderForm<z.infer<typeof FormSchema>>
+                form={form}
+                label="寬度"
                 name="widthValue"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>寬度</FormLabel>
-                    <FormControl>
-                      <div>
-                        <Slider
-                          onValueChange={(v) => field.onChange(v[0])}
-                          defaultValue={[field.value]}
-                          max={100}
-                          min={1}
-                          step={1}
-                        />
-                        <div className="pt-2 text-base font-medium">
-                          {config.widthValue}%
-                        </div>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                max={100}
+                min={1}
+                step={1}
+                unit={"%"}
+                classNames="h-auto py-2"
               />
             </form>
           </Form>
