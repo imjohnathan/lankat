@@ -4,76 +4,51 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { classes } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { PreviewItem } from "@/components/widgets/preview/Buttons";
-import { isValidUrl } from "@/lib/utils";
+import type { Links, Widgets } from "@/gql/graphql";
+import { cn } from "@/lib/utils";
 import useModalStore from "@/stores/useModalStore";
-import {
-  DndContext,
-  DragEndEvent,
-  KeyboardSensor,
-  PointerSensor,
-  closestCenter,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import {
-  SortableContext,
-  arrayMove,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Uppy from "@uppy/core";
+import Tus from "@uppy/tus";
 import { gql, useMutation } from "@urql/next";
-import { produce } from "immer";
+import { motion } from "framer-motion";
 import { nanoid } from "nanoid";
-import { useSession } from "next-auth/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import { useEffect, useId, useRef, useState } from "react";
+import {
+  UseFormReturn,
+  useFieldArray,
+  useForm,
+  useFormState,
+} from "react-hook-form";
 import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
+import * as z from "zod";
 import IconLoading from "~icons/line-md/loading-twotone-loop";
-import Fields from "./Fields";
-
-interface Link {
-  id?: string; //links的id，更新需要
-  url: string | undefined | null;
-  clicks?: number;
-  key?: string;
-}
-
-export interface WidgetLink {
-  dragId: string;
-  id?: number; //widget_links 中介合集id，更新需要
-  name: string; //按鈕名稱
-  link_id?: string; //將Link關聯時需要
-  url: string;
-  isShow?: boolean;
-  link?: Link;
-  clicks?: number;
-  key?: string;
-}
-
-interface Form {
-  id: string;
-  name: string;
-  isShow?: boolean;
-  type: string;
-  widgets_links: WidgetLink[];
-}
-
-interface WidgetLinkProps {
-  id: string;
-  link_id: string;
-  name: string;
-  widget_id: string;
-  widgets_links: WidgetLink[];
-}
-
-const initialForm: Form = {
-  name: "",
-  id: "", //widget的id，必要
-  type: "links",
-  widgets_links: [],
-};
+import SolarArrowDownOutline from "~icons/solar/arrow-down-outline";
+import SolarArrowUpOutline from "~icons/solar/arrow-up-outline";
+import IconCopy from "~icons/solar/copy-outline";
+import SolarCursorBold from "~icons/solar/cursor-bold";
+import IconEyeHide from "~icons/solar/eye-line-duotone";
+import IconEye from "~icons/solar/eye-outline";
+import IconDelete from "~icons/solar/trash-bin-minimalistic-outline";
 
 const upsertWidgetLinksQuery = gql`
   mutation upsertWidget(
@@ -95,13 +70,16 @@ const upsertWidgetLinksQuery = gql`
                 user: "4a5e811c-e66b-4b3a-afe0-5c0e8dbdd447" #新增需要
                 url: "https://tyutyutyut" #新增更新都需要
               }
-              on_conflict: { constraint: links_pkey, update_columns: url }
+              on_conflict: {
+                constraint: links_pkey
+                update_columns: [url, image]
+              }
             }
           }
         ]
         on_conflict: {
           constraint: widgets_links_pkey
-          update_columns: [name, link_id, isShow]
+          update_columns: [name, link_id, isShow, config]
         }
       }
     }
@@ -109,7 +87,10 @@ const upsertWidgetLinksQuery = gql`
   ) {
     insert_widgets_one(
       object: $object
-      on_conflict: { constraint: widgets_pkey, update_columns: [isShow, name] }
+      on_conflict: {
+        constraint: widgets_pkey
+        update_columns: [isShow, name, config]
+      }
     ) {
       id
     }
@@ -122,94 +103,176 @@ const upsertWidgetLinksQuery = gql`
   }
 `;
 
-export function Preview({ fields }: { fields: WidgetLink[] }) {
+export const defaultData = {
+  links: [
+    {
+      name: "",
+      url: "",
+      isShow: true,
+      image: "",
+    },
+  ],
+};
+
+export const FormSchema = z.object({
+  links: z.array(
+    z.object({
+      id: z.number().optional(),
+      name: z.string(),
+      url: z.string().url(),
+      isShow: z.boolean(),
+      link_id: z.string().optional(),
+      clicks: z.number().optional(),
+      key: z.string().optional(),
+      image: z.string().optional(),
+    }),
+  ),
+});
+
+export function Preview({ fields }: { fields: Partial<Links>[] }) {
   return (
-    <div>
-      <div className="mx-auto grid max-w-xs gap-4">
-        {fields.map(({ name, url, isShow }, index) => (
-          <PreviewItem
-            key={index}
-            name={name}
-            url={url}
-            isShow={isShow ?? true}
-          />
-        ))}
-      </div>
+    <div className="mx-auto grid w-full max-w-xs gap-4">
+      {fields.map(({ name, url, isShow }, index) => (
+        <PreviewItem
+          key={index}
+          name={name ?? ""}
+          url={url ?? ""}
+          isShow={isShow ?? true}
+          isPreview
+        />
+      ))}
     </div>
   );
 }
-export default function ButtonEdit({ widget }: { widget: WidgetLinkProps }) {
-  const [form, setForm] = useState<Form>(initialForm);
-  const deletedFields = useRef<number[]>([]);
-  const { data: session } = useSession();
-  const { close } = useModalStore();
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  );
+
+export default function Banner({ widget }: { widget: Widgets }) {
+  const { close, setUnSavedChanges } = useModalStore();
+  const removeIds = useRef<number[]>([]);
+  const formId = useId();
+  const dataFromWidget: z.infer<typeof FormSchema> = {
+    links:
+      widget.widgets_links.length === 0
+        ? defaultData.links
+        : widget.widgets_links.map((link) => ({
+            ...(link.id && { id: link.id }),
+            ...(link.link?.id && { link_id: link.link?.id }),
+            name: link.name || "",
+            url: link?.link?.url || "",
+            isShow: link.isShow || true,
+            key: link.link?.key || "",
+            image: link.link?.image || "",
+            clicks: link.link?.clicks || 0,
+          })),
+  };
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      ...defaultData,
+      ...dataFromWidget,
+    },
+  });
+  const { isDirty } = useFormState({
+    control: form.control,
+  });
+
   const [{ fetching }, upsertWidgetLinks] = useMutation(upsertWidgetLinksQuery);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isFetching = fetching || isSubmitting;
 
-  // 處理新增欄位組的功能
-  const addField = () => {
-    setForm(
-      produce((form) => {
-        form.widgets_links.push({
-          dragId: nanoid(),
-          isShow: true,
-          name: "",
-          url: "",
-        });
-      }),
-    );
-  };
+  function extractBlobId(blobUrl: string): string {
+    const url = new URL(blobUrl);
+    const parts = url.pathname.split("/");
+    const blobId = parts[parts.length - 1];
+    return blobId;
+  }
 
-  // 處理欄位值變化的功能
-  const handleFieldChange = (index: number, field: Partial<WidgetLink>) => {
-    setForm(
-      produce((form) => {
-        form.widgets_links[index] = { ...form.widgets_links[index], ...field };
-      }),
-    );
-  };
+  async function convertLinksToBlobs(data: any) {
+    const promises = data.map(async (link: any) => {
+      const [blobUrl, type] = link.image.split("#");
+      const response = await fetch(blobUrl);
+      const blobData = await response.blob();
+      const extension = type.split("/")[1];
+      const blobId = extractBlobId(blobUrl);
+      return {
+        name: `${uuidv4()}.${extension}`,
+        type,
+        meta: {
+          blobId,
+        },
+        data: blobData,
+      };
+    });
 
-  const handleDeleteField = (index: number) => {
-    setForm(
-      produce((form) => {
-        form.widgets_links.splice(index, 1);
-      }),
-    );
-    const deletedFieldId = form.widgets_links[index]?.id || null;
-    if (deletedFieldId) deletedFields.current.push(deletedFieldId);
-  };
+    return await Promise.all(promises);
+  }
 
-  const handleCopyField = (index: number) => {
-    setForm(
-      produce((form) => {
-        const field = { ...form.widgets_links[index], dragId: nanoid() };
-        delete field.id;
-        delete field.link_id;
-        form.widgets_links.splice(index + 1, 0, field);
-      }),
-    );
-  };
-
-  const handleShowField = (index: number) => {
-    setForm(
-      produce((form) => {
-        form.widgets_links[index].isShow = !form.widgets_links[index].isShow;
-      }),
-    );
-  };
-
-  const sendForm = async () => {
+  async function uploadFiles(data: z.infer<typeof FormSchema>) {
     try {
-      form.widgets_links.forEach(({ name, url }) => {
-        if (!name || !url) throw new Error("文字或連結不得為空");
-        if (!isValidUrl(url)) throw new Error("連結格式錯誤");
+      const bucketName = "links";
+      const folderName = "banners";
+      const supabaseUploadURL = `https://akbggkpvgcoobuczoagm.supabase.co/storage/v1/upload/resumable`;
+      const publicUrl = `https://akbggkpvgcoobuczoagm.supabase.co/storage/v1/object/public/${bucketName}`;
+      const uppy = new Uppy({
+        debug: true,
+        restrictions: {
+          maxFileSize: 5242880,
+          allowedFileTypes: ["image/*"],
+        },
+      }).use(Tus, {
+        endpoint: supabaseUploadURL,
+        headers: {
+          authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+        },
+        chunkSize: 6 * 1024 * 1024,
+        allowedMetaFields: [
+          "bucketName",
+          "objectName",
+          "contentType",
+          "cacheControl",
+        ],
       });
-      const variablesLinks = form.widgets_links.map((field, index) => {
+      const filteredBlobs = data.links.filter((link) =>
+        link.image.startsWith("blob:"),
+      );
+      const filesList = await convertLinksToBlobs(filteredBlobs);
+      uppy.on("file-added", (file) => {
+        console.log("Added file", file);
+        file.meta = {
+          ...file.meta,
+          bucketName: bucketName,
+          objectName: folderName ? `${folderName}/${file.name}` : file.name,
+          contentType: file.type,
+        };
+      });
+
+      uppy.addFiles(filesList);
+
+      const res = await uppy.upload();
+      const { successful = [], failed = [] } = res;
+      console.log(res);
+      if (failed.length) throw new Error("上傳失敗");
+
+      const filesUrl = successful.map(({ meta: { objectName, blobId } }) => {
+        return { blobId, url: `${publicUrl}/${objectName}` };
+      });
+      console.log(filesUrl);
+      return filesUrl;
+    } catch (e: any) {
+      console.error(e);
+      throw new Error(e.message);
+    }
+  }
+
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    try {
+      setIsSubmitting(true);
+
+      const filesUrl = await uploadFiles(data);
+
+      const variablesLinks = data.links.map((field, index) => {
+        const findFile = filesUrl.find(({ blobId }) =>
+          field.image.includes(blobId as string),
+        );
         const fieldData = {
           name: field.name,
           sort: index,
@@ -224,22 +287,27 @@ export default function ButtonEdit({ widget }: { widget: WidgetLinkProps }) {
               ...(field.link_id && { id: field.link_id }),
               //新增時才帶入key和user
               ...(!field.id && { key: nanoid(7) }),
+              //把img帶入
+              image: findFile ? findFile.url : field.image,
+              //   ...(field.image &&
+              //     field.image.startsWith("blob:") && { image: findFile?.url }),
             },
             on_conflict: {
               constraint: "links_pkey",
-              update_columns: ["url"],
+              update_columns: ["url", "image"],
             },
           },
         };
 
         return fieldData;
       });
+      console.log(variablesLinks);
 
       const variables = {
         object: {
-          id: form.id,
-          isShow: form.isShow,
-          name: form.name,
+          id: widget.id,
+          isShow: widget.isShow,
+          name: widget.name,
           widgets_links: {
             data: variablesLinks,
             on_conflict: {
@@ -248,7 +316,7 @@ export default function ButtonEdit({ widget }: { widget: WidgetLinkProps }) {
             },
           },
         },
-        deleteIds: { id: { _in: deletedFields.current } },
+        deleteIds: { id: { _in: removeIds.current } },
       };
       const { error } = await upsertWidgetLinks(variables);
       if (error) throw new Error(error.message);
@@ -263,108 +331,48 @@ export default function ButtonEdit({ widget }: { widget: WidgetLinkProps }) {
         console.error("An unknown error occurred");
         throw new Error("An unknown error occurred");
       }
+    } finally {
+      setIsSubmitting(false);
     }
-  };
-
-  const handleDragEnd = ({ active, over }: DragEndEvent) => {
-    console.log(active, over);
-    if (active.id !== over?.id) {
-      setForm(
-        produce((form) => {
-          const oldIndex = form.widgets_links.findIndex(
-            ({ dragId }) => dragId === active.id,
-          );
-          const newIndex = form.widgets_links.findIndex(
-            ({ dragId }) => dragId === over?.id,
-          );
-
-          form.widgets_links = arrayMove(
-            form.widgets_links,
-            oldIndex,
-            newIndex,
-          );
-        }),
-      );
-    }
-  };
+  }
 
   useEffect(() => {
-    if (!form.id) {
-      let widgetLinks: WidgetLink[] = [];
-      if (widget.widgets_links.length === 0) {
-        widgetLinks = [{ dragId: nanoid(), name: "", url: "", isShow: true }];
-      } else {
-        widgetLinks = widget.widgets_links.map(
-          ({ id, name, isShow, link }, index) => {
-            return {
-              dragId: nanoid(),
-              id,
-              name: name || "",
-              isShow,
-              url: link?.url || "",
-              link_id: link?.id,
-              clicks: link?.clicks,
-              key: link?.key,
-            };
-          },
-        );
-      }
-      setForm((prev) => ({ ...prev, ...widget, widgets_links: widgetLinks }));
-    }
-  }, [form, widget]);
+    if (isDirty) setUnSavedChanges(true);
+  }, [isDirty]);
 
+  useEffect(() => {
+    form.setFocus("links.0.name");
+  }, []);
+
+  const values = form.watch();
+  console.log("form errors", form.formState.errors);
   return (
     <>
       <DialogHeader>
-        <DialogTitle>編輯連結列表</DialogTitle>
+        <DialogTitle>圖片看板</DialogTitle>
       </DialogHeader>
       <div className="flex">
-        <ScrollArea className="max-h-[500px] flex-1 px-4">
-          <div className="grid gap-3">
-            <DndContext
-              modifiers={[restrictToVerticalAxis]}
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
+        <ScrollArea className="min-h-48 max-h-[500px] flex-1 px-4">
+          <Form {...form}>
+            <form
+              id={formId}
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="grid gap-3 pb-4"
             >
-              <SortableContext
-                items={useMemo(
-                  () => form.widgets_links.map(({ dragId }) => dragId),
-                  [form.widgets_links],
-                )}
-                strategy={verticalListSortingStrategy}
-              >
-                {form.widgets_links.map((field, index) => (
-                  <Fields
-                    key={index}
-                    index={index}
-                    field={field}
-                    handleFieldChange={handleFieldChange}
-                    handleDeleteField={handleDeleteField}
-                    handleCopyField={handleCopyField}
-                    handleShowField={handleShowField}
-                  />
-                ))}
-              </SortableContext>
-            </DndContext>
-            <Button onClick={addField}>新增</Button>
-          </div>
-          {/* <code className="mt-10 block max-w-sm whitespace-pre">
-            {JSON.stringify(form, null, 2)}
-          </code> */}
+              <ImagesForm form={form} removeIds={removeIds} />
+              {/* <code className="block whitespace-pre-wrap">
+                {JSON.stringify(values, null, 2)}
+              </code> */}
+            </form>
+          </Form>
         </ScrollArea>
-        <div className="flex-1">
-          <Preview fields={form.widgets_links} />
+        <div className="grid flex-1 place-items-center p-4">
+          <Preview fields={values.links} />
         </div>
       </div>
       <DialogFooter>
-        <Button
-          onClick={sendForm}
-          disabled={fetching}
-          form="linkForm"
-          type="submit"
-        >
-          {fetching ? (
+        <Button disabled={isFetching} form={formId} type="submit">
+          {isFetching ? (
             <>
               <IconLoading className="mr-3 h-4 w-4" />
               請稍候
@@ -374,6 +382,230 @@ export default function ButtonEdit({ widget }: { widget: WidgetLinkProps }) {
           )}
         </Button>
       </DialogFooter>
+    </>
+  );
+}
+
+function ImagesForm({
+  form,
+  removeIds,
+}: {
+  form: UseFormReturn<z.infer<typeof FormSchema>>;
+  removeIds: React.MutableRefObject<number[]>;
+}) {
+  const values = form.watch();
+
+  const { fields, append, remove, move, insert } = useFieldArray({
+    name: "links",
+    control: form.control,
+    rules: { maxLength: 10 },
+  });
+
+  const handleRemove = (index: number) => {
+    remove(index);
+    const deletedFieldId = values.links[index]?.id || null;
+    if (deletedFieldId) removeIds.current.push(deletedFieldId);
+  };
+
+  const handleDuplicate = (index: number) => {
+    const { id, link_id, key, ...dataToDuplicate } = values.links[index];
+    insert(index + 1, dataToDuplicate);
+  };
+
+  return (
+    <>
+      <motion.div className="grid gap-3">
+        {fields.map((fieldItem, index) => (
+          <motion.div
+            key={fieldItem.id}
+            className="flex gap-2 rounded-lg border p-4 py-4"
+          >
+            <div className="flex flex-col justify-between gap-2 rounded-md bg-gray-100 px-1 py-2">
+              <div className="flex flex-col gap-2">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={() => handleDuplicate(index)}
+                        type="button"
+                        className="grid place-items-center"
+                      >
+                        <IconCopy />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>複製欄位</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={() => handleRemove(index)}
+                        type="button"
+                        className="grid place-items-center"
+                      >
+                        <IconDelete />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>刪除欄位</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={() => {
+                          form.setValue(
+                            `links.${index}.isShow`,
+                            !values.links[index].isShow,
+                          );
+                        }}
+                        type="button"
+                        className="grid place-items-center"
+                      >
+                        {values.links[index].isShow ? (
+                          <IconEye />
+                        ) : (
+                          <IconEyeHide />
+                        )}
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>
+                        {values.links[index].isShow ? "隱藏欄位" : "顯示欄位"}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <div className="flex flex-col gap-1">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        disabled={index === 0}
+                        onClick={() => move(index, index - 1)}
+                        type="button"
+                        className="grid place-items-center disabled:opacity-20"
+                      >
+                        <SolarArrowUpOutline />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>上移一格</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        disabled={index + 1 === values.links.length}
+                        onClick={() => move(index, index + 1)}
+                        type="button"
+                        className="grid place-items-center disabled:opacity-20"
+                      >
+                        <SolarArrowDownOutline />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>下移一格</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </div>
+            <div
+              className={cn("flex flex-1 flex-col gap-4", {
+                "opacity-50": !values.links[index].isShow,
+              })}
+            >
+              <FormField
+                control={form.control}
+                name={`links.${index}.name`}
+                render={({ field }) => (
+                  <FormItem>
+                    <div
+                      className={cn(
+                        classes,
+                        "flex w-full items-center overflow-hidden p-0 focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+                      )}
+                    >
+                      <FormLabel className="flex h-full w-14 items-center justify-center bg-gray-100">
+                        標題
+                      </FormLabel>
+                      <FormControl>
+                        <input
+                          className="h-full flex-1 px-2 py-2 outline-0"
+                          {...field}
+                        />
+                      </FormControl>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name={`links.${index}.url`}
+                render={({ field }) => (
+                  <FormItem>
+                    <div
+                      className={cn(
+                        classes,
+                        "flex w-full items-center overflow-hidden p-0 focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+                      )}
+                    >
+                      <FormLabel className="flex h-full w-14 items-center justify-center bg-gray-100">
+                        連結
+                      </FormLabel>
+                      <FormControl>
+                        <input
+                          className="h-full flex-1 px-2 py-2 outline-0"
+                          {...field}
+                        />
+                      </FormControl>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {Boolean(fieldItem?.key) && (
+                <div>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link
+                          href={"/admin/analytics?key=" + fieldItem.key}
+                          target="_blank"
+                          className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-sm text-gray-400"
+                        >
+                          <SolarCursorBold />
+                          <span>{fieldItem.clicks}</span>
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>點擊次數</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        ))}
+      </motion.div>
+      <Button
+        disabled={fields.length >= 10}
+        type="button"
+        onClick={() => append(defaultData.links[0])}
+      >
+        新增連結
+      </Button>
     </>
   );
 }

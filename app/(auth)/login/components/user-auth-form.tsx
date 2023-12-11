@@ -135,7 +135,7 @@ export function UserSignUpForm({ className, ...props }: UserAuthFormProps) {
 }
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
   async function loginWithProvider(provider: string) {
     setIsLoading(true);
@@ -150,6 +150,15 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       callbackUrl: "/admin",
     });
   }
+
+  React.useEffect(() => {
+    const getCsrf = async () => {
+      setIsLoading(true);
+      await fetch("/api/auth/csrf");
+      setIsLoading(false);
+    };
+    getCsrf();
+  }, []);
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>

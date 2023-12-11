@@ -16,19 +16,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { ColorForm } from "@/components/ui/form/form-elements";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import PreviewPage from "@/components/userpage/Preview";
 import templates from "@/lib/constants/templates.json";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Sketch from "@uiw/react-color-sketch";
 import { gql, useMutation } from "@urql/next";
 import Image from "next/image";
 import { useContext, useEffect, useRef } from "react";
@@ -142,68 +136,7 @@ export function ThemeSelector({ form, name }: { form: any; name: string }) {
   );
 }
 
-export function ColorForm({
-  form,
-  label,
-  name,
-}: {
-  form: UseFormReturn<z.infer<typeof appearanceFormSchema>>;
-  label: string;
-  name: NamePropType;
-}) {
-  return (
-    <FormField
-      control={form.control}
-      name={name}
-      render={({ field }) => (
-        <FormItem className="flex h-16 flex-row items-center justify-between space-y-0 rounded-lg border px-4">
-          <FormLabel>{label}</FormLabel>
-          <FormControl>
-            <div className="flex items-center gap-3">
-              <Input className="h-8 w-[102px] py-0 font-mono" {...field} />
-              <Popover>
-                <PopoverTrigger className="block">
-                  <div>
-                    <div
-                      className="h-10 w-10 overflow-hidden rounded-full border-2 border-solid border-gray-300"
-                      style={{
-                        background: `rgba(50, 50, 50, 0.25)
-                          repeating-conic-gradient(
-                            rgba(50, 50, 50, 0.25) 0% 25%,
-                            transparent 0% 50%
-                          )
-                          50% / 10px 10px`,
-                      }}
-                    >
-                      <div
-                        className="h-full w-full"
-                        style={{ backgroundColor: field.value }}
-                      />
-                    </div>
-                  </div>
-                </PopoverTrigger>
-                <PopoverContent align="start" className="w-[218px] p-1">
-                  <Sketch
-                    style={{
-                      width: "100%",
-                      borderRadius: 0,
-                      boxShadow: "none",
-                    }}
-                    color={field.value}
-                    onChange={(color) => field.onChange(color.hexa)}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
-}
-
-export function SliderForm({
+export function SliderFormWithPx({
   form,
   label,
   name,
@@ -274,14 +207,14 @@ export function ThemeConfigForm({
             {values.isGradient && (
               <ColorForm
                 form={form}
-                label={"上層顏色"}
-                name={"themeConfig.background-color-2"}
+                label={"下層顏色"}
+                name={"themeConfig.background-color" as any}
               />
             )}
             <ColorForm
               form={form}
               label={values.isGradient ? "底部顏色" : "背景顏色"}
-              name={"themeConfig.background-color"}
+              name={"themeConfig.background-color" as any}
             />
           </AccordionContent>
         </AccordionItem>
@@ -291,12 +224,12 @@ export function ThemeConfigForm({
             <ColorForm
               form={form}
               label={"背景顏色"}
-              name={"themeConfig.bio-background-color"}
+              name={"themeConfig.bio-background-color" as any}
             />
             <ColorForm
               form={form}
               label={"文字顏色"}
-              name={"themeConfig.text-color"}
+              name={"themeConfig.text-color" as any}
             />
           </AccordionContent>
         </AccordionItem>
@@ -306,29 +239,29 @@ export function ThemeConfigForm({
             <ColorForm
               form={form}
               label={"背景顏色"}
-              name={"themeConfig.button-background-color"}
+              name={"themeConfig.button-background-color" as any}
             />
             <ColorForm
               form={form}
               label={"懸浮時背景顏色"}
-              name={"themeConfig.button-background-color-hover"}
+              name={"themeConfig.button-background-color-hover" as any}
             />
             <ColorForm
               form={form}
               label={"邊框顏色"}
-              name={"themeConfig.button-border-color"}
+              name={"themeConfig.button-border-color" as any}
             />
             <ColorForm
               form={form}
               label={"文字顏色"}
-              name={"themeConfig.button-text-color"}
+              name={"themeConfig.button-text-color" as any}
             />
             <ColorForm
               form={form}
               label={"懸浮文字顏色"}
-              name={"themeConfig.button-text-color-hover"}
+              name={"themeConfig.button-text-color-hover" as any}
             />
-            <SliderForm
+            <SliderFormWithPx
               form={form}
               name={"themeConfig.button-border-width"}
               label={"邊框粗細"}
@@ -336,7 +269,7 @@ export function ThemeConfigForm({
               max={20}
               step={1}
             />
-            <SliderForm
+            <SliderFormWithPx
               form={form}
               name={"themeConfig.button-radius"}
               label={"圓角"}

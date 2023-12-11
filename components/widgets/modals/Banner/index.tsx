@@ -12,10 +12,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { RadioForm, SwitchForm } from "@/components/ui/form/form-elements";
 import { classes } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Switch } from "@/components/ui/switch";
 import {
   Tooltip,
   TooltipContent,
@@ -357,106 +356,46 @@ export default function Banner({ widget }: { widget: Widgets }) {
               onSubmit={form.handleSubmit(onSubmit)}
               className="grid gap-3 pb-4"
             >
-              <FormField
-                control={form.control}
-                name="config.autoPlay"
-                render={({ field }) => (
-                  <FormItem className="flex h-10 flex-row items-center justify-between space-y-0 rounded-lg border px-4 py-2">
-                    <FormLabel className="text-sm">自動播放</FormLabel>
-                    <FormControl>
-                      <Switch
-                        className="scale-75"
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
+              <SwitchForm<z.infer<typeof FormSchema>>
+                form={form}
+                label="自動播放"
+                name={"config.autoPlay" as any}
+                switchClassnames="scale-75"
+                classNames="h-10 px-4 py-2"
               />
-              <FormField
-                control={form.control}
-                name="config.autoPlaySpeed"
-                render={({ field }) => (
-                  <FormItem
-                    className={cn(
-                      "flex h-10 flex-row items-center justify-between space-y-0 rounded-lg border px-4 py-2",
-                      { hidden: !values.config.autoPlay },
-                    )}
-                  >
-                    <FormLabel>播放速度</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex flex-row gap-5"
-                      >
-                        {autoPlaySpeeds.map((value) => (
-                          <FormItem
-                            key={value}
-                            className="flex items-center space-x-2 space-y-0"
-                          >
-                            <FormControl>
-                              <RadioGroupItem value={value} />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              {value}秒
-                            </FormLabel>
-                          </FormItem>
-                        ))}
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+
+              <RadioForm<z.infer<typeof FormSchema>>
+                form={form}
+                label="播放速度"
+                name={"config.autoPlaySpeed" as any}
+                items={autoPlaySpeeds.map((value) => ({
+                  label: value + "秒",
+                  value,
+                }))}
+                classNames={cn("h-10 px-4 py-2", {
+                  hidden: !values.config.autoPlay,
+                })}
               />
-              <FormField
-                control={form.control}
-                name="config.aspectRatio"
-                render={({ field }) => (
-                  <FormItem className="flex h-10 flex-row items-center justify-between space-y-0 rounded-lg border px-4 py-2">
-                    <FormLabel>顯示比例</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex flex-row gap-5"
-                      >
-                        {aspectRatios.map((value) => (
-                          <FormItem
-                            key={value}
-                            className="flex items-center space-x-2 space-y-0"
-                          >
-                            <FormControl>
-                              <RadioGroupItem value={value} />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              {value}
-                            </FormLabel>
-                          </FormItem>
-                        ))}
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+
+              <RadioForm<z.infer<typeof FormSchema>>
+                form={form}
+                label="顯示比例"
+                name={"config.aspectRatio" as any}
+                items={aspectRatios.map((value) => ({
+                  label: value,
+                  value,
+                }))}
+                classNames={"h-10 px-4 py-2"}
               />
-              <FormField
-                control={form.control}
-                name="config.dots"
-                render={({ field }) => (
-                  <FormItem className="flex h-10 flex-row items-center justify-between space-y-0 rounded-lg border px-4 py-2">
-                    <FormLabel className="text-sm">輪播導航</FormLabel>
-                    <FormControl>
-                      <Switch
-                        className="scale-75"
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
+              <SwitchForm<z.infer<typeof FormSchema>>
+                form={form}
+                label="輪播導航"
+                name={"config.dots" as any}
+                switchClassnames="scale-75"
+                classNames="h-10 px-4 py-2"
               />
-              <ImagesForm form={form} removeIds={removeIds} />
+
+              <Fields form={form} removeIds={removeIds} />
               {/* <code className="block whitespace-pre-wrap">
                 {JSON.stringify(values, null, 2)}
               </code> */}
@@ -483,7 +422,7 @@ export default function Banner({ widget }: { widget: Widgets }) {
   );
 }
 
-function ImagesForm({
+export function Fields({
   form,
   removeIds,
 }: {
@@ -495,7 +434,7 @@ function ImagesForm({
   const { fields, append, remove, move, insert } = useFieldArray({
     name: "links",
     control: form.control,
-    rules: { minLength: 10 },
+    rules: { maxLength: 10 },
   });
 
   const handleRemove = (index: number) => {
@@ -509,81 +448,111 @@ function ImagesForm({
     insert(index + 1, dataToDuplicate);
   };
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.5,
-      },
-    },
-  };
-
-  const item = {
-    hidden: { opacity: 0 },
-    show: { opacity: 1 },
-  };
-
   return (
     <>
-      <motion.div
-        className="grid gap-3"
-        variants={container}
-        initial="hidden"
-        animate="show"
-      >
+      <motion.div className="grid gap-3">
         {fields.map((fieldItem, index) => (
           <motion.div
             key={fieldItem.id}
-            variants={item}
             className="flex gap-2 rounded-lg border p-4 py-4"
           >
             <div className="flex flex-col justify-between rounded-md bg-gray-100 px-1 py-2">
               <div className="flex flex-col gap-2">
-                <button
-                  onClick={() => handleDuplicate(index)}
-                  type="button"
-                  className="grid place-items-center"
-                >
-                  <IconCopy />
-                </button>
-                <button
-                  onClick={() => handleRemove(index)}
-                  type="button"
-                  className="grid place-items-center"
-                >
-                  <IconDelete />
-                </button>
-                <button
-                  onClick={() => {
-                    form.setValue(
-                      `links.${index}.isShow`,
-                      !values.links[index].isShow,
-                    );
-                  }}
-                  type="button"
-                  className="grid place-items-center"
-                >
-                  {values.links[index].isShow ? <IconEye /> : <IconEyeHide />}
-                </button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={() => handleDuplicate(index)}
+                        type="button"
+                        className="grid place-items-center"
+                      >
+                        <IconCopy />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>複製欄位</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={() => handleRemove(index)}
+                        type="button"
+                        className="grid place-items-center"
+                      >
+                        <IconDelete />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>刪除欄位</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={() => {
+                          form.setValue(
+                            `links.${index}.isShow`,
+                            !values.links[index].isShow,
+                          );
+                        }}
+                        type="button"
+                        className="grid place-items-center"
+                      >
+                        {values.links[index].isShow ? (
+                          <IconEye />
+                        ) : (
+                          <IconEyeHide />
+                        )}
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>
+                        {values.links[index].isShow ? "隱藏欄位" : "顯示欄位"}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
               <div className="flex flex-col gap-1">
-                <button
-                  disabled={index === 0}
-                  onClick={() => move(index, index - 1)}
-                  type="button"
-                  className="grid place-items-center disabled:opacity-20"
-                >
-                  <SolarArrowUpOutline />
-                </button>
-                <button
-                  disabled={index + 1 === values.links.length}
-                  onClick={() => move(index, index + 1)}
-                  type="button"
-                  className="grid place-items-center disabled:opacity-20"
-                >
-                  <SolarArrowDownOutline />
-                </button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        disabled={index === 0}
+                        onClick={() => move(index, index - 1)}
+                        type="button"
+                        className="grid place-items-center disabled:opacity-20"
+                      >
+                        <SolarArrowUpOutline />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>上移一格</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        disabled={index + 1 === values.links.length}
+                        onClick={() => move(index, index + 1)}
+                        type="button"
+                        className="grid place-items-center disabled:opacity-20"
+                      >
+                        <SolarArrowDownOutline />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>下移一格</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             </div>
             <div

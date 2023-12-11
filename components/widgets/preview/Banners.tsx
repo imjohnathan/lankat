@@ -97,6 +97,7 @@ export default function Banner({
               style={{ width: "1280px", maxWidth: "100%" }}
             >
               <Link
+                prefetch={false}
                 onClick={() => recordClick(link?.key)}
                 href={link.url}
                 target="_blank"

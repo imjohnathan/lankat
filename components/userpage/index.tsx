@@ -31,7 +31,7 @@ export default function UserPage({
           </div>
 
           <Link
-            className="mx-auto flex max-w-[180px] items-center justify-center rounded-full border border-transparent bg-white/90 px-2.5 py-4 text-xs font-semibold text-primary-foreground transition-colors hover:bg-white/50 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            className="mx-auto mt-16 flex max-w-[180px] items-center justify-center rounded-full border border-transparent bg-white/90 px-2.5 py-4 text-xs font-semibold text-primary-foreground transition-colors hover:bg-white/50 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             target="_blank"
             href="/"
           >

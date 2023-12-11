@@ -41,6 +41,7 @@ const AlertDialogDemo = ({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <Button
+            variant="ghost"
             onClick={(e) => {
               e.preventDefault();
               setOpen(false);
@@ -50,7 +51,6 @@ const AlertDialogDemo = ({
             返回編輯
           </Button>
           <Button
-            variant="destructive"
             onClick={(e) => {
               e.preventDefault();
               setOpen(false);
