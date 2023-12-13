@@ -175,7 +175,6 @@ export const getStats = async ({
       url.searchParams.append(filter, rest[filter]);
     }
   });
-  console.log(url.toString());
 
   return await fetch(url.toString(), {
     headers: {
