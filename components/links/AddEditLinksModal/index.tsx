@@ -66,7 +66,6 @@ const query = gql`
         update_columns: [
           key
           url
-          clicks
           og_image
           og_title
           og_description

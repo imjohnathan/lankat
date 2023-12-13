@@ -1,11 +1,16 @@
 "use client";
 
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { cn, nFormatter } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { Dispatch, ReactNode, SetStateAction, useMemo, useState } from "react";
-
+import HoverCardPreview from "./HoverCard";
 export default function BarList({
   tab,
   data,
@@ -58,33 +63,45 @@ export default function BarList({
         );
 
         return (
-          <Link
-            key={idx}
-            href={href}
-            scroll={false}
-            onClick={() => setShowModal(false)}
-          >
-            <div key={idx} className="group flex items-center justify-between">
-              <div className="relative z-10 flex w-full max-w-[calc(100%-2rem)] items-center">
-                {lineItem}
-                <motion.div
-                  style={{
-                    width: `${(clicks / (maxClicks || 0)) * 100}%`,
-                  }}
-                  className={cn(
-                    "absolute h-8 origin-left rounded-sm",
-                    barBackground,
+          <HoverCard key={idx} openDelay={100}>
+            <Link
+              key={idx}
+              href={href}
+              scroll={false}
+              onClick={() => setShowModal(false)}
+            >
+              <div
+                key={idx}
+                className="group flex items-center justify-between"
+              >
+                <div className="relative flex w-full max-w-[calc(100%-2rem)] items-center">
+                  {tab === "Top Links" ? (
+                    <HoverCardTrigger asChild>{lineItem}</HoverCardTrigger>
+                  ) : (
+                    lineItem
                   )}
-                  transition={{ ease: "easeOut", duration: 0.3 }}
-                  initial={{ transform: "scaleX(0)" }}
-                  animate={{ transform: "scaleX(1)" }}
-                />
+                  <motion.div
+                    style={{
+                      width: `${(clicks / (maxClicks || 0)) * 100}%`,
+                    }}
+                    className={cn(
+                      "absolute h-8 origin-left rounded-sm",
+                      barBackground,
+                    )}
+                    transition={{ ease: "easeOut", duration: 0.3 }}
+                    initial={{ transform: "scaleX(0)" }}
+                    animate={{ transform: "scaleX(1)" }}
+                  />
+                </div>
+                <p className="z-10 text-sm font-bold text-gray-600">
+                  {nFormatter(clicks)}
+                </p>
               </div>
-              <p className="z-10 text-sm font-bold text-gray-600">
-                {nFormatter(clicks)}
-              </p>
-            </div>
-          </Link>
+            </Link>
+            <HoverCardContent className="z-50 w-full">
+              <HoverCardPreview link={title} />
+            </HoverCardContent>
+          </HoverCard>
         );
       })}
     </div>
