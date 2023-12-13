@@ -416,9 +416,9 @@ export function AppearanceForm() {
                 "儲存"
               )}
             </Button>
-            <code className="block whitespace-pre-wrap">
+            {/* <code className="block whitespace-pre-wrap">
               {JSON.stringify(values, null, 2)}
-            </code>
+            </code> */}
           </form>
         </Form>
         <div className="relative col-span-2">
