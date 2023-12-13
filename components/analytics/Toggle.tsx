@@ -1,4 +1,5 @@
 import { StatsContext } from "@/app/(admin)/admin/analytics/page";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Command, CommandGroup } from "@/components/ui/command";
 import {
@@ -25,13 +26,17 @@ export default function Toggle() {
       <div className="mx-auto flex h-20 max-w-4xl flex-col items-center justify-between space-y-3 px-2.5 md:h-10 md:flex-row md:space-y-0 lg:px-0">
         {domain && !key ? (
           <div className="flex items-center space-x-2">
-            <img
-              alt={"Lank.at 任意門"}
-              src={session?.user.image ?? ""}
-              className="h-6 w-6 flex-shrink-0 overflow-hidden rounded-full object-cover"
-              width={48}
-              height={48}
-            />
+            <Avatar className="h-6 w-6">
+              <AvatarImage
+                alt={session?.user?.display_name}
+                width={48}
+                height={48}
+                src={session?.user.image ?? ""}
+              />
+              <AvatarFallback>
+                {session?.user?.display_name?.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
             <h2 className="text-lg font-semibold text-gray-800">我的頁面</h2>
           </div>
         ) : domain && key ? (
@@ -68,7 +73,6 @@ export default function Toggle() {
                       <Link
                         key={value}
                         href={`${basePath}?${new URLSearchParams({
-                          ...(domain && { domain }),
                           ...(key && key !== "_root" && { key }),
                           interval: value,
                         }).toString()}`}

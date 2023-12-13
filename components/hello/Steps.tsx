@@ -38,7 +38,7 @@ export function UserUrl(
 ) {
   const { form, setForm } = useContext(FormStateContext);
 
-  const { register, handleSubmit, control } = useForm({
+  const { register, handleSubmit, control, setValue, getValues } = useForm({
     shouldUseNativeValidation: true,
     defaultValues: {
       url_key: form.steps.userUrl.value.url_key,
@@ -61,6 +61,11 @@ export function UserUrl(
     );
   }, [isDirty, setForm]);
 
+  useEffect(() => {
+    if (!getValues("url_key"))
+      setValue("url_key", form.steps.userUrl.value.url_key);
+  }, [form]);
+
   return (
     <form
       onSubmit={handleSubmit((value) => {
@@ -73,7 +78,6 @@ export function UserUrl(
             };
           }),
         );
-
         props.onNext();
       })}
     >

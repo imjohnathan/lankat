@@ -164,17 +164,22 @@ function DataTable() {
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger className="flex items-center">
-                                <div className="flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-xs md:inline-flex">
+                                <div className="max-w-[100px] items-center !truncate rounded-md bg-gray-100 px-2 py-0.5 text-xs">
                                   {widgets_links[0].name}
                                 </div>
                               </TooltipTrigger>
                               <TooltipContent>
-                                <p>這個連結是從社群名片中建立的</p>
+                                <div className="text-center">
+                                  <strong>{widgets_links[0].name}</strong>
+                                  <p className="text-xs">
+                                    這個連結是從社群名片中建立的
+                                  </p>
+                                </div>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
                         )}
-                        <p className="flex h-full max-w-[250px] items-center truncate text-xs text-gray-400">
+                        <p className="h-full max-w-[250px] items-center truncate text-xs text-gray-400">
                           {url}
                         </p>
                       </div>

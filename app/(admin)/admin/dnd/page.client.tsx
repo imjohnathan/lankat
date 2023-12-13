@@ -121,7 +121,7 @@ function SortableItem({
     useSortable({ id });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: CSS.Translate.toString(transform),
     transition,
   };
   const Component = render;
@@ -307,6 +307,13 @@ function DnD() {
       previousWidgetsRef.current = data.widgets;
     }
   }, [data]);
+
+  useEffect(() => {
+    if (data?.widgets.length === 0 && widgets.length > 0) {
+      console.log("reexecuteQuery");
+      reexecuteQuery({ requestPolicy: "network-only" });
+    }
+  }, [data, widgets]);
 
   if (fetching) return <LoadingFallback />;
 

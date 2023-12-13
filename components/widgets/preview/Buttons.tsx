@@ -36,7 +36,7 @@ export function PreviewItem({
         className={clsx(
           "linkButton h-auto w-full border-2 border-black py-3 text-base",
           {
-            "opacity-50": !isShow,
+            hidden: !isShow,
           },
         )}
       >

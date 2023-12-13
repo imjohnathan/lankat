@@ -149,6 +149,7 @@ export default function Banner({ widget }: { widget: Widgets }) {
   const { close, setUnSavedChanges } = useModalStore();
   const removeIds = useRef<number[]>([]);
   const formId = useId();
+  console.log(widget);
   const dataFromWidget: z.infer<typeof FormSchema> = {
     links:
       widget.widgets_links.length === 0
@@ -158,7 +159,7 @@ export default function Banner({ widget }: { widget: Widgets }) {
             ...(link.link?.id && { link_id: link.link?.id }),
             name: link.name || "",
             url: link?.link?.url || "",
-            isShow: link.isShow || true,
+            isShow: link.isShow ?? true,
             key: link.link?.key || "",
             image: link.link?.image || "",
             clicks: link.link?.clicks || 0,
@@ -349,7 +350,7 @@ export default function Banner({ widget }: { widget: Widgets }) {
   return (
     <>
       <DialogHeader>
-        <DialogTitle>圖片看板</DialogTitle>
+        <DialogTitle>連結按鈕</DialogTitle>
       </DialogHeader>
       <div className="flex">
         <ScrollArea className="min-h-48 max-h-[500px] flex-1 px-4">

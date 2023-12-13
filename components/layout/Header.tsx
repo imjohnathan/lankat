@@ -3,6 +3,8 @@ import { UserNav } from "@/components/user/UserNav";
 import { auth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import NavMenu from "./NavMenu";
+
 export default async function Header({ type }: { type: string }) {
   const session = await auth();
   const isHome = type && type === "index";
@@ -26,30 +28,12 @@ export default async function Header({ type }: { type: string }) {
         </Link>
         {session?.user && (
           <>
-            <div className="col-span-3">
+            <div className="col-span-3 flex justify-center">
               {session?.user.url_key && (
-                <ul className="flex gap-8 text-lg font-medium">
-                  <li>
-                    <Link href="/admin/hello">你好</Link>
-                  </li>
-                  <li>
-                    <Link href="/admin">頁面</Link>
-                  </li>
-                  <li>
-                    <Link href="/admin/links">連結</Link>
-                  </li>
-                  <li>
-                    <Link href="/admin/analytics">分析</Link>
-                  </li>
-                  <li>
-                    <Link target="_blank" href={`/u/${session?.user.url_key}`}>
-                      我的頁面
-                    </Link>
-                  </li>
-                </ul>
+                <NavMenu url_key={session?.user.url_key} />
               )}
             </div>
-            <UserNav className="flex justify-end" />{" "}
+            <UserNav className="flex justify-end" />
           </>
         )}
       </div>

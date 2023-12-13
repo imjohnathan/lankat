@@ -66,7 +66,7 @@ export default function AvatarUpload({
       </div>
       <label
         htmlFor="image"
-        className="group relative mt-1 flex h-[14rem] cursor-pointer flex-col items-center justify-center rounded-md border border-gray-300 bg-white shadow-sm transition-all hover:bg-gray-50"
+        className="group relative flex h-[14rem] cursor-pointer flex-col items-center justify-center rounded-md border border-gray-300 bg-white/80 shadow-sm transition-all hover:bg-gray-50"
       >
         <div
           className="absolute z-[5] h-full w-full rounded-md"
@@ -116,7 +116,7 @@ export default function AvatarUpload({
             dragActive
               ? "cursor-copy border-2 border-black bg-gray-50 opacity-100"
               : ""
-          } absolute z-[3] flex h-full w-full flex-col items-center justify-center rounded-md bg-white transition-all ${
+          } absolute z-[3] flex h-full w-full flex-col items-center justify-center rounded-md bg-white/80 transition-all ${
             image
               ? "opacity-0 group-hover:opacity-100"
               : "group-hover:bg-gray-50"

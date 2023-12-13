@@ -17,6 +17,7 @@ export default function Locations() {
   const { data } = useSWR<{ country: string; city: string; clicks: number }[]>(
     `${baseApiPath}/${tab}?${queryString}`,
     fetcher,
+    { revalidateOnFocus: false },
   );
 
   const { queryParams } = useRouterStuff();
@@ -53,7 +54,7 @@ export default function Locations() {
 
   return (
     <>
-      <ScrollArea className="scrollbar-hide relative z-0 h-[400px] border border-gray-200 bg-white px-7 py-5  sm:rounded-lg sm:border-gray-100 sm:shadow-lg">
+      <ScrollArea className="scrollbar-hide relative z-0 h-[400px] rounded-lg border bg-card px-7 py-5 text-card-foreground shadow-sm">
         <div className="mb-5 flex justify-between">
           <h1 className="text-lg font-semibold">地區</h1>
           <Tabs value={tab} onValueChange={(tab) => setTab(tab)}>

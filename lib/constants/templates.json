@@ -3,7 +3,19 @@
     "id": 0,
     "name": "預設",
     "preview": "/templates/themes/default/preview.png",
-    "settings": {}
+    "settings": {
+      "bio-background-color": "#ffffff",
+      "background-color": "#f3f4f6ff",
+      "background-color-2": "#f3f4f6ff",
+      "text-color": "#000000ff",
+      "button-background-color": "#ffffff",
+      "button-background-color-hover": "#f1f5f9ff",
+      "button-border-color": "#000000ff",
+      "button-border-width": "2px",
+      "button-text-color": "#000000ff",
+      "button-text-color-hover": "#000000ff",
+      "button-radius": "6px"
+    }
   },
   {
     "id": 1,
@@ -17,6 +29,7 @@
       "button-background-color": "#ffffff",
       "button-background-color-hover": "#ffffff",
       "button-border-color": "#00000000",
+      "button-border-width": "2px",
       "button-text-color": "#2a3235",
       "button-text-color-hover": "#2a3235",
       "button-radius": "14px"
@@ -88,6 +101,7 @@
       "button-background-color": "#222222",
       "button-background-color-hover": "#222222",
       "button-border-color": "#00000000",
+      "button-border-width": "2px",
       "button-text-color": "#ffffff",
       "button-text-color-hover": "#ffffff",
       "button-radius": "14px"
