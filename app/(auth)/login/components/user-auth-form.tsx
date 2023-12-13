@@ -13,7 +13,9 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Cookies from "js-cookie";
 import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -27,6 +29,8 @@ const formSchema = z.object({
   password: z.string().min(2).max(50),
 });
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+const testUsers = ["kol", "sat", "broker"];
 
 export function UserSignUpForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -135,6 +139,9 @@ export function UserSignUpForm({ className, ...props }: UserAuthFormProps) {
 }
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+  const searchParams = useSearchParams();
+  const isTest = searchParams.has("test");
+  const [isTestCookie, setIsTestCookie] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
   async function loginWithProvider(provider: string) {
@@ -142,12 +149,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     await signIn(provider, { callbackUrl: "/admin" });
   }
 
-  async function loginTestUser() {
+  async function loginTestUser(type: string = "test") {
     setIsLoading(true);
     await signIn("credentials", {
-      email: "test@lank.at",
+      email: type + "@lank.at",
       password: "testtest",
-      callbackUrl: "/admin",
+      callbackUrl: "/admin/hello",
     });
   }
 
@@ -158,12 +165,40 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       setIsLoading(false);
     };
     getCsrf();
+
+    if (isTest) Cookies.set("isTest", "true");
+    const testCookie = Cookies.get("isTest") || false;
+    if (testCookie) {
+      setIsTestCookie(true);
+    }
   }, []);
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
+      {isTestCookie && (
+        <div className="grid gap-3">
+          {testUsers.map((user) => (
+            <Button
+              key={user}
+              onClick={() => {
+                loginTestUser(user);
+              }}
+              variant="outline"
+              type="button"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <IconLoading className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <SolarUserHeartBold className="mr-2 h-4 w-4" />
+              )}{" "}
+              {user} 登入
+            </Button>
+          ))}
+        </div>
+      )}
       <Button
-        onClick={loginTestUser}
+        onClick={() => loginTestUser("test")}
         variant="outline"
         type="button"
         disabled={isLoading}

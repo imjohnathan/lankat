@@ -9,6 +9,7 @@ import {
 import { Input, classes } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/lib/supabase";
 import {
   cn,
@@ -220,6 +221,8 @@ export default function AddLinksModal({ link }: { link: any }) {
     } catch (e) {
       if (e instanceof Error) {
         console.error(e.message);
+        if (e.message.includes("links_key_key"))
+          e.message = "短網址已存在，請換一個試試";
         toast.error("錯誤：" + e.message);
         throw new Error(e.message);
       } else {
@@ -245,11 +248,11 @@ export default function AddLinksModal({ link }: { link: any }) {
             className="grid gap-3 px-4"
           >
             <div>
-              <div className="flex justify-between">
+              <div className="flex items-center justify-between pb-1">
                 <Label htmlFor="url">連結網址</Label>
                 <button
                   type="button"
-                  className="text-sm font-medium"
+                  className="text-xs font-medium"
                   onClick={(e) => {
                     e.preventDefault();
                     const go = confirm(
@@ -274,10 +277,10 @@ export default function AddLinksModal({ link }: { link: any }) {
               />
             </div>
             <div>
-              <div className="flex justify-between">
+              <div className="flex items-center justify-between pb-1">
                 <Label htmlFor="key">短網址</Label>
                 <button
-                  className="text-sm font-medium"
+                  className="text-xs font-medium"
                   onClick={(e) => {
                     e.preventDefault();
                     let go = true;
@@ -310,7 +313,9 @@ export default function AddLinksModal({ link }: { link: any }) {
               </div>
             </div>
             <div>
-              <Label htmlFor="og_image">OG Image</Label>
+              <Label className="pb-1" htmlFor="og_image">
+                OG Image
+              </Label>
               <ImageUpload
                 data={data}
                 setData={setData}
@@ -319,7 +324,9 @@ export default function AddLinksModal({ link }: { link: any }) {
               />
             </div>
             <div>
-              <Label htmlFor="og_title">OG Title</Label>
+              <Label className="pb-1" htmlFor="og_title">
+                OG Title
+              </Label>
               <Input
                 id="og_title"
                 value={og_title ?? ""}
@@ -333,7 +340,9 @@ export default function AddLinksModal({ link }: { link: any }) {
               />
             </div>
             <div>
-              <Label htmlFor="og_description">OG Description</Label>
+              <Label className="pb-1" htmlFor="og_description">
+                OG Description
+              </Label>
               <Input
                 id="og_description"
                 value={og_description ?? ""}
@@ -375,25 +384,58 @@ function UTMsection({
   setData: Dispatch<SetStateAction<any>>;
 }) {
   const { parameters } = data;
+  const isObjectEmpty = (objectName: {}) => {
+    return JSON.stringify(objectName) === "{}";
+  };
+  const [utm, setUtm] = useState(false);
+
+  useEffect(() => {
+    const initUtm = parameters ? !isObjectEmpty(parameters) : false;
+    setUtm(initUtm);
+  }, [parameters]);
   return (
-    <div>
-      {paramsMetadata.map(({ display, key, examples }, index) => (
-        <div key={key}>
-          <Label htmlFor="og_description">{display}</Label>
-          <Input
-            name={key}
-            id={key}
-            value={parameters ? parameters[key] : ""}
-            onChange={(e) => {
-              setData(
-                produce((data: any) => {
-                  data.parameters[key] = e.target.value;
-                }),
-              );
-            }}
-          />
+    <>
+      <div
+        className={cn(
+          "flex flex-row items-center justify-between space-y-0 rounded-lg border px-4 py-2",
+        )}
+      >
+        <Label className="text-sm">UTM 參數設定</Label>
+        <Switch className="scale-75" checked={utm} onCheckedChange={setUtm} />
+      </div>
+      {utm && (
+        <div className="grid gap-3 rounded-lg border p-4 py-4">
+          {paramsMetadata.map(({ display, key, examples }, index) => (
+            <div
+              key={key}
+              className={cn(
+                classes,
+                "flex w-full items-center overflow-hidden p-0 focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+              )}
+            >
+              <Label
+                htmlFor={key}
+                className="flex h-full w-28 items-center justify-center bg-gray-100 text-xs"
+              >
+                {display}
+              </Label>
+              <input
+                className="h-full flex-1 px-2 py-2 outline-0"
+                name={key}
+                id={key}
+                value={parameters?.[key] ?? ""}
+                onChange={(e) => {
+                  setData(
+                    produce((data: any) => {
+                      data.parameters[key] = e.target.value;
+                    }),
+                  );
+                }}
+              />
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
+      )}
+    </>
   );
 }

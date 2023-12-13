@@ -3,6 +3,7 @@
 import { getDeployGraphqlEndpoint } from "@/lib/utils";
 import { devtoolsExchange } from "@urql/devtools";
 import { authExchange } from "@urql/exchange-auth";
+import { cacheExchange as graphCacheExchange } from "@urql/exchange-graphcache";
 import {
   UrqlProvider,
   cacheExchange,
@@ -35,6 +36,16 @@ export default function Layout({ children }: React.PropsWithChildren) {
         process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT?.replace("https", "wss") ?? "",
     });
 
+    const cache = graphCacheExchange({
+      updates: {
+        Mutation: {
+          mutationField: (result, args, cache, info) => {
+            console.log(result, args, cache, info);
+          },
+        },
+      },
+    });
+
     const subscription = subscriptionExchange({
       forwardSubscription(request) {
         const input = { ...request, query: request.query || "" };
@@ -54,6 +65,7 @@ export default function Layout({ children }: React.PropsWithChildren) {
         devtoolsExchange,
         authHeader,
         cacheExchange,
+        //cache,
         ssr,
         fetchExchange,
         subscription,

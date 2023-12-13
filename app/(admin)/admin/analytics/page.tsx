@@ -74,6 +74,7 @@ export default function Analytics() {
   const { data: totalClicks } = useSWR<number>(
     `${baseApiPath}/clicks?${queryString}`,
     fetcher,
+    { revalidateOnFocus: false },
   );
 
   return (

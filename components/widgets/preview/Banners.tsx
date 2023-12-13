@@ -13,7 +13,9 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
 import { useDebounce } from "use-debounce";
 import * as z from "zod";
+import MaterialSymbolsImagesmodeOutlineSharp from "~icons/material-symbols/imagesmode-outline-sharp";
 import placeholder from "./assets/banner-placeholder.jpg";
+
 const aspectRatioMap: {
   [key: string]: string | undefined;
 } = {
@@ -21,6 +23,17 @@ const aspectRatioMap: {
   "4:3": "aspect-w-4 aspect-h-3",
   "1:1": "aspect-w-1 aspect-h-1",
 };
+
+function PlaceHolder() {
+  return (
+    <div className="grid place-items-center bg-gray-200">
+      <div className="flex flex-col items-center justify-center">
+        <MaterialSymbolsImagesmodeOutlineSharp className="h-10 w-10" />
+        <p className="text-sm">請上傳圖片</p>
+      </div>
+    </div>
+  );
+}
 
 export default function Banner({
   isPreview = false,
@@ -109,14 +122,18 @@ export default function Banner({
                   aspectRatioMap[aspectRatio],
                 )}
               >
-                <Image
-                  height={720}
-                  width={1280}
-                  priority={false}
-                  alt={link.name || "Preview"}
-                  src={link.image || placeholder.src}
-                  className="object-cover"
-                />
+                {link.image ? (
+                  <Image
+                    height={720}
+                    width={1280}
+                    priority={false}
+                    alt={link.name || "Preview"}
+                    src={link.image || placeholder.src}
+                    className="bg-slate-200 object-cover"
+                  />
+                ) : (
+                  <PlaceHolder />
+                )}
                 {link.name && (
                   <div className="!bottom-auto !top-0 flex h-10 items-center bg-gradient-to-b from-black/80 to-transparent text-white">
                     <div className="line-clamp-1 px-4">{link.name}</div>

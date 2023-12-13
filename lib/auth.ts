@@ -91,7 +91,7 @@ const config = {
     async signIn({ user, account, profile, email, credentials }) {
       if (user && credentials) {
         const sessionToken = uuidv4();
-        const sessionMaxAge = 60 * 60 * 24 * 30; //30Daysconst sessionMaxAge = 60 * 60 * 24 * 30; //30Days
+        const sessionMaxAge = 60 * 60 * 24 * 30;
         const sessionExpiry = fromDate(sessionMaxAge);
         const { data, error } = await supabaseAuth
           .from("sessions")
@@ -148,6 +148,7 @@ const config = {
           error,
         } = await client.query(query, { id: user.id });
         session.user = { ...session.user, ...userInfo };
+        //if (user.email === "broker@lank.at") session.user.url_key = "";
       }
       return session;
     },

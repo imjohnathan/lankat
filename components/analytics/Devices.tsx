@@ -18,7 +18,9 @@ export default function Devices() {
     ({
       [key in DeviceTabs]: string;
     } & { clicks: number })[]
-  >(`${baseApiPath}/${tab}?${queryString}`, fetcher);
+  >(`${baseApiPath}/${tab}?${queryString}`, fetcher, {
+    revalidateOnFocus: false,
+  });
 
   const { queryParams } = useRouterStuff();
   const [showModal, setShowModal] = useState(false);
@@ -47,7 +49,7 @@ export default function Devices() {
 
   return (
     <>
-      <ScrollArea className="scrollbar-hide relative z-0 h-[400px]  border border-gray-200 bg-white px-7 py-5  sm:rounded-lg sm:border-gray-100 sm:shadow-lg">
+      <ScrollArea className="scrollbar-hide relative z-0 h-[400px]   rounded-lg border bg-card px-7 py-5 text-card-foreground shadow-sm">
         <div className="mb-5 flex justify-between">
           <h1 className="text-lg font-semibold">裝置</h1>
           <Tabs value={tab} onValueChange={(tab) => setTab(tab)}>

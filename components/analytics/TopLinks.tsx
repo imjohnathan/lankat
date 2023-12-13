@@ -13,6 +13,7 @@ export default function TopLinks() {
   const { data } = useSWR<{ domain: string; key: string; clicks: number }[]>(
     `${baseApiPath}/top_links?${queryString}`,
     fetcher,
+    { revalidateOnFocus: false },
   );
 
   const { queryParams } = useRouterStuff();
@@ -45,7 +46,7 @@ export default function TopLinks() {
 
   return (
     <>
-      <ScrollArea className="scrollbar-hide relative z-0 h-[400px] border border-gray-200 bg-white px-7 py-5 sm:rounded-lg sm:border-gray-100 sm:shadow-lg">
+      <ScrollArea className="scrollbar-hide relative z-0 h-[400px] rounded-lg border bg-card px-7 py-5 text-card-foreground shadow-sm">
         <div className="mb-5 flex">
           <h1 className="text-lg font-semibold">連結點擊排行</h1>
         </div>
@@ -54,7 +55,7 @@ export default function TopLinks() {
             barList(9)
           ) : (
             <div className="flex h-[300px] items-center justify-center">
-              <p className="text-sm text-gray-600">No data available</p>
+              <p className="text-sm text-gray-600">沒有任何資料</p>
             </div>
           )
         ) : (

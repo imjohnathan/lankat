@@ -15,6 +15,7 @@ export default function Referer() {
   const { data } = useSWR<{ referer: string; clicks: number }[]>(
     `${baseApiPath}/referer?${queryString}`,
     fetcher,
+    { revalidateOnFocus: false },
   );
 
   const { queryParams } = useRouterStuff();
@@ -56,7 +57,7 @@ export default function Referer() {
 
   return (
     <>
-      <ScrollArea className="scrollbar-hide relative z-0 h-[400px] border border-gray-200 bg-white px-7 py-5 sm:rounded-lg sm:border-gray-100 sm:shadow-lg">
+      <ScrollArea className="scrollbar-hide relative z-0 h-[400px] rounded-lg border bg-card px-7 py-5 text-card-foreground shadow-sm">
         <div className="mb-5 flex">
           <h1 className="text-lg font-semibold">參照網址</h1>
         </div>

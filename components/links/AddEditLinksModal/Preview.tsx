@@ -48,9 +48,7 @@ export default function Preview({ data }: PreviewProps) {
         ) : (
           <div className="flex h-[250px] w-full flex-col items-center justify-center space-y-4 border-b border-gray-300 bg-gray-100">
             <Photo className="h-8 w-8 text-gray-400" />
-            <p className="text-sm text-gray-400">
-              Enter a link to generate a preview.
-            </p>
+            <p className="text-sm text-gray-400">請輸入連結網址來產生預覽</p>
           </div>
         )}
         <div className="grid gap-1 p-3">

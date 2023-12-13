@@ -37,6 +37,7 @@ export default function BarChart() {
   const { data } = useSWR<{ start: Date; clicks: number }[]>(
     `/api/stats/timeseries?${queryString}`,
     fetcher,
+    { revalidateOnFocus: false },
   );
 
   const { width: screenWidth } = useMediaQuery();

@@ -3,11 +3,13 @@
 import { Finish, Styles, UserName, UserUrl } from "@/components/hello/Steps";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { produce } from "immer";
+import { useSession } from "next-auth/react";
 import {
   Suspense,
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from "react";
 import IconLoading from "~icons/line-md/loading-twotone-loop";
@@ -122,6 +124,7 @@ export const Loading = () => {
 };
 
 const CreateTaskMultiStepForm = () => {
+  const { data: session } = useSession();
   const { form, setForm } = useContext(FormStateContext);
 
   const next = useCallback(() => {
@@ -156,6 +159,17 @@ const CreateTaskMultiStepForm = () => {
     Object.values(form.steps)
       .slice(0, index)
       .every((step) => step.valid && !step.dirty);
+
+  useEffect(() => {
+    setForm(
+      produce((form) => {
+        form.steps.userUrl.value.url_key = session?.user?.url_key || "";
+        form.steps.userName.value.display_name =
+          session?.user?.display_name || "";
+        form.steps.userName.value.genres = [13];
+      }),
+    );
+  }, []);
 
   return (
     <div className="mx-auto mt-20 grid max-w-2xl place-items-center px-6">

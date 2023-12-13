@@ -207,8 +207,8 @@ export function ThemeConfigForm({
             {values.isGradient && (
               <ColorForm
                 form={form}
-                label={"下層顏色"}
-                name={"themeConfig.background-color" as any}
+                label={"上層顏色"}
+                name={"themeConfig.background-color-2" as any}
               />
             )}
             <ColorForm
@@ -351,7 +351,7 @@ export function AppearanceForm() {
 
   const { isDirty, dirtyFields } = form.formState;
   const values = form.watch();
-
+  console.log("form errors", form.formState.errors);
   useEffect(() => {
     const subscription = form.watch(async (data, { name, type }) => {
       if (type === "change" && name === "theme") {
@@ -370,8 +370,9 @@ export function AppearanceForm() {
             theme.settings["background-color"] !==
               theme.settings["background-color-2"],
           );
-          form.setValue("themeConfig", theme?.settings);
           form.setValue("isGradient", isGradient);
+
+          form.setValue("themeConfig", theme?.settings);
           lastTheme.current = data.theme ?? "0";
           form.setValue("isModified", false);
           changeThemePreviewDebounced(theme);
@@ -381,7 +382,7 @@ export function AppearanceForm() {
         (name?.includes("themeConfig") || name === "isGradient")
       ) {
         const settings = data.themeConfig;
-        if (!data.isGradient) {
+        if (!data.isGradient && settings?.["background-color"]) {
           form.setValue(
             "themeConfig.background-color-2",
             settings?.["background-color"] ?? "",
@@ -415,9 +416,9 @@ export function AppearanceForm() {
                 "儲存"
               )}
             </Button>
-            {/* <code className="block whitespace-pre-wrap">
+            <code className="block whitespace-pre-wrap">
               {JSON.stringify(values, null, 2)}
-            </code> */}
+            </code>
           </form>
         </Form>
         <div className="relative col-span-2">

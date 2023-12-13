@@ -158,7 +158,7 @@ export default function Banner({ widget }: { widget: Widgets }) {
             ...(link.link?.id && { link_id: link.link?.id }),
             name: link.name || "",
             url: link?.link?.url || "",
-            isShow: link.isShow || true,
+            isShow: link.isShow ?? true,
             key: link.link?.key || "",
             image: link.link?.image || "",
             clicks: link.link?.clicks || 0,
