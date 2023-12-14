@@ -5,7 +5,7 @@ import { gql, useQuery } from "@urql/next";
 import punycode from "punycode";
 
 const getLinkNameByKey = gql`
-  query getLinkNameByKey($key: String_comparison_exp = { _eq: "TuQchTF" }) {
+  query getLinkNameByKey($key: String_comparison_exp!) {
     links(where: { key: $key }) {
       clicks
       widgets_links {
@@ -20,9 +20,11 @@ const getLinkNameByKey = gql`
 
 export default function LinkPreviewTooltip({
   link,
+  isTitle = false,
 }: {
   // link is in the format dub.sh/github
   link: string;
+  isTitle?: boolean;
 }) {
   const domain = link.split("/")[0];
   const key = link.split("/").slice(1).join("/").split("/")[1];
@@ -32,7 +34,11 @@ export default function LinkPreviewTooltip({
   });
   if (fetching) {
     return (
-      <div className="relative flex w-[28rem] items-center px-4 py-2">
+      <div
+        className={cn("relative flex items-center", {
+          "w-[28rem] px-4 py-2": !isTitle,
+        })}
+      >
         <div className="mr-2 h-8 w-8 animate-pulse rounded-full bg-gray-200 sm:h-10 sm:w-10" />
         <div className="flex flex-col space-y-2">
           <div className="flex items-center space-x-2">
@@ -50,7 +56,11 @@ export default function LinkPreviewTooltip({
   }
   if (data.links.length === 0) {
     return (
-      <div className="relative flex w-[28rem] items-center space-x-3 px-4 py-2">
+      <div
+        className={cn("relative flex items-center space-x-3 ", {
+          "w-[28rem] px-4 py-2": !isTitle,
+        })}
+      >
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-300 px-0 sm:h-10 sm:w-10">
           {/* <Trash className="h-4 w-4 text-gray-500 sm:h-5 sm:w-5" /> */}
         </div>
@@ -71,22 +81,26 @@ export default function LinkPreviewTooltip({
   const { widgets_links, image, created_at, url, og_image } = data.links[0];
   const apexDomain = getApexDomain(url);
   return (
-    <div className="relative flex w-[28rem] items-center justify-between px-4 py-2">
-      <div className="relative flex shrink items-center">
+    <div
+      className={cn("relative flex items-center space-x-3 ", {
+        "w-[28rem] px-4 py-2": !isTitle,
+      })}
+    >
+      <div className="relative flex shrink items-center gap-2">
         {Boolean(image || og_image) && (
           <Avatar>
             <AvatarImage src={image || og_image} alt="Link Image" />
           </Avatar>
         )}
-        {/* 
-              Here, we're manually setting ml-* values because if we do space-x-* in the parent div, 
-              it messes up the tooltip positioning.
-            */}
-        <div className="ml-2 sm:ml-4">
+        <div>
           <div className="flex max-w-fit items-center space-x-2">
             <a
               className={cn(
-                "w-full max-w-[140px] truncate text-sm font-semibold text-blue-800 sm:max-w-[300px] sm:text-base md:max-w-[360px] xl:max-w-[500px]",
+                {
+                  "w-full max-w-[140px] truncate text-sm font-semibold text-blue-800 sm:max-w-[300px] sm:text-base md:max-w-[360px] xl:max-w-[500px]":
+                    !isTitle,
+                },
+                { "text-lg font-semibold text-gray-800": isTitle },
               )}
               href={linkConstructor({ domain, key })}
               target="_blank"
@@ -99,7 +113,9 @@ export default function LinkPreviewTooltip({
                 pretty: true,
               })}
             </a>
-            <CopyButton value={linkConstructor({ domain, key })} />
+            {!isTitle && (
+              <CopyButton value={linkConstructor({ domain, key })} />
+            )}
           </div>
           <div className="flex max-w-fit items-center space-x-1">
             {widgets_links.length !== 0 && <p>{widgets_links[0].name}</p>}
