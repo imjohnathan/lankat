@@ -5,6 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import { Toaster } from "sonner";
 import ClientLayout from "./client/layout";
 import "./globals.css";
+import StyledJsxRegistry from "./registry";
 
 // export const metadata: Metadata = {
 //   title: "Lank.at 任意門 | 用你最喜歡的樣子，展現你的網路人格",
@@ -26,16 +27,18 @@ export default async function RootLayout({
 }) {
   const session = await auth();
   return (
-    <SessionProvider session={session} refetchOnWindowFocus={false}>
-      <ClientLayout>
-        <html lang="en">
-          <body>
-            {children}
-            <Toaster />
-            <Modal />
-          </body>
-        </html>
-      </ClientLayout>
-    </SessionProvider>
+    <StyledJsxRegistry>
+      <SessionProvider session={session} refetchOnWindowFocus={false}>
+        <ClientLayout>
+          <html lang="en">
+            <body>
+              {children}
+              <Toaster />
+              <Modal />
+            </body>
+          </html>
+        </ClientLayout>
+      </SessionProvider>
+    </StyledJsxRegistry>
   );
 }
