@@ -13,6 +13,7 @@ import { Calendar, Check, ChevronDown } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useContext, useMemo, useState } from "react";
+import LinkPreviewTooltip from "./HoverCard";
 
 export default function Toggle() {
   const { basePath, domain, key, interval } = useContext(StatsContext);
@@ -20,13 +21,14 @@ export default function Toggle() {
   const selectedInterval = useMemo(() => {
     return INTERVALS.find((s) => s.value === interval) || INTERVALS[1];
   }, [interval]);
+
   const { data: session } = useSession();
   return (
     <div className={"z-10 mb-5 bg-gray-50 py-3 md:py-5"}>
       <div className="mx-auto flex h-20 max-w-4xl flex-col items-center justify-between space-y-3 px-2.5 md:h-10 md:flex-row md:space-y-0 lg:px-0">
         {domain && !key ? (
           <div className="flex items-center space-x-2">
-            <Avatar className="h-6 w-6">
+            <Avatar>
               <AvatarImage
                 alt={session?.user?.display_name}
                 width={48}
@@ -40,17 +42,26 @@ export default function Toggle() {
             <h2 className="text-lg font-semibold text-gray-800">我的頁面</h2>
           </div>
         ) : domain && key ? (
-          <a
-            className="group flex text-lg font-semibold text-gray-800 md:text-xl"
-            href={linkConstructor({ key })}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {linkConstructor({
-              key,
-              pretty: true,
-            })}
-          </a>
+          <div className="flex items-center space-x-2">
+            <LinkPreviewTooltip
+              isTitle
+              link={linkConstructor({
+                key,
+                pretty: true,
+              })}
+            />
+            {/* <a
+              className="group flex text-lg font-semibold text-gray-800 md:text-xl"
+              href={linkConstructor({ key })}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {linkConstructor({
+                key,
+                pretty: true,
+              })}
+            </a> */}
+          </div>
         ) : null}
         <div className="flex items-center">
           <Popover open={openDatePopover} onOpenChange={setOpenDatePopover}>
