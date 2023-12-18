@@ -37,8 +37,18 @@ export function UserUrl(
   }>,
 ) {
   const { form, setForm } = useContext(FormStateContext);
+  const schema = z.object({
+    url_key: z
+      .string()
+      .min(3)
+      .max(20)
+      .regex(/^[a-z0-9_-]*$/),
+  });
 
-  const { register, handleSubmit, control, setValue, getValues } = useForm({
+  const { register, handleSubmit, control, setValue, getValues } = useForm<
+    z.infer<typeof schema>
+  >({
+    resolver: zodResolver(schema),
     shouldUseNativeValidation: true,
     defaultValues: {
       url_key: form.steps.userUrl.value.url_key,
@@ -68,7 +78,9 @@ export function UserUrl(
 
   return (
     <form
-      onSubmit={handleSubmit((value) => {
+      onSubmit={handleSubmit(async (value) => {
+        // const res = await fetch("/api/checkUrlKey?key=" + value.url_key);
+        // const data = await res.json();
         setForm(
           produce((formState) => {
             formState.steps.userUrl = {
@@ -103,6 +115,9 @@ export function UserUrl(
               ref={urlRef}
             />
           </div>
+          <p className="text-sm text-muted-foreground">
+            至少3個最多20個字元。只可使用小寫英文字母且不可使用特殊符號。
+          </p>
         </div>
 
         <Button>下一步</Button>
@@ -133,7 +148,8 @@ export function UserName(
   const FormSchema = z.object({
     display_name: z
       .string()
-      .min(2, { message: "You have to enter a display name." }),
+      .min(2, { message: "You have to enter a display name." })
+      .max(20),
     genres: z.array(z.number()).refine((value) => value.some((item) => item), {
       message: "You have to select at least one item.",
     }),

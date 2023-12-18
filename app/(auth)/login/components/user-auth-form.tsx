@@ -30,7 +30,7 @@ const formSchema = z.object({
 });
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-const testUsers = ["kol", "sat", "broker"];
+const testUsers = ["kol", "sat", "broker", "robert"];
 
 export function UserSignUpForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);

@@ -41,7 +41,7 @@ export default function Bg() {
         className="relative z-20 my-auto grid place-items-center gap-4"
       >
         <Logo className="h-10 fill-white" />
-        <h2 className="text-xl font-medium">從這邊那到那邊，總共5步</h2>
+        <h2 className="text-xl font-medium">從這邊到那邊，總共5步</h2>
       </Link>
     </>
   );
