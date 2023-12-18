@@ -1,3 +1,4 @@
+import { ScrollArea } from "@/components/ui/scroll-area";
 import UserPage from "@/components/userpage";
 import { client } from "@/lib/nodeClient";
 import { gql } from "@urql/next";
@@ -97,6 +98,8 @@ export default async function App(
   const isPreview = Object.hasOwn(searchParams, "preview");
 
   return (
-    <UserPage users={users} widgets={data.widgets} isPreview={isPreview} />
+    <ScrollArea className="fixed inset-0 h-screen">
+      <UserPage users={users} widgets={data.widgets} isPreview={isPreview} />
+    </ScrollArea>
   );
 }

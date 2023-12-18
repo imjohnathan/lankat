@@ -111,13 +111,18 @@ export default function Banner({
             >
               <Link
                 prefetch={false}
-                onClick={() => recordClick(link?.key)}
+                onClick={(e) => {
+                  recordClick(link?.key);
+                }}
                 href={link.url}
                 target="_blank"
                 className={cn(
                   "block overflow-hidden rounded-md",
                   {
                     border: isPreview,
+                  },
+                  {
+                    "pointer-events-none": !link.url,
                   },
                   aspectRatioMap[aspectRatio],
                 )}

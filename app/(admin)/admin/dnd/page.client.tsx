@@ -360,7 +360,7 @@ function DnD() {
                   <div className="grid place-items-center text-gray-800">
                     <div className="mt-8 flex">
                       <div className="flex items-end pb-1 text-xl font-medium">
-                        開始增小工具
+                        開始新增小工具
                       </div>
                       <PhArrowBendRightUp className="ml-[-12px] h-32 w-32" />
                     </div>

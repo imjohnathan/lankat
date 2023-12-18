@@ -577,6 +577,7 @@ export function Fields({
                       <FormControl>
                         <input
                           className="h-full flex-1 px-2 py-2 outline-0"
+                          placeholder="圖片標題"
                           {...field}
                         />
                       </FormControl>
@@ -602,6 +603,7 @@ export function Fields({
                       <FormControl>
                         <input
                           className="h-full flex-1 px-2 py-2 outline-0"
+                          placeholder="https://lank.at/"
                           {...field}
                         />
                       </FormControl>

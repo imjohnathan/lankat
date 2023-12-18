@@ -118,7 +118,7 @@ export const FormSchema = z.object({
   links: z.array(
     z.object({
       id: z.number().optional(),
-      name: z.string(),
+      name: z.string().max(100),
       url: z.string().url(),
       isShow: z.boolean(),
       link_id: z.string().optional(),
@@ -131,7 +131,7 @@ export const FormSchema = z.object({
 
 export function Preview({ fields }: { fields: Partial<Links>[] }) {
   return (
-    <div className="mx-auto grid w-full max-w-xs gap-4">
+    <div className="mx-auto grid w-full max-w-[480px] grid-cols-1 gap-4">
       {fields.map(({ name, url, isShow }, index) => (
         <PreviewItem
           key={index}
@@ -367,7 +367,7 @@ export default function Banner({ widget }: { widget: Widgets }) {
             </form>
           </Form>
         </ScrollArea>
-        <div className="grid flex-1 place-items-center p-4">
+        <div className="grid max-w-[480px] flex-1 place-items-center p-4">
           <Preview fields={values.links} />
         </div>
       </div>
@@ -541,6 +541,7 @@ function ImagesForm({
                       </FormLabel>
                       <FormControl>
                         <input
+                          placeholder="按鈕名稱"
                           className="h-full flex-1 px-2 py-2 outline-0"
                           {...field}
                         />
@@ -566,6 +567,7 @@ function ImagesForm({
                       </FormLabel>
                       <FormControl>
                         <input
+                          placeholder="https://lank.at/"
                           className="h-full flex-1 px-2 py-2 outline-0"
                           {...field}
                         />

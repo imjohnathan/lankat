@@ -34,14 +34,14 @@ export function PreviewItem({
         asChild
         variant="outline"
         className={clsx(
-          "linkButton h-auto w-full border-2 border-black py-3 text-base",
+          "linkButton mx-auto h-auto w-full overflow-hidden truncate border-2 border-black py-3 text-base",
           {
             hidden: !isShow,
           },
         )}
       >
         <a href={url} target="_blank">
-          {name ? name : "..."}
+          <p>{name ? name : "..."}</p>
         </a>
       </Button>
     </div>
@@ -66,7 +66,12 @@ export default function ButtonPreview({
       ? [{ isShow: true, id: 1, name: "", link: { url: "" } }]
       : [];
   return (
-    <div className={cn("mx-auto grid w-full max-w-full gap-4", className)}>
+    <div
+      className={cn(
+        "mx-auto grid w-full max-w-full grid-cols-1 gap-4",
+        className,
+      )}
+    >
       {widgetData.map(({ link: { url, key }, ...rest }, index) => (
         <PreviewItem
           key={index}
