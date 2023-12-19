@@ -60,7 +60,7 @@ const getData = async (key: string) => {
       userKey: key,
     },
     {
-      fetchOptions: { cache: "no-store", next: { revalidate: -1 } },
+      fetchOptions: { cache: "no-store" },
     },
   );
   if (error || !data?.users.length) {

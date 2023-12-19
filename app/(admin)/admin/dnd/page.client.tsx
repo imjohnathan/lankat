@@ -148,7 +148,7 @@ function SortableItem({
           <IconLoading className="h-8 w-8" />
         </div>
         <div className="py-4">
-          <Component widget={widget} isPreview />
+          <Component widget={widget} isPreview isDraggableArea />
         </div>
       </EditUI>
     </div>

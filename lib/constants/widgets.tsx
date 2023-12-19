@@ -1,6 +1,7 @@
 import Banners from "@/components/widgets/preview/Banners";
 import Links from "@/components/widgets/preview/Buttons";
 import Separator from "@/components/widgets/preview/Separator";
+import Text from "@/components/widgets/preview/Text";
 import { type Widgets } from "@/gql/graphql";
 
 type WidgetListType = {
@@ -35,6 +36,13 @@ export const widgetsList: WidgetListType[] = [
       };
       return <Banners data={data} {...props} />;
     },
+  },
+  {
+    type: "text",
+    title: "文字看板",
+    render: ({ widget: { config }, ...props }) => (
+      <Text config={config} {...props} />
+    ),
   },
   {
     type: "separator",
