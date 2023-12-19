@@ -2,6 +2,7 @@
 import Banner from "@/components/widgets/modals/Banner";
 import ButtonEdit from "@/components/widgets/modals/ButtonEdit";
 import Separator from "@/components/widgets/modals/Separator";
+import Text from "@/components/widgets/modals/Text";
 
 interface WidgetEditModalProps {
   id: string;
@@ -14,6 +15,7 @@ const modals = {
   links: ButtonEdit,
   separator: Separator,
   banner: Banner,
+  text: Text,
 };
 
 export default function WidgetEditModal({
