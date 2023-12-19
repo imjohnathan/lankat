@@ -8,7 +8,7 @@ export default async function RootLayout({
   return (
     <>
       <Header />
-      {children}
+      <div className="min-h-screen">{children}</div>
       <Footer />
     </>
   );
