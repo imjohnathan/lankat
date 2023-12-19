@@ -444,6 +444,7 @@ export function Fields({
   };
 
   const handleDuplicate = (index: number) => {
+    if (values.links.length >= 10) return;
     const { id, link_id, key, ...dataToDuplicate } = values.links[index];
     insert(index + 1, dataToDuplicate);
   };
@@ -462,9 +463,10 @@ export function Fields({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <button
+                        disabled={fields.length >= 10}
                         onClick={() => handleDuplicate(index)}
                         type="button"
-                        className="grid place-items-center"
+                        className="grid place-items-center disabled:opacity-20"
                       >
                         <IconCopy />
                       </button>
