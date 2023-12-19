@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import NavMenu from "./NavMenu";
 
-export default async function Header({ type }: { type: string }) {
+export default async function Header({ type }: { type?: string }) {
   const session = await auth();
   const isHome = type && type === "index";
   return (
