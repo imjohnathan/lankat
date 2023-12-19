@@ -1,5 +1,5 @@
+import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
-
 export default async function RootLayout({
   children,
 }: {
@@ -9,6 +9,7 @@ export default async function RootLayout({
     <>
       <Header />
       {children}
+      <Footer />
     </>
   );
 }

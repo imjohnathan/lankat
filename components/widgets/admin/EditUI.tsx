@@ -46,9 +46,9 @@ export default function WidgetUI({
         <div className="flex items-center justify-center gap-2">
           <button
             onClick={() => openEditModal({ type, widget })}
-            className="text-slate-400 hover:text-black"
+            className="flex items-center gap-1 text-slate-400 hover:text-black"
           >
-            <IconEdit />
+            <span className="text-sm">編輯</span> <IconEdit />
           </button>
           <button
             onClick={() => handleDeleteWidget(id)}
