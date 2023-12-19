@@ -197,9 +197,9 @@ export default function Separator({ widget }: { widget: Widgets }) {
                   );
                 }}
               />
-              <code className="block whitespace-pre-wrap">
+              {/* <code className="block whitespace-pre-wrap">
                 {JSON.stringify(form.getValues(), null, 2)}
-              </code>
+              </code> */}
             </form>
           </Form>
         </ScrollArea>
