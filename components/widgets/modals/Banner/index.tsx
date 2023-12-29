@@ -1,126 +1,54 @@
-import { Button } from "@/components/ui/button";
-import {
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { RadioForm, SwitchForm } from "@/components/ui/form/form-elements";
-import { classes } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import Preview from "@/components/widgets/preview/Banners";
-import type { Widgets } from "@/gql/graphql";
-import { cn } from "@/lib/utils";
-import useModalStore from "@/stores/useModalStore";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Uppy from "@uppy/core";
-import Tus from "@uppy/tus";
-import { gql, useMutation } from "@urql/next";
-import { motion } from "framer-motion";
-import { nanoid } from "nanoid";
-import Link from "next/link";
-import { useEffect, useId, useRef, useState } from "react";
-import {
-  UseFormReturn,
-  useFieldArray,
-  useForm,
-  useFormState,
-} from "react-hook-form";
-import { toast } from "sonner";
-import { v4 as uuidv4 } from "uuid";
-import * as z from "zod";
-import IconLoading from "~icons/line-md/loading-twotone-loop";
-import SolarArrowDownOutline from "~icons/solar/arrow-down-outline";
-import SolarArrowUpOutline from "~icons/solar/arrow-up-outline";
-import IconCopy from "~icons/solar/copy-outline";
-import SolarCursorBold from "~icons/solar/cursor-bold";
-import IconEyeHide from "~icons/solar/eye-line-duotone";
-import IconEye from "~icons/solar/eye-outline";
-import IconDelete from "~icons/solar/trash-bin-minimalistic-outline";
-
-const upsertWidgetLinksQuery = gql`
-  mutation upsertWidget(
-    $object: widgets_insert_input = {
-      id: "17daee77-4830-437b-9a78-8dcd730b53bd"
-      isShow: true
-      name: "好看的小工具"
-      user: "4a5e811c-e66b-4b3a-afe0-5c0e8dbdd447"
-      widgets_links: {
-        data: [
-          {
-            id: 11 #更新需要
-            #link_id: "8b348d87-c081-4b3b-bf6a-15fed934f372" #將Link關聯時需要
-            name: "按鈕名稱6"
-            link: {
-              data: {
-                id: "8b348d87-c081-4b3b-bf6a-15fed934f372" #更新需要
-                key: "gdfgdg" #新增需要
-                user: "4a5e811c-e66b-4b3a-afe0-5c0e8dbdd447" #新增需要
-                url: "https://tyutyutyut" #新增更新都需要
-              }
-              on_conflict: {
-                constraint: links_pkey
-                update_columns: [url, image]
-              }
-            }
-          }
-        ]
-        on_conflict: {
-          constraint: widgets_links_pkey
-          update_columns: [name, link_id, isShow, config]
-        }
-      }
-    }
-    $deleteIds: widgets_links_bool_exp = { id: { _in: [] } }
-  ) {
-    insert_widgets_one(
-      object: $object
-      on_conflict: {
-        constraint: widgets_pkey
-        update_columns: [isShow, name, config]
-      }
-    ) {
-      id
-    }
-    delete_widgets_links(where: $deleteIds) {
-      affected_rows
-      returning {
-        id
-      }
-    }
-  }
-`;
-const autoPlaySpeeds = ["3", "5", "10"];
-const aspectRatios = ["1:1", "4:3", "16:9"];
+import { Button } from '@/components/ui/button';
+import { DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { RadioForm, SwitchForm } from '@/components/ui/form/form-elements';
+import { classes } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import FooterButton from '@/components/widgets/modals/FooterButtons';
+import Preview from '@/components/widgets/preview/Banners';
+import { upsertWidget } from '@/gql/fragments/upsertWidgetLinks';
+import type { Widgets } from '@/gql/graphql';
+import { cn } from '@/lib/utils';
+import useModalStore from '@/stores/useModalStore';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Uppy from '@uppy/core';
+import Tus from '@uppy/tus';
+import { useMutation } from '@urql/next';
+import { motion } from 'framer-motion';
+import { nanoid } from 'nanoid';
+import Link from 'next/link';
+import { useEffect, useId, useRef, useState } from 'react';
+import { UseFormReturn, useFieldArray, useForm, useFormState } from 'react-hook-form';
+import { toast } from 'sonner';
+import { v4 as uuidv4 } from 'uuid';
+import * as z from 'zod';
+import SolarArrowDownOutline from '~icons/solar/arrow-down-outline';
+import SolarArrowUpOutline from '~icons/solar/arrow-up-outline';
+import IconCopy from '~icons/solar/copy-outline';
+import SolarCursorBold from '~icons/solar/cursor-bold';
+import IconEyeHide from '~icons/solar/eye-line-duotone';
+import IconEye from '~icons/solar/eye-outline';
+import IconDelete from '~icons/solar/trash-bin-minimalistic-outline';
+const autoPlaySpeeds = ['3', '5', '10'];
+const aspectRatios = ['1:1', '4:3', '16:9'];
 
 export const defaultData = {
   config: {
     autoPlay: true,
-    autoPlaySpeed: "3",
+    autoPlaySpeed: '3',
     dots: true,
-    aspectRatio: "16:9",
+    aspectRatio: '16:9'
   },
   links: [
     {
-      name: "",
-      url: "",
+      name: '',
+      url: '',
       isShow: true,
-      image: "",
-    },
-  ],
+      image: '',
+      key: ''
+    }
+  ]
 };
 
 export const FormSchema = z.object({
@@ -128,7 +56,7 @@ export const FormSchema = z.object({
     autoPlay: z.boolean(),
     autoPlaySpeed: z.string(),
     aspectRatio: z.string(),
-    dots: z.boolean(),
+    dots: z.boolean()
   }),
   links: z.array(
     z.object({
@@ -139,12 +67,13 @@ export const FormSchema = z.object({
       link_id: z.string().optional(),
       clicks: z.number().optional(),
       key: z.string().optional(),
-      image: z.string(),
-    }),
-  ),
+      image: z.string()
+    })
+  )
 });
 
 export default function Banner({ widget }: { widget: Widgets }) {
+  const [isPreview, setIsPreview] = useState(false);
   const { close, setUnSavedChanges } = useModalStore();
   const removeIds = useRef<number[]>([]);
   const formId = useId();
@@ -156,50 +85,50 @@ export default function Banner({ widget }: { widget: Widgets }) {
         : widget.widgets_links.map((link) => ({
             ...(link.id && { id: link.id }),
             ...(link.link?.id && { link_id: link.link?.id }),
-            name: link.name || "",
-            url: link?.link?.url || "",
+            name: link.name || '',
+            url: link?.link?.url || '',
             isShow: link.isShow ?? true,
-            key: link.link?.key || "",
-            image: link.link?.image || "",
-            clicks: link.link?.clicks || 0,
-          })),
+            key: link.link?.key || '',
+            image: link.link?.image || '',
+            clicks: link.link?.clicks || 0
+          }))
   };
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       ...defaultData,
-      ...dataFromWidget,
-    },
+      ...dataFromWidget
+    }
   });
   const { isDirty } = useFormState({
-    control: form.control,
+    control: form.control
   });
 
-  const [{ fetching }, upsertWidgetLinks] = useMutation(upsertWidgetLinksQuery);
+  const [{ fetching }, upsertWidgetLinks] = useMutation(upsertWidget);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isFetching = fetching || isSubmitting;
 
   function extractBlobId(blobUrl: string): string {
     const url = new URL(blobUrl);
-    const parts = url.pathname.split("/");
+    const parts = url.pathname.split('/');
     const blobId = parts[parts.length - 1];
     return blobId;
   }
 
   async function convertLinksToBlobs(data: any) {
     const promises = data.map(async (link: any) => {
-      const [blobUrl, type] = link.image.split("#");
+      const [blobUrl, type] = link.image.split('#');
       const response = await fetch(blobUrl);
       const blobData = await response.blob();
-      const extension = type.split("/")[1];
+      const extension = type.split('/')[1];
       const blobId = extractBlobId(blobUrl);
       return {
         name: `${uuidv4()}.${extension}`,
         type,
         meta: {
-          blobId,
+          blobId
         },
-        data: blobData,
+        data: blobData
       };
     });
 
@@ -208,40 +137,33 @@ export default function Banner({ widget }: { widget: Widgets }) {
 
   async function uploadFiles(data: z.infer<typeof FormSchema>) {
     try {
-      const bucketName = "links";
-      const folderName = "banners";
+      const bucketName = 'links';
+      const folderName = 'banners';
       const supabaseUploadURL = `https://akbggkpvgcoobuczoagm.supabase.co/storage/v1/upload/resumable`;
       const publicUrl = `https://akbggkpvgcoobuczoagm.supabase.co/storage/v1/object/public/${bucketName}`;
       const uppy = new Uppy({
         debug: true,
         restrictions: {
           maxFileSize: 5242880,
-          allowedFileTypes: ["image/*"],
-        },
+          allowedFileTypes: ['image/*']
+        }
       }).use(Tus, {
         endpoint: supabaseUploadURL,
         headers: {
-          authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+          authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
         },
         chunkSize: 6 * 1024 * 1024,
-        allowedMetaFields: [
-          "bucketName",
-          "objectName",
-          "contentType",
-          "cacheControl",
-        ],
+        allowedMetaFields: ['bucketName', 'objectName', 'contentType', 'cacheControl']
       });
-      const filteredBlobs = data.links.filter((link) =>
-        link.image.startsWith("blob:"),
-      );
+      const filteredBlobs = data.links.filter((link) => link.image.startsWith('blob:'));
       const filesList = await convertLinksToBlobs(filteredBlobs);
-      uppy.on("file-added", (file) => {
-        console.log("Added file", file);
+      uppy.on('file-added', (file) => {
+        console.log('Added file', file);
         file.meta = {
           ...file.meta,
           bucketName: bucketName,
           objectName: folderName ? `${folderName}/${file.name}` : file.name,
-          contentType: file.type,
+          contentType: file.type
         };
       });
 
@@ -250,7 +172,7 @@ export default function Banner({ widget }: { widget: Widgets }) {
       const res = await uppy.upload();
       const { successful = [], failed = [] } = res;
       console.log(res);
-      if (failed.length) throw new Error("上傳失敗");
+      if (failed.length) throw new Error('上傳失敗');
 
       const filesUrl = successful.map(({ meta: { objectName, blobId } }) => {
         return { blobId, url: `${publicUrl}/${objectName}` };
@@ -270,9 +192,7 @@ export default function Banner({ widget }: { widget: Widgets }) {
       const filesUrl = await uploadFiles(data);
 
       const variablesLinks = data.links.map((field, index) => {
-        const findFile = filesUrl.find(({ blobId }) =>
-          field.image.includes(blobId as string),
-        );
+        const findFile = filesUrl.find(({ blobId }) => field.image.includes(blobId as string));
         const fieldData = {
           name: field.name,
           sort: index,
@@ -288,15 +208,15 @@ export default function Banner({ widget }: { widget: Widgets }) {
               //新增時才帶入key和user
               ...(!field.id && { key: nanoid(7) }),
               //把img帶入
-              image: findFile ? findFile.url : field.image,
+              image: findFile ? findFile.url : field.image
               //   ...(field.image &&
               //     field.image.startsWith("blob:") && { image: findFile?.url }),
             },
             on_conflict: {
-              constraint: "links_pkey",
-              update_columns: ["url", "image"],
-            },
-          },
+              constraint: 'links_pkey',
+              update_columns: ['url', 'image']
+            }
+          }
         };
 
         return fieldData;
@@ -312,25 +232,25 @@ export default function Banner({ widget }: { widget: Widgets }) {
           widgets_links: {
             data: variablesLinks,
             on_conflict: {
-              constraint: "widgets_links_pkey",
-              update_columns: ["name", "link_id", "isShow", "sort"],
-            },
-          },
+              constraint: 'widgets_links_pkey',
+              update_columns: ['name', 'link_id', 'isShow', 'sort']
+            }
+          }
         },
-        deleteIds: { id: { _in: removeIds.current } },
+        deleteIds: { id: { _in: removeIds.current } }
       };
       const { error } = await upsertWidgetLinks(variables);
       if (error) throw new Error(error.message);
-      toast.success("儲存成功！");
+      toast.success('儲存成功！');
       close();
     } catch (e) {
       if (e instanceof Error) {
         console.error(e.message);
-        toast.error("錯誤：" + e.message);
+        toast.error('錯誤：' + e.message);
         throw new Error(e.message);
       } else {
-        console.error("An unknown error occurred");
-        throw new Error("An unknown error occurred");
+        console.error('An unknown error occurred');
+        throw new Error('An unknown error occurred');
       }
     } finally {
       setIsSubmitting(false);
@@ -339,27 +259,22 @@ export default function Banner({ widget }: { widget: Widgets }) {
 
   useEffect(() => {
     if (isDirty) setUnSavedChanges(true);
-  }, [isDirty]);
+  }, [isDirty, setUnSavedChanges]);
 
   const values = form.watch();
-  console.log("form errors", form.formState.errors);
   return (
     <>
       <DialogHeader>
         <DialogTitle>圖片看板</DialogTitle>
       </DialogHeader>
-      <div className="flex">
-        <ScrollArea className="min-h-48 max-h-[500px] flex-1 px-4">
+      <div className="flex flex-1">
+        <ScrollArea className={cn('sm:max-h-[500px] flex-1 sm:px-4', { hidden: isPreview })}>
           <Form {...form}>
-            <form
-              id={formId}
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="grid gap-3 pb-4"
-            >
+            <form id={formId} onSubmit={form.handleSubmit(onSubmit)} className="grid gap-3 pb-4">
               <SwitchForm<z.infer<typeof FormSchema>>
                 form={form}
                 label="自動播放"
-                name={"config.autoPlay" as any}
+                name={'config.autoPlay' as any}
                 switchClassnames="scale-75"
                 classNames="h-10 px-4 py-2"
               />
@@ -367,30 +282,30 @@ export default function Banner({ widget }: { widget: Widgets }) {
               <RadioForm<z.infer<typeof FormSchema>>
                 form={form}
                 label="播放速度"
-                name={"config.autoPlaySpeed" as any}
+                name={'config.autoPlaySpeed' as any}
                 items={autoPlaySpeeds.map((value) => ({
-                  label: value + "秒",
-                  value,
+                  label: value + '秒',
+                  value
                 }))}
-                classNames={cn("h-10 px-4 py-2", {
-                  hidden: !values.config.autoPlay,
+                classNames={cn('h-10 px-4 py-2', {
+                  hidden: !values.config.autoPlay
                 })}
               />
 
               <RadioForm<z.infer<typeof FormSchema>>
                 form={form}
                 label="顯示比例"
-                name={"config.aspectRatio" as any}
+                name={'config.aspectRatio' as any}
                 items={aspectRatios.map((value) => ({
                   label: value,
-                  value,
+                  value
                 }))}
-                classNames={"h-10 px-4 py-2"}
+                classNames={'h-10 px-4 py-2'}
               />
               <SwitchForm<z.infer<typeof FormSchema>>
                 form={form}
                 label="輪播導航"
-                name={"config.dots" as any}
+                name={'config.dots' as any}
                 switchClassnames="scale-75"
                 classNames="h-10 px-4 py-2"
               />
@@ -402,21 +317,18 @@ export default function Banner({ widget }: { widget: Widgets }) {
             </form>
           </Form>
         </ScrollArea>
-        <div className="grid flex-1 place-items-center p-4">
+        <div
+          className={cn(
+            'grid flex-1 place-items-center p-4',
+            { '<sm:hidden': !isPreview },
+            { 'max-h-[500px]': isPreview }
+          )}
+        >
           <Preview isPreview data={values} />
         </div>
       </div>
-      <DialogFooter>
-        <Button disabled={isFetching} form={formId} type="submit">
-          {isFetching ? (
-            <>
-              <IconLoading className="mr-3 h-4 w-4" />
-              請稍候
-            </>
-          ) : (
-            "儲存"
-          )}
-        </Button>
+      <DialogFooter className="<sm:flex-row gap-3">
+        <FooterButton setIsPreview={setIsPreview} isPreview={isPreview} isFetching={isFetching} formId={formId} />
       </DialogFooter>
     </>
   );
@@ -424,7 +336,7 @@ export default function Banner({ widget }: { widget: Widgets }) {
 
 export function Fields({
   form,
-  removeIds,
+  removeIds
 }: {
   form: UseFormReturn<z.infer<typeof FormSchema>>;
   removeIds: React.MutableRefObject<number[]>;
@@ -432,9 +344,9 @@ export function Fields({
   const values = form.watch();
 
   const { fields, append, remove, move, insert } = useFieldArray({
-    name: "links",
+    name: 'links',
     control: form.control,
-    rules: { maxLength: 10 },
+    rules: { maxLength: 10 }
   });
 
   const handleRemove = (index: number) => {
@@ -453,10 +365,7 @@ export function Fields({
     <>
       <motion.div className="grid gap-3">
         {fields.map((fieldItem, index) => (
-          <motion.div
-            key={fieldItem.id}
-            className="flex gap-2 rounded-lg border p-4 py-4"
-          >
+          <motion.div key={fieldItem.id} className="flex gap-2 rounded-lg border p-4 py-4">
             <div className="flex flex-col justify-between rounded-md bg-gray-100 px-1 py-2">
               <div className="flex flex-col gap-2">
                 <TooltipProvider>
@@ -479,11 +388,7 @@ export function Fields({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button
-                        onClick={() => handleRemove(index)}
-                        type="button"
-                        className="grid place-items-center"
-                      >
+                      <button onClick={() => handleRemove(index)} type="button" className="grid place-items-center">
                         <IconDelete />
                       </button>
                     </TooltipTrigger>
@@ -497,25 +402,16 @@ export function Fields({
                     <TooltipTrigger asChild>
                       <button
                         onClick={() => {
-                          form.setValue(
-                            `links.${index}.isShow`,
-                            !values.links[index].isShow,
-                          );
+                          form.setValue(`links.${index}.isShow`, !values.links[index].isShow);
                         }}
                         type="button"
                         className="grid place-items-center"
                       >
-                        {values.links[index].isShow ? (
-                          <IconEye />
-                        ) : (
-                          <IconEyeHide />
-                        )}
+                        {values.links[index].isShow ? <IconEye /> : <IconEyeHide />}
                       </button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>
-                        {values.links[index].isShow ? "隱藏欄位" : "顯示欄位"}
-                      </p>
+                      <p>{values.links[index].isShow ? '隱藏欄位' : '顯示欄位'}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -558,8 +454,8 @@ export function Fields({
               </div>
             </div>
             <div
-              className={cn("flex flex-1 flex-col gap-4", {
-                "opacity-50": !values.links[index].isShow,
+              className={cn('flex flex-1 flex-col gap-4', {
+                'opacity-50': !values.links[index].isShow
               })}
             >
               <FormField
@@ -570,18 +466,12 @@ export function Fields({
                     <div
                       className={cn(
                         classes,
-                        "flex w-full items-center overflow-hidden p-0 focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+                        'flex w-full items-center overflow-hidden p-0 focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2'
                       )}
                     >
-                      <FormLabel className="flex h-full w-14 items-center justify-center bg-gray-100">
-                        標題
-                      </FormLabel>
+                      <FormLabel className="flex h-full w-14 items-center justify-center bg-gray-100">標題</FormLabel>
                       <FormControl>
-                        <input
-                          className="h-full flex-1 px-2 py-2 outline-0"
-                          placeholder="圖片標題"
-                          {...field}
-                        />
+                        <input className="h-full flex-1 px-2 py-2 outline-0" placeholder="圖片標題" {...field} />
                       </FormControl>
                     </div>
                     <FormMessage />
@@ -596,12 +486,10 @@ export function Fields({
                     <div
                       className={cn(
                         classes,
-                        "flex w-full items-center overflow-hidden p-0 focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+                        'flex w-full items-center overflow-hidden p-0 focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2'
                       )}
                     >
-                      <FormLabel className="flex h-full w-14 items-center justify-center bg-gray-100">
-                        連結
-                      </FormLabel>
+                      <FormLabel className="flex h-full w-14 items-center justify-center bg-gray-100">連結</FormLabel>
                       <FormControl>
                         <input
                           className="h-full flex-1 px-2 py-2 outline-0"
@@ -622,32 +510,24 @@ export function Fields({
                     <div
                       className={cn(
                         classes,
-                        "flex w-full items-center overflow-hidden p-0 focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+                        'flex w-full items-center overflow-hidden p-0 focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2'
                       )}
                     >
-                      <FormLabel className="flex h-full w-14 items-center justify-center bg-gray-100">
-                        圖片
-                      </FormLabel>
+                      <FormLabel className="flex h-full w-14 items-center justify-center bg-gray-100">圖片</FormLabel>
                       <FormControl>
                         <>
                           <input
-                            className="h-full flex-1 px-2 py-2 outline-0 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground"
+                            className="max-w-[150px] h-full flex-1 px-2 py-2 outline-0 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground"
                             onChange={(e) => {
                               const file = e.target.files?.[0];
                               if (!file) return;
-                              if (
-                                file.type !== "image/png" &&
-                                file.type !== "image/jpeg"
-                              ) {
-                                toast.error(
-                                  "File type not supported (.png or .jpg only)",
-                                );
+                              if (file.type !== 'image/png' && file.type !== 'image/jpeg') {
+                                toast.error('File type not supported (.png or .jpg only)');
                               } else {
                                 const blob = new Blob([file], {
-                                  type: file.type,
+                                  type: file.type
                                 });
-                                const url =
-                                  URL.createObjectURL(blob) + "#" + file.type;
+                                const url = URL.createObjectURL(blob) + '#' + file.type;
                                 onChange(url);
                               }
                             }}
@@ -662,7 +542,7 @@ export function Fields({
                       <img
                         src={
                           field.value ||
-                          "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAQAAABeK7cBAAAADUlEQVR42mO8+Z+BAQAGawHafks3+QAAAABJRU5ErkJggg=="
+                          'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAQAAABeK7cBAAAADUlEQVR42mO8+Z+BAQAGawHafks3+QAAAABJRU5ErkJggg=='
                         }
                         alt="Preview"
                         className="h-full w-full object-cover"
@@ -677,7 +557,7 @@ export function Fields({
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Link
-                          href={"/admin/analytics?key=" + fieldItem.key}
+                          href={'/admin/analytics?key=' + fieldItem.key}
                           target="_blank"
                           className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-sm text-gray-400"
                         >
@@ -696,11 +576,7 @@ export function Fields({
           </motion.div>
         ))}
       </motion.div>
-      <Button
-        disabled={fields.length >= 10}
-        type="button"
-        onClick={() => append(defaultData.links[0])}
-      >
+      <Button disabled={fields.length >= 10} type="button" onClick={() => append(defaultData.links[0])}>
         新增圖片
       </Button>
     </>

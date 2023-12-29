@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import { FormSchema, defaultData } from "@/components/widgets/modals/Banner";
-import { cn } from "@/lib/utils";
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import "swiper/css";
-import "swiper/css/autoplay";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
-import { useDebounce } from "use-debounce";
-import * as z from "zod";
-import MaterialSymbolsImagesmodeOutlineSharp from "~icons/material-symbols/imagesmode-outline-sharp";
-import placeholder from "./assets/banner-placeholder.jpg";
+import { FormSchema, defaultData } from '@/components/widgets/modals/Banner';
+import { cn } from '@/lib/utils';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react';
+import 'swiper/css';
+import 'swiper/css/autoplay';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
+import { useDebounce } from 'use-debounce';
+import * as z from 'zod';
+import MaterialSymbolsImagesmodeOutlineSharp from '~icons/material-symbols/imagesmode-outline-sharp';
+import placeholder from './assets/banner-placeholder.jpg';
 
 const aspectRatioMap: {
   [key: string]: string | undefined;
 } = {
-  "16:9": "aspect-w-16 aspect-h-9",
-  "4:3": "aspect-w-4 aspect-h-3",
-  "1:1": "aspect-w-1 aspect-h-1",
+  '16:9': 'aspect-w-16 aspect-h-9',
+  '4:3': 'aspect-w-4 aspect-h-3',
+  '1:1': 'aspect-w-1 aspect-h-1'
 };
 
 function PlaceHolder() {
@@ -35,43 +35,35 @@ function PlaceHolder() {
   );
 }
 
-export default function Banner({
-  isPreview = false,
-  data,
-}: {
-  isPreview?: boolean;
-  data: z.infer<typeof FormSchema>;
-}) {
+export default function Banner({ isPreview = false, data }: { isPreview?: boolean; data: z.infer<typeof FormSchema> }) {
   const [debouncedData] = useDebounce(data, 500);
   const [swiperKey, setSwiperKey] = useState(0);
   const swiperRef = useRef<SwiperClass>();
   const {
     config: { autoPlay, autoPlaySpeed, aspectRatio, dots },
-    links,
+    links
   } = {
-    links:
-      data?.links && data.links.length
-        ? data.links
-        : isPreview
-          ? defaultData.links
-          : [],
+    links: data?.links && data.links.length ? data.links : isPreview ? defaultData.links : [],
     config: {
       ...defaultData.config,
-      ...data.config,
-    },
+      ...data.config
+    }
   };
+
   const linksFiltered = links.filter((link) => link.isShow);
 
   useEffect(() => {
     setSwiperKey((prev) => prev + 1);
   }, [debouncedData]);
+
   const recordClick = (key: string | null | undefined) => {
     if (!isPreview && key) {
       fetch(`/s/${key}?logger`, {
-        method: "POST",
+        method: 'POST'
       });
     }
   };
+
   if (!linksFiltered.length) return null;
   return (
     <div className="grid">
@@ -83,7 +75,7 @@ export default function Banner({
           autoPlay
             ? {
                 delay: Number(autoPlaySpeed) * 1000,
-                disableOnInteraction: false,
+                disableOnInteraction: false
               }
             : false
         }
@@ -93,7 +85,7 @@ export default function Banner({
           dots
             ? {
                 clickable: true,
-                clickableClass: "drop-shadow-lg",
+                clickableClass: 'drop-shadow-lg'
               }
             : false
         }
@@ -105,10 +97,7 @@ export default function Banner({
       >
         {Boolean(links && links.length) &&
           linksFiltered.map((link, index) => (
-            <SwiperSlide
-              key={index}
-              style={{ width: "1280px", maxWidth: "100%" }}
-            >
+            <SwiperSlide key={index} style={{ width: '1280px', maxWidth: '100%' }}>
               <Link
                 prefetch={false}
                 onClick={(e) => {
@@ -117,22 +106,22 @@ export default function Banner({
                 href={link.url}
                 target="_blank"
                 className={cn(
-                  "block overflow-hidden rounded-md",
+                  'block overflow-hidden rounded-md',
                   {
-                    border: isPreview,
+                    border: isPreview
                   },
                   {
-                    "pointer-events-none": !link.url,
+                    'pointer-events-none': !link.url
                   },
-                  aspectRatioMap[aspectRatio],
+                  aspectRatioMap[aspectRatio]
                 )}
               >
                 {link.image ? (
                   <Image
                     height={720}
                     width={1280}
-                    priority={false}
-                    alt={link.name || "Preview"}
+                    priority={true}
+                    alt={link.name || 'Preview'}
                     src={link.image || placeholder.src}
                     className="bg-slate-200 object-cover"
                   />

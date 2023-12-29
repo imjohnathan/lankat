@@ -1,9 +1,8 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { type Widgets } from "@/gql/graphql";
-import { cn } from "@/lib/utils";
-import { clsx } from "clsx";
+import { Button } from '@/components/ui/button';
+import { type Widgets } from '@/gql/graphql';
+import { cn } from '@/lib/utils';
 
 interface WidgetLinkProps {
   isShow: boolean;
@@ -13,17 +12,11 @@ interface WidgetLinkProps {
   isPreview: boolean;
 }
 
-export function PreviewItem({
-  isShow,
-  url,
-  name,
-  urlKey,
-  isPreview,
-}: WidgetLinkProps) {
+export function PreviewItem({ isShow, url, name, urlKey, isPreview }: WidgetLinkProps) {
   const recordClick = () => {
     if (!isPreview && urlKey) {
       fetch(`/s/${urlKey}?logger`, {
-        method: "POST",
+        method: 'POST'
       });
     }
   };
@@ -33,15 +26,15 @@ export function PreviewItem({
         onClick={recordClick}
         asChild
         variant="outline"
-        className={clsx(
-          "linkButton mx-auto h-auto w-full overflow-hidden truncate border-2 border-black py-3 text-base",
+        className={cn(
+          'linkButton mx-auto h-auto w-full overflow-hidden truncate border-2 border-black py-3 text-base',
           {
-            hidden: !isShow,
-          },
+            hidden: !isShow
+          }
         )}
       >
         <a href={url} target="_blank">
-          <p>{name ? name : "..."}</p>
+          <p>{name ? name : '...'}</p>
         </a>
       </Button>
     </div>
@@ -51,8 +44,7 @@ export function PreviewItem({
 export default function ButtonPreview({
   widget,
   className,
-  isPreview = false,
-  ...props
+  isPreview = false
 }: {
   widget: Widgets;
   isPreview: boolean;
@@ -63,24 +55,21 @@ export default function ButtonPreview({
   const widgetData = widgets_links.length
     ? widgets_links
     : isPreview
-      ? [{ isShow: true, id: 1, name: "", link: { url: "" } }]
+      ? [{ isShow: true, id: 1, name: '', link: { url: '', key: '' } }]
       : [];
   return (
-    <div
-      className={cn(
-        "mx-auto grid w-full max-w-full grid-cols-1 gap-4",
-        className,
-      )}
-    >
-      {widgetData.map(({ link: { url, key }, ...rest }, index) => (
-        <PreviewItem
-          key={index}
-          url={url}
-          urlKey={key}
-          isPreview={isPreview}
-          {...rest}
-        />
-      ))}
+    <div className={cn('mx-auto grid w-full max-w-full grid-cols-1 gap-4', className)}>
+      {widgetData.length &&
+        widgetData.map(({ link, name, isShow }, index) => (
+          <PreviewItem
+            key={index}
+            name={name ?? '...'}
+            url={link?.url ?? ''}
+            urlKey={link?.key ?? ''}
+            isShow={isShow ?? true}
+            isPreview={isPreview}
+          />
+        ))}
     </div>
   );
 }

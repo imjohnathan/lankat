@@ -1,5 +1,5 @@
-import { isValidUrl } from "@/lib/utils";
-import { parse } from "node-html-parser";
+import { isValidUrl } from '@/lib/utils';
+import { parse } from 'node-html-parser';
 
 type MetaTag = {
   property?: string;
@@ -24,22 +24,22 @@ const getHtml = async (url: string) => {
     const response = await fetch(url, {
       signal: controller.signal,
       headers: {
-        "User-Agent": "dub-bot/1.0",
-      },
+        'User-Agent': 'dub-bot/1.0'
+      }
     });
     clearTimeout(timeoutId);
     return await response.text();
   } catch (error) {
     if (error instanceof Error) {
-      if (error.name === "AbortError") {
+      if (error.name === 'AbortError') {
         // Handle fetch request abort (e.g., due to timeout)
-        console.error("Fetch request aborted due to timeout.");
+        console.error('Fetch request aborted due to timeout.');
       } else {
         // Handle other fetch errors
-        console.error("Fetch request failed:", error);
+        console.error('Fetch request failed:', error);
       }
     } else {
-      console.error("An unknown error occurred");
+      console.error('An unknown error occurred');
     }
     return null;
   }
@@ -47,19 +47,19 @@ const getHtml = async (url: string) => {
 
 const getHeadChildNodes = (html: string) => {
   const ast = parse(html); // parse the html into AST format with node-html-parser
-  const metaTags = ast.querySelectorAll("meta").map(({ attributes }) => {
+  const metaTags = ast.querySelectorAll('meta').map(({ attributes }) => {
     const property = attributes.property || attributes.name || attributes.href;
     return {
       property,
-      content: attributes.content,
+      content: attributes.content
     };
   });
-  const title = ast.querySelector("title")?.innerText;
-  const linkTags = ast.querySelectorAll("link").map(({ attributes }) => {
+  const title = ast.querySelector('title')?.innerText;
+  const linkTags = ast.querySelectorAll('link').map(({ attributes }) => {
     const { rel, href } = attributes;
     return {
       rel,
-      href,
+      href
     };
   });
 
@@ -83,8 +83,8 @@ export const getMetaTags = async (url: string): Promise<MetaTagsResult> => {
   if (!html) {
     return {
       title: url,
-      description: "No description",
-      image: null,
+      description: 'No description',
+      image: null
     };
   }
 
@@ -92,8 +92,8 @@ export const getMetaTags = async (url: string): Promise<MetaTagsResult> => {
 
   let object: Record<string, string> = {};
 
-  for (let k in metaTags) {
-    let { property, content } = metaTags[k];
+  for (let key in metaTags) {
+    let { property, content } = metaTags[key];
     if (property && content) {
       object[property] = content;
     }
@@ -106,21 +106,17 @@ export const getMetaTags = async (url: string): Promise<MetaTagsResult> => {
     }
   }
 
-  const title =
-    object["og:title"] || object["twitter:title"] || titleTag || url;
+  const title = object['og:title'] || object['twitter:title'] || titleTag || url;
   const description =
-    object["description"] ||
-    object["og:description"] ||
-    object["twitter:description"] ||
-    "No description";
+    object['description'] || object['og:description'] || object['twitter:description'] || 'No description';
   const image = getRelativeUrl(
     url,
-    object["og:image"] ||
-      object["twitter:image"] ||
-      object["image_src"] ||
-      object["icon"] ||
-      object["shortcut icon"] ||
-      "",
+    object['og:image'] ||
+      object['twitter:image'] ||
+      object['image_src'] ||
+      object['icon'] ||
+      object['shortcut icon'] ||
+      ''
   );
 
   return { title, description, image };

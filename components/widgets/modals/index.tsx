@@ -1,27 +1,33 @@
-"use client";
-import Banner from "@/components/widgets/modals/Banner";
-import ButtonEdit from "@/components/widgets/modals/ButtonEdit";
-import Separator from "@/components/widgets/modals/Separator";
-import Text from "@/components/widgets/modals/Text";
+'use client';
+import { Loading } from '@/components/Modal';
+import { Widgets } from '@/gql/graphql';
+import { lazy, Suspense } from 'react';
 
 interface WidgetEditModalProps {
   id: string;
-  type: keyof typeof modals; // Change this line
-  data: any;
+  type: keyof typeof modals;
+  widget: Widgets;
   open: boolean;
 }
 
 const modals = {
-  links: ButtonEdit,
-  separator: Separator,
-  banner: Banner,
-  text: Text,
+  links: lazy(() => import('@/components/widgets/modals/ButtonEdit')),
+  separator: lazy(() => import('@/components/widgets/modals/Separator')),
+  banner: lazy(() => import('@/components/widgets/modals/Banner')),
+  text: lazy(() => import('@/components/widgets/modals/Text'))
 };
 
-export default function WidgetEditModal({
-  type,
-  ...props
-}: WidgetEditModalProps) {
+export default function WidgetEditModal({ type, widget, ...props }: WidgetEditModalProps) {
   const Modal = modals[type];
-  return type && <Modal type={type} {...props} />;
+  return (
+    <Suspense
+      fallback={
+        <div className="h-[300px]">
+          <Loading />
+        </div>
+      }
+    >
+      {type && <Modal widget={widget} {...props} />}
+    </Suspense>
+  );
 }

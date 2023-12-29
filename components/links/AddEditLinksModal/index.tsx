@@ -1,40 +1,21 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import {
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input, classes } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Switch } from "@/components/ui/switch";
-import { supabase } from "@/lib/supabase";
-import {
-  cn,
-  getUrlWithoutUTMParams,
-  isValidUrl,
-  paramsMetadata,
-  truncate,
-} from "@/lib/utils";
-import useModalStore from "@/stores/useModalStore";
-import { gql, useMutation } from "@urql/next";
-import { produce } from "immer";
-import { nanoid } from "nanoid";
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { toast } from "sonner";
-import { useDebounce } from "use-debounce";
-import IconLoading from "~icons/line-md/loading-twotone-loop";
-import ImageUpload from "./ImageUpload";
-import Preview from "./Preview";
+'use client';
+import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input, classes } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Switch } from '@/components/ui/switch';
+import FooterButton from '@/components/widgets/modals/FooterButtons';
+import { supabase } from '@/lib/supabase';
+import { cn, getUrlWithoutUTMParams, isValidUrl, paramsMetadata, truncate } from '@/lib/utils';
+import useModalStore from '@/stores/useModalStore';
+import { gql, useMutation } from '@urql/next';
+import { produce } from 'immer';
+import { nanoid } from 'nanoid';
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
+import { useDebounce } from 'use-debounce';
+import ImageUpload from './ImageUpload';
+import Preview from './Preview';
 
 interface FormDataType {
   id?: string;
@@ -48,13 +29,13 @@ interface FormDataType {
 }
 
 const FORM_DATA = {
-  id: "",
-  key: "",
-  url: "",
+  id: '',
+  key: '',
+  url: '',
   parameters: {},
-  og_image: "",
-  og_title: "",
-  og_description: "",
+  og_image: '',
+  og_title: '',
+  og_description: ''
 };
 
 const query = gql`
@@ -63,14 +44,7 @@ const query = gql`
       object: $object
       on_conflict: {
         constraint: links_id_key
-        update_columns: [
-          key
-          url
-          og_image
-          og_title
-          og_description
-          parameters
-        ]
+        update_columns: [key, url, og_image, og_title, og_description, parameters]
       }
     ) {
       id
@@ -79,22 +53,23 @@ const query = gql`
 `;
 
 export default function AddLinksModal({ link }: { link: any }) {
+  const [isPreview, setIsPreview] = useState(false);
   const { isOpen, close } = useModalStore();
   const [data, setData] = useState(FORM_DATA as FormDataType);
   const { url, key, og_image, og_title, og_description } = data;
   const [generatingMetatags, setGeneratingMetatags] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [debouncedUrl] = useDebounce(getUrlWithoutUTMParams(url ?? ""), 500);
+  const [debouncedUrl] = useDebounce(getUrlWithoutUTMParams(url ?? ''), 500);
   const [{ fetching }, addLink] = useMutation(query);
   const isLoading = useMemo(
     () => fetching || generatingMetatags || uploading,
-    [, fetching, generatingMetatags, uploading],
+    [, fetching, generatingMetatags, uploading]
   );
   const generateKey = () => {
     setData(
       produce((data) => {
         data.key = nanoid(7);
-      }),
+      })
     );
   };
 
@@ -103,39 +78,30 @@ export default function AddLinksModal({ link }: { link: any }) {
       if (!key) generateKey();
       setData(
         produce((data) => {
-          data.og_title = "";
-          data.og_description = "";
-          data.og_image = "";
-        }),
+          data.og_title = '';
+          data.og_description = '';
+          data.og_image = '';
+        })
       );
-      // if url is valid, continue to generate metatags, else return null
       new URL(debouncedUrl);
       setGeneratingMetatags(true);
-      fetch(`/api/metatags?url=${debouncedUrl}`).then(async (res) => {
-        if (res.status === 200) {
-          const results = await res.json();
-          setData(
-            produce((data) => {
-              data.og_title = truncate(results.title, 120) ?? "";
-              data.og_description = truncate(results.description, 240) ?? "";
-              data.og_image = results.image;
-            }),
-          );
-        }
-        // set timeout to prevent flickering
-        setTimeout(() => setGeneratingMetatags(false), 200);
-      });
+      const res = await fetch(`/api/metatags?url=${debouncedUrl}`);
+      const results = await res.json();
+      if (res.status !== 200) throw new Error('not a valid url');
+      setData(
+        produce((data) => {
+          data.og_title = truncate(results.title, 120) ?? '';
+          data.og_description = truncate(results.description, 240) ?? '';
+          data.og_image = results.image;
+        })
+      );
+      setTimeout(() => setGeneratingMetatags(false), 200);
     } catch (e) {
-      console.log("not a valid url");
+      console.log('not a valid url');
     }
   }, [debouncedUrl, isOpen, data.id, og_title, og_image, og_description]);
   useEffect(() => {
-    if (
-      isOpen &&
-      debouncedUrl.length > 0 &&
-      !data.id &&
-      !(og_title || og_image || og_description)
-    ) {
+    if (isOpen && debouncedUrl.length > 0 && !data.id && !(og_title || og_image || og_description)) {
       getMetaTags();
     }
   }, [debouncedUrl, isOpen, data.id, og_title, og_image, og_description]);
@@ -151,7 +117,7 @@ export default function AddLinksModal({ link }: { link: any }) {
           data.og_title = link.og_title;
           data.og_description = link.og_description;
           data.parameters = link.parameters;
-        }),
+        })
       );
     }
   }, [link]);
@@ -161,26 +127,22 @@ export default function AddLinksModal({ link }: { link: any }) {
     try {
       const response = await fetch(blobUrl);
       const blob = await response.blob();
-      const extension = fileName.split(".").pop();
-      const filePath = `uploads/${new Date().getTime()}_${nanoid(
-        16,
-      )}.${extension}`;
+      const extension = fileName.split('.').pop();
+      const filePath = `uploads/${new Date().getTime()}_${nanoid(16)}.${extension}`;
 
-      const { error } = await supabase.storage
-        .from("links")
-        .upload(filePath, blob);
+      const { error } = await supabase.storage.from('links').upload(filePath, blob);
 
       if (error) {
         throw error;
       }
 
       const {
-        data: { publicUrl },
-      } = supabase.storage.from("links").getPublicUrl(filePath);
+        data: { publicUrl }
+      } = supabase.storage.from('links').getPublicUrl(filePath);
 
       return publicUrl;
     } catch (error) {
-      console.error("upload error", error as Error);
+      console.error('upload error', error as Error);
     } finally {
       setUploading(false);
     }
@@ -188,45 +150,37 @@ export default function AddLinksModal({ link }: { link: any }) {
 
   const sendForm = async () => {
     try {
-      if (!data.url || !isValidUrl(data.url))
-        return toast.error("請輸入正確連結網址！");
+      if (!data.url || !isValidUrl(data.url)) return toast.error('請輸入正確連結網址！');
       let dataToSend = { ...data };
       if (!data.id) {
         const { id, ...rest } = dataToSend;
         dataToSend = rest;
       }
-      if (
-        dataToSend?.og_image_fileName &&
-        dataToSend.og_image.startsWith("blob:")
-      ) {
-        const imageUrl = await handleFileUpload(
-          dataToSend.og_image,
-          dataToSend.og_image_fileName ?? "",
-        );
-        dataToSend.og_image = imageUrl ?? "";
+      if (dataToSend?.og_image_fileName && dataToSend.og_image.startsWith('blob:')) {
+        const imageUrl = await handleFileUpload(dataToSend.og_image, dataToSend.og_image_fileName ?? '');
+        dataToSend.og_image = imageUrl ?? '';
         const { og_image_fileName, ...rest } = dataToSend;
         dataToSend = rest;
       }
       const variables = {
         object: {
           ...dataToSend,
-          parameters: data.parameters || {},
-        },
+          parameters: data.parameters || {}
+        }
       };
       const { error } = await addLink(variables);
       if (error) throw new Error(error.message);
-      toast.success("連結新增成功！");
+      toast.success('連結新增成功！');
       close();
     } catch (e) {
       if (e instanceof Error) {
         console.error(e.message);
-        if (e.message.includes("links_key_key"))
-          e.message = "短網址已存在，請換一個試試";
-        toast.error("錯誤：" + e.message);
+        if (e.message.includes('links_key_key')) e.message = '短網址已存在，請換一個試試';
+        toast.error('錯誤：' + e.message);
         throw new Error(e.message);
       } else {
-        console.error("An unknown error occurred");
-        throw new Error("An unknown error occurred");
+        console.error('An unknown error occurred');
+        throw new Error('An unknown error occurred');
       }
     }
   };
@@ -236,8 +190,8 @@ export default function AddLinksModal({ link }: { link: any }) {
         <DialogTitle>新增連結</DialogTitle>
         <DialogDescription>新增完成後就可顯示在頁面裡面啦！</DialogDescription>
       </DialogHeader>
-      <div className="grid grid-cols-2 gap-4">
-        <ScrollArea className="h-[400px]">
+      <div className="flex flex-1 gap-4">
+        <ScrollArea className={cn('sm:max-h-[500px] flex-1 sm:px-4', { hidden: isPreview })}>
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -254,9 +208,7 @@ export default function AddLinksModal({ link }: { link: any }) {
                   className="text-xs font-medium"
                   onClick={(e) => {
                     e.preventDefault();
-                    const go = confirm(
-                      "重新抓取會清除標題、圖片、敘述，確定要重新抓取嗎？",
-                    );
+                    const go = confirm('重新抓取會清除標題、圖片、敘述，確定要重新抓取嗎？');
                     if (go) getMetaTags();
                   }}
                 >
@@ -265,12 +217,12 @@ export default function AddLinksModal({ link }: { link: any }) {
               </div>
               <Input
                 id="url"
-                value={url ?? ""}
+                value={url ?? ''}
                 onChange={(e) => {
                   setData(
                     produce((data) => {
                       data.url = e.target.value;
-                    }),
+                    })
                   );
                 }}
               />
@@ -284,9 +236,7 @@ export default function AddLinksModal({ link }: { link: any }) {
                     e.preventDefault();
                     let go = true;
                     if (data.id) {
-                      go = confirm(
-                        "重新產生會清除原有的短網址，過往的點擊成效將歸零，確定要重新產生嗎？",
-                      );
+                      go = confirm('重新產生會清除原有的短網址，過往的點擊成效將歸零，確定要重新產生嗎？');
                     }
                     if (go) generateKey();
                   }}
@@ -294,18 +244,18 @@ export default function AddLinksModal({ link }: { link: any }) {
                   隨機產生
                 </button>
               </div>
-              <div tabIndex={0} className={cn(classes, "flex")}>
+              <div tabIndex={0} className={cn(classes, 'flex')}>
                 <div className=" text-slate-400">https://lank.at/s/</div>
                 <input
                   className="h-full flex-1 pl-2 outline-0"
                   type="text"
                   id="key"
-                  value={key ?? ""}
+                  value={key ?? ''}
                   onChange={(e) => {
                     setData(
                       produce((data) => {
                         data.key = e.target.value;
-                      }),
+                      })
                     );
                   }}
                 />
@@ -315,12 +265,7 @@ export default function AddLinksModal({ link }: { link: any }) {
               <Label className="pb-1" htmlFor="og_image">
                 OG Image
               </Label>
-              <ImageUpload
-                data={data}
-                setData={setData}
-                filedName="og_image"
-                filedFileName="og_image_fileName"
-              />
+              <ImageUpload data={data} setData={setData} filedName="og_image" filedFileName="og_image_fileName" />
             </div>
             <div>
               <Label className="pb-1" htmlFor="og_title">
@@ -328,12 +273,12 @@ export default function AddLinksModal({ link }: { link: any }) {
               </Label>
               <Input
                 id="og_title"
-                value={og_title ?? ""}
+                value={og_title ?? ''}
                 onChange={(e) => {
                   setData(
                     produce((data) => {
                       data.og_title = e.target.value;
-                    }),
+                    })
                   );
                 }}
               />
@@ -344,12 +289,12 @@ export default function AddLinksModal({ link }: { link: any }) {
               </Label>
               <Input
                 id="og_description"
-                value={og_description ?? ""}
+                value={og_description ?? ''}
                 onChange={(e) => {
                   setData(
                     produce((data) => {
                       data.og_description = e.target.value;
-                    }),
+                    })
                   );
                 }}
               />
@@ -357,34 +302,27 @@ export default function AddLinksModal({ link }: { link: any }) {
             <UTMsection {...{ data, setData }} />
           </form>
         </ScrollArea>
-        <Preview {...{ data }} />
-      </div>
-      <DialogFooter>
-        <Button disabled={isLoading} form="linkForm" type="submit">
-          {isLoading ? (
-            <>
-              <IconLoading className="mr-3 h-4 w-4" />
-              請稍候
-            </>
-          ) : (
-            "儲存"
+        <div
+          className={cn(
+            'grid flex-1 place-items-center p-4',
+            { '<sm:hidden': !isPreview },
+            { 'max-h-[500px]': isPreview }
           )}
-        </Button>
+        >
+          <Preview {...{ data }} />
+        </div>
+      </div>
+      <DialogFooter className="<sm:flex-row gap-3">
+        <FooterButton setIsPreview={setIsPreview} isPreview={isPreview} isFetching={isLoading} formId="linkForm" />
       </DialogFooter>
     </>
   );
 }
 
-function UTMsection({
-  data,
-  setData,
-}: {
-  data: any;
-  setData: Dispatch<SetStateAction<any>>;
-}) {
+function UTMsection({ data, setData }: { data: any; setData: Dispatch<SetStateAction<any>> }) {
   const { parameters } = data;
   const isObjectEmpty = (objectName: {}) => {
-    return JSON.stringify(objectName) === "{}";
+    return JSON.stringify(objectName) === '{}';
   };
   const [utm, setUtm] = useState(false);
 
@@ -394,11 +332,7 @@ function UTMsection({
   }, [parameters]);
   return (
     <>
-      <div
-        className={cn(
-          "flex flex-row items-center justify-between space-y-0 rounded-lg border px-4 py-2",
-        )}
-      >
+      <div className={cn('flex flex-row items-center justify-between space-y-0 rounded-lg border px-4 py-2')}>
         <Label className="text-sm">UTM 參數設定</Label>
         <Switch className="scale-75" checked={utm} onCheckedChange={setUtm} />
       </div>
@@ -409,25 +343,22 @@ function UTMsection({
               key={key}
               className={cn(
                 classes,
-                "flex w-full items-center overflow-hidden p-0 focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+                'flex w-full items-center overflow-hidden p-0 focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2'
               )}
             >
-              <Label
-                htmlFor={key}
-                className="flex h-full w-28 items-center justify-center bg-gray-100 text-xs"
-              >
+              <Label htmlFor={key} className="flex h-full w-28 items-center justify-center bg-gray-100 text-xs">
                 {display}
               </Label>
               <input
                 className="h-full flex-1 px-2 py-2 outline-0"
                 name={key}
                 id={key}
-                value={parameters?.[key] ?? ""}
+                value={parameters?.[key] ?? ''}
                 onChange={(e) => {
                   setData(
                     produce((data: any) => {
                       data.parameters[key] = e.target.value;
-                    }),
+                    })
                   );
                 }}
               />

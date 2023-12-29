@@ -1,19 +1,12 @@
-"use client";
+'use client';
 
-import { Finish, Styles, UserName, UserUrl } from "@/components/hello/Steps";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { produce } from "immer";
-import { useSession } from "next-auth/react";
-import {
-  Suspense,
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import IconLoading from "~icons/line-md/loading-twotone-loop";
-
+import { Finish, Styles, UserName, UserUrl } from '@/components/hello/Steps';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
+import { produce } from 'immer';
+import { useSession } from 'next-auth/react';
+import { Suspense, createContext, useCallback, useContext, useEffect, useState } from 'react';
+import IconLoading from '~icons/line-md/loading-twotone-loop';
 interface FormState {
   selectedIndex: number;
   steps: {
@@ -53,51 +46,49 @@ const FORM_STATE: FormState = {
       valid: false,
       dirty: false,
       value: {
-        url_key: "",
-      },
+        url_key: ''
+      }
     },
     userName: {
       valid: false,
       dirty: false,
       value: {
-        display_name: "",
-        genres: [],
-      },
+        display_name: '',
+        genres: []
+      }
     },
     theme: {
       valid: false,
       dirty: false,
       value: {
-        theme: "0",
-      },
+        theme: '0'
+      }
     },
     finish: {
       valid: false,
-      dirty: false,
-    },
-  },
+      dirty: false
+    }
+  }
 };
 
 const FORM_STEPS = [
   {
-    label: `設定網址`,
+    label: `設定網址`
   },
   {
-    label: `設定名稱`,
+    label: `設定名稱`
   },
   {
-    label: `選擇風格`,
+    label: `選擇風格`
   },
   {
-    label: `完成`,
-  },
+    label: `完成`
+  }
 ];
 
 export const FormStateContext = createContext({
   form: FORM_STATE,
-  setForm: (
-    form: typeof FORM_STATE | ((form: typeof FORM_STATE) => typeof FORM_STATE),
-  ) => {},
+  setForm: (form: typeof FORM_STATE | ((form: typeof FORM_STATE) => typeof FORM_STATE)) => {}
 });
 
 function CreateTaskMultiStepFormContainer() {
@@ -107,7 +98,7 @@ function CreateTaskMultiStepFormContainer() {
     <FormStateContext.Provider
       value={{
         form,
-        setForm,
+        setForm
       }}
     >
       <CreateTaskMultiStepForm />
@@ -131,7 +122,7 @@ const CreateTaskMultiStepForm = () => {
     setForm(
       produce((form) => {
         form.selectedIndex += 1;
-      }),
+      })
     );
   }, [setForm]);
 
@@ -139,7 +130,7 @@ const CreateTaskMultiStepForm = () => {
     setForm(
       produce((form) => {
         form.selectedIndex -= 1;
-      }),
+      })
     );
   }, [setForm]);
 
@@ -148,10 +139,10 @@ const CreateTaskMultiStepForm = () => {
       setForm(
         produce((form) => {
           form.selectedIndex = index;
-        }),
+        })
       );
     },
-    [setForm],
+    [setForm]
   );
 
   const selectedIndex = form.selectedIndex;
@@ -163,16 +154,15 @@ const CreateTaskMultiStepForm = () => {
   useEffect(() => {
     setForm(
       produce((form) => {
-        form.steps.userUrl.value.url_key = session?.user?.url_key || "";
-        form.steps.userName.value.display_name =
-          session?.user?.display_name || "";
+        form.steps.userUrl.value.url_key = session?.user?.url_key || '';
+        form.steps.userName.value.display_name = session?.user?.display_name || '';
         form.steps.userName.value.genres = [13];
-      }),
+      })
     );
   }, []);
 
   return (
-    <div className="mx-auto mt-20 grid max-w-2xl place-items-center px-6">
+    <div className="mx-auto mt-20 grid max-w-2xl place-items-center px-6 <md:overflow-hidden">
       <Tabs
         defaultValue="0"
         value={String(selectedIndex)}
@@ -183,13 +173,25 @@ const CreateTaskMultiStepForm = () => {
       >
         <div className="flex justify-center">
           <TabsList>
-            <TabsTrigger disabled value="reg">
+            <TabsTrigger
+              disabled
+              value="reg"
+              className={cn({
+                '<sm:hidden': selectedIndex !== 0
+              })}
+            >
               1. 註冊
             </TabsTrigger>
             {FORM_STEPS.map((step, index) => {
               return (
-                <TabsTrigger key={index} value={String(index)}>
-                  {index + 2 + ". " + step.label}
+                <TabsTrigger
+                  key={index}
+                  value={String(index)}
+                  className={cn({
+                    '<sm:hidden': !(selectedIndex >= index - 1 && selectedIndex <= index + 1)
+                  })}
+                >
+                  {index + 2 + '. ' + step.label}
                 </TabsTrigger>
               );
             })}

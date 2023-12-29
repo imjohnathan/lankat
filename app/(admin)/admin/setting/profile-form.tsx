@@ -1,66 +1,37 @@
-"use client";
+'use client';
 
-import AvatarUpload from "@/components/setting/AvatarUpload";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { SOCIAL_LISTS } from "@/lib/constants/socialIcons";
-import {
-  DndContext,
-  KeyboardSensor,
-  PointerSensor,
-  closestCenter,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import AvatarUpload from '@/components/setting/AvatarUpload';
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { SOCIAL_LISTS } from '@/lib/constants/socialIcons';
+import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import {
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { gql, useMutation } from "@urql/next";
-import { useSession } from "next-auth/react";
-import { useContext } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
-import { toast } from "sonner";
-import * as z from "zod";
-import IconLoading from "~icons/line-md/loading-twotone-loop";
-import IconMove from "~icons/solar/sort-outline";
-import IconDelete from "~icons/solar/trash-bin-minimalistic-outline";
-import { ProfileContext } from "./layout.client";
+  verticalListSortingStrategy
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { gql, useMutation } from '@urql/next';
+import { useSession } from 'next-auth/react';
+import { useContext } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import * as z from 'zod';
+import IconLoading from '~icons/line-md/loading-twotone-loop';
+import IconMove from '~icons/solar/sort-outline';
+import IconDelete from '~icons/solar/trash-bin-minimalistic-outline';
+import { ProfileContext } from './layout.client';
 
 const updateUserQuery = gql`
   mutation UpdateUser(
-    $_set: users_set_input! = {
-      bio: ""
-      display_name: ""
-      email: ""
-      image: ""
-      social_links: ""
-      url_key: ""
-    }
-    $pk_columns: users_pk_columns_input! = {
-      id: "4a5e811c-e66b-4b3a-afe0-5c0e8dbdd447"
-    }
+    $_set: users_set_input! = { bio: "", display_name: "", email: "", image: "", social_links: "", url_key: "" }
+    $pk_columns: users_pk_columns_input! = { id: "4a5e811c-e66b-4b3a-afe0-5c0e8dbdd447" }
   ) {
     update_users_by_pk(pk_columns: $pk_columns, _set: $_set) {
       id
@@ -73,38 +44,44 @@ const profileFormSchema = z.object({
   username: z
     .string()
     .min(2, {
-      message: "Username must be at least 2 characters.",
+      message: 'Username must be at least 2 characters.'
     })
     .max(30, {
-      message: "Username must not be longer than 30 characters.",
+      message: 'Username must not be longer than 30 characters.'
     }),
   email: z
     .string({
-      required_error: "Please select an email to display.",
+      required_error: 'Please select an email to display.'
     })
     .email(),
   bio: z.string().max(160).min(4),
   url_key: z.string().max(30).min(3),
   urls: z
     .array(
-      z.object({
-        service: z.string(),
-        value: z.string().url({ message: "Please enter a valid URL." }),
-      }),
+      z
+        .object({
+          service: z.string(),
+          value: z.string().url({ message: 'Please enter a valid URL.' })
+        })
+        .or(
+          z.object({
+            service: z.string(),
+            value: z.string().email({ message: 'Please enter a email.' })
+          })
+        )
     )
-    .optional(),
+    .optional()
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export function SortableItem(props: any) {
   const { form, field, index, remove } = props;
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: field.id, data: { index } });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: field.id, data: { index } });
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
+    transition
   };
   return (
     <div ref={setNodeRef} style={style}>
@@ -113,13 +90,11 @@ export function SortableItem(props: any) {
         key={field.id}
         name={`urls.${index}.value`}
         render={({ field: fieldItem }) => {
-          const findSocial = SOCIAL_LISTS.find(
-            (item) => item.value === field.service,
-          );
+          const findSocial = SOCIAL_LISTS.find((item) => item.value === field.service);
           const Icon = findSocial?.icon;
           const label = findSocial?.label;
           const pttn = findSocial?.pttn;
-          const placeholder = label && pttn ? `${label} / ${pttn}` : "URL";
+          const placeholder = label && pttn ? `${label} / ${pttn}` : 'URL';
           return (
             <FormItem>
               <FormControl>
@@ -158,28 +133,28 @@ export function ProfileForm() {
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
+      coordinateGetter: sortableKeyboardCoordinates
+    })
   );
 
   const defaultValues: Partial<ProfileFormValues> = {
-    bio: user.bio ?? "",
+    bio: user.bio ?? '',
     urls: user.social_links,
-    username: user.display_name ?? "",
-    email: user.email ?? "",
-    avatar: user.image ?? "",
-    url_key: user.url_key ?? "",
+    username: user.display_name ?? '',
+    email: user.email ?? '',
+    avatar: user.image ?? '',
+    url_key: user.url_key ?? ''
   };
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues,
-    mode: "onChange",
+    mode: 'onChange'
   });
 
   const { fields, append, remove, move } = useFieldArray({
-    name: "urls",
-    control: form.control,
+    name: 'urls',
+    control: form.control
   });
 
   async function onSubmit(data: ProfileFormValues) {
@@ -191,19 +166,19 @@ export function ProfileForm() {
           email: data.email,
           image: data.avatar,
           url_key: data.url_key,
-          social_links: data.urls,
+          social_links: data.urls
         },
         pk_columns: {
-          id: user.id,
-        },
+          id: user.id
+        }
       };
       const { data: updateData, error } = await updateUser(variables);
       if (error) throw new Error(error.message);
-      toast.success("更新成功");
+      toast.success('更新成功');
       update();
     } catch (e) {
       console.error(e);
-      toast.error("更新失敗");
+      toast.error('更新失敗');
     }
   }
 
@@ -213,13 +188,13 @@ export function ProfileForm() {
     if (active.id !== over.id) {
       const {
         data: {
-          current: { index: activeIndex },
-        },
+          current: { index: activeIndex }
+        }
       } = active;
       const {
         data: {
-          current: { index: activeOver },
-        },
+          current: { index: activeOver }
+        }
       } = over;
       move(activeIndex, activeOver);
     }
@@ -291,9 +266,7 @@ export function ProfileForm() {
         />
         <div>
           <FormLabel>社群連結</FormLabel>
-          <FormDescription className="my-2">
-            您可以在這裡加入您的社群連結，讓大家更了解您。
-          </FormDescription>
+          <FormDescription className="my-2">您可以在這裡加入您的社群連結，讓大家更了解您。</FormDescription>
           <div className="grid gap-3">
             <DndContext
               sensors={sensors}
@@ -301,23 +274,14 @@ export function ProfileForm() {
               onDragEnd={handleDragEnd}
               modifiers={[restrictToVerticalAxis]}
             >
-              <SortableContext
-                items={fields.map(({ id }) => id)}
-                strategy={verticalListSortingStrategy}
-              >
+              <SortableContext items={fields.map(({ id }) => id)} strategy={verticalListSortingStrategy}>
                 {fields.map((field, index) => (
-                  <SortableItem
-                    key={field.id}
-                    form={form}
-                    field={field}
-                    index={index}
-                    remove={remove}
-                  />
+                  <SortableItem key={field.id} form={form} field={field} index={index} remove={remove} />
                 ))}
               </SortableContext>
             </DndContext>
           </div>
-          <div className="mx-auto mt-6 grid max-w-lg grid-cols-10 place-items-center gap-4">
+          <div className="mx-auto mt-6 grid max-w-lg grid-cols-6 sm:grid-cols-10 place-items-center gap-4">
             {SOCIAL_LISTS.map(({ icon, value, label }, index) => {
               const Icon = icon;
               return (
@@ -331,8 +295,8 @@ export function ProfileForm() {
                         size="icon"
                         onClick={() =>
                           append({
-                            value: "",
-                            service: value,
+                            value: '',
+                            service: value
                           })
                         }
                       >
@@ -355,7 +319,7 @@ export function ProfileForm() {
               請稍候
             </>
           ) : (
-            "儲存"
+            '儲存'
           )}
         </Button>
       </form>

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   AlertDialog,
@@ -6,21 +6,16 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import useModalStore, { components } from "@/stores/useModalStore";
-import { Dispatch, SetStateAction, Suspense, useState } from "react";
-import IconLoading from "~icons/line-md/loading-twotone-loop";
+  AlertDialogTitle
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
+import useModalStore, { components } from '@/stores/useModalStore';
+import { Dispatch, SetStateAction, Suspense, useState } from 'react';
+import IconLoading from '~icons/line-md/loading-twotone-loop';
 
-const AlertDialogDemo = ({
-  open,
-  setOpen,
-}: {
-  open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
-}) => {
+const AlertDialogDemo = ({ open, setOpen }: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>> }) => {
   const { close } = useModalStore();
   return (
     <AlertDialog
@@ -35,9 +30,7 @@ const AlertDialogDemo = ({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>注意</AlertDialogTitle>
-          <AlertDialogDescription>
-            有未儲存的變更，確定要取消編輯嗎？
-          </AlertDialogDescription>
+          <AlertDialogDescription>有未儲存的變更，確定要取消編輯嗎？</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <Button
@@ -66,15 +59,14 @@ const AlertDialogDemo = ({
   );
 };
 
-const Loading = () => (
+export const Loading = () => (
   <div className="fixed inset-0 z-50 grid place-items-center bg-background/80 backdrop-blur-sm">
     <IconLoading className="h-8 w-8" />
   </div>
 );
 
 const Modal = () => {
-  const { component, props, isLoading, isOpen, close, unSavedChanges } =
-    useModalStore();
+  const { component, props, isLoading, isOpen, close, unSavedChanges } = useModalStore();
   const ModalComponent = component ? components[component] : () => <></>;
   const [openConfirm, setOpenConfirm] = useState(false);
   return (
@@ -87,7 +79,7 @@ const Modal = () => {
             if (!open) return close();
           }}
         >
-          <DialogContent className={props.className + " overflow-y-auto"}>
+          <DialogContent className={cn(props.className, 'flex flex-col overflow-y-auto')}>
             {component && <ModalComponent {...props} isLoading={isLoading} />}
           </DialogContent>
         </Dialog>
