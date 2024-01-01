@@ -35,7 +35,13 @@ function PlaceHolder() {
   );
 }
 
-export default function Banner({ isPreview = false, data }: { isPreview?: boolean; data: z.infer<typeof FormSchema> }) {
+export default function Banner({
+  isPreview = false,
+  data
+}: {
+  isPreview?: boolean;
+  data: Partial<z.infer<typeof FormSchema>>;
+}) {
   const [debouncedData] = useDebounce(data, 500);
   const [swiperKey, setSwiperKey] = useState(0);
   const swiperRef = useRef<SwiperClass>();

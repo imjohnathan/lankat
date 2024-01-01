@@ -1,17 +1,17 @@
 //import { LoadingSpinner, useMediaQuery } from "@dub/ui";
-import { StatsContext } from "@/app/(admin)/admin/analytics/page";
-import useMediaQuery from "@/components/ui/hooks/useMediaQuery";
-import { fetcher, nFormatter } from "@/lib/utils";
-import { AxisBottom, AxisLeft } from "@visx/axis";
-import { localPoint } from "@visx/event";
-import { GridRows } from "@visx/grid";
-import { scaleBand, scaleLinear } from "@visx/scale";
-import { useTooltip, useTooltipInPortal } from "@visx/tooltip";
-import { motion } from "framer-motion";
-import { useCallback, useContext, useMemo } from "react";
-import useSWR from "swr";
-import IconLoading from "~icons/line-md/loading-twotone-loop";
-import styles from "./bar-chart.module.css";
+import { StatsContext } from '@/app/(admin)/admin/analytics/page';
+import useMediaQuery from '@/components/ui/hooks/useMediaQuery';
+import { fetcher, nFormatter } from '@/lib/utils';
+import { AxisBottom, AxisLeft } from '@visx/axis';
+import { localPoint } from '@visx/event';
+import { GridRows } from '@visx/grid';
+import { scaleBand, scaleLinear } from '@visx/scale';
+import { useTooltip, useTooltipInPortal } from '@visx/tooltip';
+import { motion } from 'framer-motion';
+import { useCallback, useContext, useMemo } from 'react';
+import useSWR from 'swr';
+import IconLoading from '~icons/line-md/loading-twotone-loop';
+import styles from './bar-chart.module.css';
 
 const LEFT_AXIS_WIDTH = 30;
 const CHART_MAX_HEIGHT = 400;
@@ -34,21 +34,15 @@ const rangeFormatter = (maxN: number): number => {
 
 export default function BarChart() {
   const { queryString, interval } = useContext(StatsContext);
-  const { data } = useSWR<{ start: Date; clicks: number }[]>(
-    `/api/stats/timeseries?${queryString}`,
-    fetcher,
-    { revalidateOnFocus: false },
-  );
+  const { data } = useSWR<{ start: Date; clicks: number }[]>(`/api/stats/timeseries?${queryString}`, fetcher, {
+    revalidateOnFocus: false
+  });
 
   const { width: screenWidth } = useMediaQuery();
 
   const [CHART_WIDTH, CHART_HEIGHT] = useMemo(() => {
-    const width = screenWidth
-      ? Math.min(screenWidth * 0.8, CHART_MAX_WIDTH)
-      : CHART_MAX_WIDTH;
-    const height = screenWidth
-      ? Math.min(screenWidth * 0.5, CHART_MAX_HEIGHT)
-      : CHART_MAX_HEIGHT;
+    const width = screenWidth ? Math.min(screenWidth * 0.8, CHART_MAX_WIDTH) : CHART_MAX_WIDTH;
+    const height = screenWidth ? Math.min(screenWidth * 0.5, CHART_MAX_HEIGHT) : CHART_MAX_HEIGHT;
     return [width, height];
   }, [screenWidth]);
 
@@ -56,77 +50,65 @@ export default function BarChart() {
     return scaleBand({
       range: [0, CHART_WIDTH],
       domain: data ? data.map((d) => d.start) : [],
-      padding: 0.4,
+      padding: 0.4
     });
   }, [data, interval]);
 
   const yScale = useMemo(() => {
     return scaleLinear({
       range: [CHART_HEIGHT, 0],
-      domain: [
-        0,
-        data ? rangeFormatter(Math.max(...data.map((d) => d.clicks))) : 0,
-      ],
+      domain: [0, data ? rangeFormatter(Math.max(...data.map((d) => d.clicks))) : 0],
       nice: true,
-      round: true,
+      round: true
     });
   }, [data, interval]);
 
   const formatTimestamp = useCallback(
     (e: Date) => {
       switch (interval) {
-        case "1h":
-          return new Date(e).toLocaleTimeString("zh-tw", {
-            hour: "numeric",
-            minute: "numeric",
+        case '1h':
+          return new Date(e).toLocaleTimeString('zh-tw', {
+            hour: 'numeric',
+            minute: 'numeric'
           });
-        case "24h":
+        case '24h':
           return new Date(e)
-            .toLocaleDateString("zh-tw", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
+            .toLocaleDateString('zh-tw', {
+              month: 'short',
+              day: 'numeric',
+              hour: 'numeric'
             })
-            .replace(",", " ");
-        case "90d":
-        case "all":
-          return new Date(e).toLocaleDateString("zh-tw", {
-            month: "short",
-            year: "numeric",
+            .replace(',', ' ');
+        case '90d':
+        case 'all':
+          return new Date(e).toLocaleDateString('zh-tw', {
+            month: 'short',
+            year: 'numeric'
           });
         default:
-          return new Date(e).toLocaleDateString("zh-tw", {
-            month: "short",
-            day: "numeric",
+          return new Date(e).toLocaleDateString('zh-tw', {
+            month: 'short',
+            day: 'numeric'
           });
       }
     },
-    [data, interval],
+    [data, interval]
   );
-  const {
-    tooltipOpen,
-    tooltipLeft,
-    tooltipTop,
-    tooltipData,
-    hideTooltip,
-    showTooltip,
-  } = useTooltip<TooltipData>();
+  const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = useTooltip<TooltipData>();
 
   const { containerRef, TooltipInPortal } = useTooltipInPortal({
     // TooltipInPortal is rendered in a separate child of <body /> and positioned
     // with page coordinates which should be updated on scroll. consider using
     // Tooltip or TooltipWithBounds if you don't need to render inside a Portal
     scroll: true,
-    debounce: 100, // to avoid a weird tooltip flickering bug
+    debounce: 100 // to avoid a weird tooltip flickering bug
   });
 
   let tooltipTimeout: number | undefined;
   return (
     <figure
       className={`
-        ${
-          data && data.length > 0 ? "" : "items-center justify-center"
-        } my-10 flex`}
+        ${data && data.length > 0 ? '' : 'items-center justify-center'} my-10 flex`}
       style={{ width: CHART_WIDTH, height: CHART_HEIGHT }}
     >
       {data && data.length > 0 ? (
@@ -140,40 +122,31 @@ export default function BarChart() {
               scale={yScale}
               tickFormat={(d) => nFormatter(d as number)}
               tickLabelProps={() => ({
-                fill: "#666666",
-                filter: data ? "none" : "blur(8px)",
+                fill: '#666666',
+                filter: data ? 'none' : 'blur(8px)',
                 fontSize: 14,
-                textAnchor: "start",
-                transition: "all 0.4s ease-in-out",
+                textAnchor: 'start',
+                transition: 'all 0.4s ease-in-out'
               })}
             />
           </svg>
-          <svg
-            className="overflow-visible"
-            height={CHART_HEIGHT}
-            width={`calc(100% - ${LEFT_AXIS_WIDTH}px)`}
-          >
+          <svg className="overflow-visible" height={CHART_HEIGHT} width={`calc(100% - ${LEFT_AXIS_WIDTH}px)`}>
             <AxisBottom
               hideAxisLine
               hideTicks
               scale={xScale}
               tickFormat={formatTimestamp}
               tickLabelProps={() => ({
-                fill: "#666666",
-                filter: data ? "none" : "blur(8px)",
+                fill: '#666666',
+                filter: data ? 'none' : 'blur(8px)',
                 fontSize: 12,
-                textAnchor: "middle",
-                transition: "all 0.4s ease-in-out",
+                textAnchor: 'middle',
+                transition: 'all 0.4s ease-in-out'
               })}
               numTicks={6}
               top={CHART_HEIGHT - 5}
             />
-            <GridRows
-              numTicks={5}
-              scale={yScale}
-              stroke="#E1E1E1"
-              width={CHART_WIDTH}
-            />
+            <GridRows numTicks={5} scale={yScale} stroke="#E1E1E1" width={CHART_WIDTH} />
             {data.map(({ start, clicks }, idx) => {
               const barWidth = xScale.bandwidth();
               const barHeight = CHART_HEIGHT - (yScale(clicks) ?? 0);
@@ -182,10 +155,10 @@ export default function BarChart() {
               return (
                 <motion.rect
                   key={`bar-${interval}-${start}`}
-                  transition={{ ease: "easeOut", duration: 0.3 }}
+                  transition={{ ease: 'easeOut', duration: 0.3 }}
                   className="!origin-bottom fill-[#2563eb]"
-                  initial={{ transform: "scaleY(0)" }}
-                  animate={{ transform: "scaleY(1)" }}
+                  initial={{ transform: 'scaleY(0)' }}
+                  animate={{ transform: 'scaleY(1)' }}
                   x={barX}
                   y={barY}
                   width={barWidth}
@@ -202,7 +175,7 @@ export default function BarChart() {
                     // is what containerRef is set to in this example.
                     const eventSvgCoords = localPoint(event) ?? {
                       x: 0,
-                      y: 0,
+                      y: 0
                     };
                     const left = barX + barWidth / 2 - 81;
                     showTooltip({
@@ -210,10 +183,10 @@ export default function BarChart() {
                         start,
                         end: data[idx + 1]?.start ?? new Date(),
                         clicks,
-                        link: "https://google.com",
+                        link: 'https://google.com'
                       },
                       tooltipTop: eventSvgCoords.y - 150,
-                      tooltipLeft: left,
+                      tooltipLeft: left
                     });
                   }}
                 />
@@ -221,29 +194,19 @@ export default function BarChart() {
             })}
           </svg>
           {tooltipOpen && tooltipData && (
-            <TooltipInPortal
-              top={tooltipTop}
-              left={tooltipLeft}
-              className={styles.tooltip}
-            >
+            <TooltipInPortal top={tooltipTop} left={tooltipLeft} className={styles.tooltip}>
               {
                 (
                   <div className="text-center">
                     <h3 className="my-1 text-black">
-                      <span className="text-2xl font-semibold">
-                        {nFormatter(tooltipData.clicks)}
-                      </span>{" "}
-                      點擊
+                      <span className="text-2xl font-semibold">{nFormatter(tooltipData.clicks)}</span> 點擊
                     </h3>
                     <p className="text-xs text-gray-600">
-                      {formatTimestamp(tooltipData.start)} -{" "}
-                      {interval === "24h"
-                        ? new Date(tooltipData.end).toLocaleTimeString(
-                            "zh-tw",
-                            {
-                              hour: "numeric",
-                            },
-                          )
+                      {formatTimestamp(tooltipData.start)} -{' '}
+                      {interval === '24h'
+                        ? new Date(tooltipData.end).toLocaleTimeString('zh-tw', {
+                            hour: 'numeric'
+                          })
                         : formatTimestamp(tooltipData.end)}
                     </p>
                   </div>

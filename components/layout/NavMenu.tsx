@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import SolarSquareTopDownLinear from '~icons/solar/square-top-down-linear';
+import { useSideMenu } from './SideMenu';
 
 const NavLink = ({
   href,
@@ -25,6 +26,7 @@ const NavLink = ({
 }) => {
   const currentRoute = usePathname();
   const isActive = currentRoute === href;
+  const { setIsOpen } = useSideMenu();
 
   return (
     <NavigationMenuItem>
@@ -34,6 +36,7 @@ const NavLink = ({
           active={isActive}
           target={target}
           {...props}
+          onClick={() => setIsOpen(false)}
         >
           {children}
         </NavigationMenuLink>

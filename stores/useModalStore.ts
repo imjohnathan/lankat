@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { lazy } from "react";
-import { create } from "zustand";
+import { lazy } from 'react';
+import { create } from 'zustand';
 
 export const components = {
   LoadingModal: lazy(() => new Promise(() => {})),
-  EditModal: lazy(() => import("@/components/widgets/modals")),
-  QRcodeModal: lazy(() => import("@/components/userpage/modals/QRcode")),
-  AddEditLinkModal: lazy(() => import("@/components/links/AddEditLinksModal")),
+  EditModal: lazy(() => import('@/components/widgets/modals')),
+  QRcodeModal: lazy(() => import('@/components/userpage/modals/QRcode')),
+  AddEditLinkModal: lazy(() => import('@/components/links/AddEditLinksModal'))
 };
 
 interface State {
@@ -33,7 +33,7 @@ const initialState = {
   isOpen: false,
   props: {},
   isLoading: false,
-  unSavedChanges: false,
+  unSavedChanges: false
 };
 
 const useModalStore = create<State & Actions>((set, get) => ({
@@ -48,18 +48,18 @@ const useModalStore = create<State & Actions>((set, get) => ({
     }
 
     const body = document.body;
-    body.style.overflowY = "hidden";
+    body.style.overflowY = 'hidden';
 
     set({
       isOpen: true,
       component,
       props: props || {},
-      isLoading,
+      isLoading
     });
   },
   close: () => {
     const body = document.body;
-    body.style.overflowY = "";
+    body.style.overflowY = '';
 
     set({ isOpen: false });
 
@@ -72,28 +72,28 @@ const useModalStore = create<State & Actions>((set, get) => ({
   },
   openEditModal: async (props: Partial<State>) => {
     get().open({
-      props: { ...props, className: "max-w-screen-lg sm:max-h-[90vh]" },
-      component: "EditModal",
+      props: { ...props, className: 'max-w-screen-lg sm:max-h-[90vh] <sm:max-h-[calc(100%-4rem)] <sm:h-full' },
+      component: 'EditModal'
     });
   },
   openLoadingModal: async (props: Partial<State>) => {
     get().open({
       props,
-      component: "LoadingModal",
+      component: 'LoadingModal'
     });
   },
   openQRcodeModal: async (props: Partial<State>) => {
     get().open({
       props,
-      component: "QRcodeModal",
+      component: 'QRcodeModal'
     });
   },
   openAddEditLinkModal: async (props: Partial<State>) => {
     get().open({
-      props: { ...props, className: "max-w-screen-lg sm:max-h-[90vh]" },
-      component: "AddEditLinkModal",
+      props: { ...props, className: 'max-w-screen-lg sm:max-h-[90vh] <sm:max-h-[calc(100%-4rem)] <sm:h-full' },
+      component: 'AddEditLinkModal'
     });
-  },
+  }
 }));
 
 export default useModalStore;

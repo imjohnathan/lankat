@@ -568,7 +568,7 @@ export function Finish(
                 left: 0
               }}
             />
-            <div className="iframe w-screen relative ml-[-50vw] left-[50%]" style={{ opacity: 0 }}>
+            <div className="iframe <sm:w-screen relative <sm:ml-[-50vw] <sm:left-[50%]" style={{ opacity: 0 }}>
               <PreviewPage
                 isFloating={false}
                 wrapperClass="scale-100"

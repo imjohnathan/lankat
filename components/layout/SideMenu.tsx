@@ -3,7 +3,7 @@
 import Logo from '@/components/logo';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useSession } from 'next-auth/react';
-import { createContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import NavMenu from './NavMenu';
 
 export const SideMenuContext = createContext<{
@@ -32,7 +32,7 @@ export function SideMenuProvider({ children }: { children: React.ReactNode }) {
               <Logo className="h-6" />
             </SheetTitle>
             <div className="pl-4 pt-4">
-              <NavMenu WrapperClassName="flex-col" url_key={session?.user.url_key ?? ''} isSlide />
+              <NavMenu WrapperClassName="flex-col text-left" url_key={session?.user.url_key ?? ''} isSlide />
             </div>
           </SheetHeader>
         </SheetContent>
@@ -40,3 +40,11 @@ export function SideMenuProvider({ children }: { children: React.ReactNode }) {
     </SideMenuContext.Provider>
   );
 }
+
+export const useSideMenu = () => {
+  const cxt = useContext(SideMenuContext);
+  if (cxt === undefined) {
+    throw new Error('useSideMenu must be used within a SideMenuProvider');
+  }
+  return cxt;
+};

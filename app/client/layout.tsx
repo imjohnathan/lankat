@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { getDeployGraphqlEndpoint } from "@/lib/utils";
-import { devtoolsExchange } from "@urql/devtools";
-import { authExchange } from "@urql/exchange-auth";
-import { cacheExchange as graphCacheExchange } from "@urql/exchange-graphcache";
+import { getDeployGraphqlEndpoint } from '@/lib/utils';
+import { devtoolsExchange } from '@urql/devtools';
+import { authExchange } from '@urql/exchange-auth';
+import { cacheExchange as graphCacheExchange } from '@urql/exchange-graphcache';
 import {
   UrqlProvider,
   cacheExchange,
   createClient,
   fetchExchange,
   ssrExchange,
-  subscriptionExchange,
-} from "@urql/next";
-import { createClient as createWSClient } from "graphql-ws";
-import { useSession } from "next-auth/react";
-import { useMemo } from "react";
+  subscriptionExchange
+} from '@urql/next';
+import { createClient as createWSClient } from 'graphql-ws';
+import { useSession } from 'next-auth/react';
+import { ReactNode, useMemo } from 'react';
 
-export default function Layout({ children }: React.PropsWithChildren) {
+export default function Layout({ children }: { children: ReactNode }) {
   const { data: session } = useSession();
   const [client, ssr] = useMemo(() => {
     const ssr = ssrExchange();
@@ -25,15 +25,20 @@ export default function Layout({ children }: React.PropsWithChildren) {
         addAuthToOperation(operation) {
           if (!session?.accessToken) return operation;
           return utils.appendHeaders(operation, {
-            Authorization: `Bearer ${session?.accessToken}`,
+            Authorization: `Bearer ${session?.accessToken}`
           });
         },
+        didAuthError() {
+          return false;
+        },
+        refreshAuth() {
+          return Promise.resolve();
+        }
       };
     });
 
     const wsClient = createWSClient({
-      url:
-        process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT?.replace("https", "wss") ?? "",
+      url: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT?.replace('https', 'wss') ?? ''
     });
 
     const cache = graphCacheExchange({
@@ -41,25 +46,25 @@ export default function Layout({ children }: React.PropsWithChildren) {
         Mutation: {
           mutationField: (result, args, cache, info) => {
             console.log(result, args, cache, info);
-          },
-        },
-      },
+          }
+        }
+      }
     });
 
     const subscription = subscriptionExchange({
       forwardSubscription(request) {
-        const input = { ...request, query: request.query || "" };
+        const input = { ...request, query: request.query || '' };
         return {
           subscribe(sink) {
             const unsubscribe = wsClient.subscribe(input, sink);
             return { unsubscribe };
-          },
+          }
         };
-      },
+      }
     });
 
     const client = createClient({
-      url: getDeployGraphqlEndpoint() ?? "",
+      url: getDeployGraphqlEndpoint() ?? '',
       fetchOptions: () => ({}),
       exchanges: [
         devtoolsExchange,
@@ -68,9 +73,9 @@ export default function Layout({ children }: React.PropsWithChildren) {
         //cache,
         ssr,
         fetchExchange,
-        subscription,
+        subscription
       ],
-      suspense: true,
+      suspense: true
     });
 
     return [client, ssr];

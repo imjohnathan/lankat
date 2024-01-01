@@ -32,9 +32,8 @@ export default async function Header({ type }: { type?: string }) {
             {session?.user.url_key && <NavMenu url_key={session?.user.url_key} />}
           </div>
           <div className="flex justify-end gap-2">
-            {/* @ts-expect-error Server Component */}
-            {session?.user && <UserNav className="flex justify-end" />}
-            <SideMenuButton />
+            <UserNav className="flex justify-end" />
+            {session?.user && <SideMenuButton />}
           </div>
         </div>
       </header>

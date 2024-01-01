@@ -1,18 +1,11 @@
-import { ScrollArea } from "@/components/ui/scroll-area";
-import UserPage from "@/components/userpage";
-import { client } from "@/lib/nodeClient";
-import { gql } from "@urql/next";
-import { notFound } from "next/navigation";
-import { NextFetchEvent, NextRequest } from "next/server";
+import UserPage from '@/components/userpage';
+import { client } from '@/lib/nodeClient';
+import { gql } from '@urql/next';
+import { notFound } from 'next/navigation';
+import { NextFetchEvent, NextRequest } from 'next/server';
 const query = gql`
   query GetUserWidgets($userKey: String!) {
-    widgets(
-      where: {
-        isShow: { _eq: true }
-        userByUser: { url_key: { _eq: $userKey } }
-      }
-      order_by: { sort: asc }
-    ) {
+    widgets(where: { isShow: { _eq: true }, userByUser: { url_key: { _eq: $userKey } } }, order_by: { sort: asc }) {
       id
       config
       type
@@ -51,17 +44,17 @@ const query = gql`
   }
 `;
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 const getData = async (key: string) => {
   const { data, error } = await client.query(
     query,
     {
-      userKey: key,
+      userKey: key
     },
     {
-      fetchOptions: { cache: "no-store" },
-    },
+      fetchOptions: { cache: 'no-store' }
+    }
   );
   if (error || !data?.users.length) {
     return notFound();
@@ -69,37 +62,29 @@ const getData = async (key: string) => {
   return data;
 };
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { key: string };
-}) {
+export async function generateMetadata({ params }: { params: { key: string } }) {
   const data = await getData(params.key);
   const { display_name } = data.users[0];
   return {
-    title: `${display_name} | Lank.at 任意門`,
+    title: `${display_name} | Lank.at 任意門`
   };
 }
 
 export default async function App(
   {
     params,
-    searchParams,
+    searchParams
   }: {
     params: { key: string };
     searchParams: { [key: string]: string | string[] | undefined };
   },
   req: NextRequest,
-  ev: NextFetchEvent,
+  ev: NextFetchEvent
 ) {
   const data = await getData(params.key);
   const users = data.users[0];
 
-  const isPreview = Object.hasOwn(searchParams, "preview");
+  const isPreview = Object.hasOwn(searchParams, 'preview');
 
-  return (
-    <ScrollArea className="fixed inset-0 h-screen">
-      <UserPage users={users} widgets={data.widgets} isPreview={isPreview} />
-    </ScrollArea>
-  );
+  return <UserPage users={users} widgets={data.widgets} isPreview={isPreview} />;
 }

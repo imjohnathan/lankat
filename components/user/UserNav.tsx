@@ -52,16 +52,14 @@ export async function UserNav({ className }: { className?: string }) {
           <DropdownMenuItem className="p-0">
             {session ? (
               <>
-                {/* @ts-expect-error Server Component */}
                 <SignOut className="h-full w-full">
                   <button className="h-full w-full px-2 py-1.5 text-left">登出</button>
                 </SignOut>
               </>
             ) : (
               <>
-                {/* @ts-expect-error Server Component */}
                 <SignIn provider="google" className="h-full w-full">
-                  <button className="h-full w-full px-2 py-1.5 text-left">使用 Google 登入</button>
+                  <button className="h-full w-full px-2 py-1.5 text-left">登入</button>
                 </SignIn>
               </>
             )}

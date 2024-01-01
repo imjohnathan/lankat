@@ -5,9 +5,9 @@ import Link from 'next/link';
 export default async function Home() {
   return (
     <main className="mt-[-66px] flex min-h-screen flex-col items-center justify-between">
-      <div className="grid h-screen w-full place-items-center overflow-hidden bg-[radial-gradient(ellipse_at_center_left,_var(--tw-gradient-stops))] from-gray-700 via-gray-900 to-black pt-10 sm:pt-16 lg:overflow-hidden lg:pb-14 lg:pt-20">
-        <div className="mx-auto max-w-7xl lg:px-8">
-          <div className="lg:grid lg:grid-cols-2 lg:gap-8">
+      <div className="grid h-screen w-full lg:place-items-center overflow-hidden bg-[radial-gradient(ellipse_at_center_left,_var(--tw-gradient-stops))] from-gray-700 via-gray-900 to-black pt-10 sm:pt-16 lg:overflow-hidden lg:pb-14 lg:pt-20">
+        <div className="mx-auto max-w-7xl px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-8 <lg:pt-20">
             <div className="mx-auto max-w-md px-4 sm:max-w-2xl sm:px-6 sm:text-center lg:flex lg:items-center lg:px-0 lg:text-left">
               <div className="lg:py-24">
                 <h1 className="mt-4 text-4xl font-bold  !leading-[1.2] text-white sm:mt-5 sm:text-6xl lg:mt-6 xl:text-6xl">
@@ -20,7 +20,7 @@ export default async function Home() {
                 </p>
                 <div className="mt-10 sm:mt-12">
                   <div className="sm:mx-auto sm:max-w-xl lg:mx-0">
-                    <div className="sm:flex">
+                    <div className="flex <lg:justify-center">
                       <div className="mt-3 sm:ml-3 sm:mt-0">
                         <Button className="h-12 text-lg" variant={'outline'} asChild>
                           <Link href="/login">馬上開始</Link>

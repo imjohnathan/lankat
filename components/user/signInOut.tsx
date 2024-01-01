@@ -1,41 +1,37 @@
-import { signIn, signOut } from "@/lib/auth";
-import { redirect } from "next/navigation";
+import { signOut } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 export async function SignIn({
   provider,
   children,
-  className,
+  className
 }: {
   provider?: string;
   children?: React.ReactNode;
   className?: string;
 }) {
   return (
-    <form
-      className={className}
-      action={async () => {
-        "use server";
-        const url = await signIn(provider, { redirect: false });
-        redirect(url.replace("signin", "api/auth/signin"));
-      }}
-    >
-      {children}
-    </form>
+    <>
+      <form
+        className={className}
+        action={async () => {
+          'use server';
+          //const url = await signIn(provider, { redirect: false });
+          redirect('/login');
+        }}
+      >
+        {children}
+      </form>
+    </>
   );
 }
 
-export async function SignOut({
-  children,
-  className,
-}: {
-  children?: React.ReactNode;
-  className?: string;
-}) {
+export async function SignOut({ children, className }: { children?: React.ReactNode; className?: string }) {
   return (
     <form
       className={className}
       action={async () => {
-        "use server";
+        'use server';
         await signOut();
       }}
     >

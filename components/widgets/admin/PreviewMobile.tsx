@@ -9,8 +9,8 @@ export default function PreviewMobile({ session }: { session?: any }) {
           預覽
         </button>
       </DrawerTrigger>
-      <DrawerContent>
-        <div className="relative py-5 mx-auto grid grid-cols-1 place-items-center">
+      <DrawerContent className="max-h-[calc(100dvh-4rem)]">
+        <div className="relative mx-auto grid grid-cols-1 place-items-center overflow-y-auto">
           <Preview
             session={session}
             classes={{
