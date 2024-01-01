@@ -1,24 +1,23 @@
-import { CodegenConfig } from "@graphql-codegen/cli";
+import { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
   schema: [
     {
-      "https://together-pangolin-86.hasura.app/v1/graphql": {
+      'https://together-pangolin-86.hasura.app/v1/graphql': {
         headers: {
-          "x-hasura-admin-secret":
-            "7lQAMFpyeVollj1jalVlpTTBQn7m7odbfSP6w29fHqIJY6b0C7g4K0cyFhG9AyYj",
-        },
-      },
-    },
+          'x-hasura-admin-secret': process.env.HASURA_ADMIN_KEY ?? ''
+        }
+      }
+    }
   ],
-  documents: ["src/**/*.tsx"],
+  documents: ['src/**/*.tsx'],
   ignoreNoDocuments: true, // for better experience with the watcher
   generates: {
-    "./gql/": {
-      preset: "client",
-      plugins: [],
-    },
-  },
+    './gql/': {
+      preset: 'client',
+      plugins: []
+    }
+  }
 };
 
 export default config;
