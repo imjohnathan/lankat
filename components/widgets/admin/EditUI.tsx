@@ -41,7 +41,7 @@ export default function WidgetUI({
         </div>
         <div className="flex items-center justify-center gap-2">
           <button
-            onClick={() => openEditModal({ type, widget, className: '<sm:max-h-[calc(100%-4rem)] <sm:h-full' })}
+            onClick={() => openEditModal({ type, widget })}
             className="flex items-center gap-1 text-slate-400 hover:text-black"
           >
             <span className="text-sm">編輯</span> <IconEdit />

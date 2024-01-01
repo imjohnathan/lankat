@@ -13,7 +13,16 @@
           "link": {
             "url": "",
             "id": "e537f270-836a-4b79-8fdf-8d440a41495b",
-            "key": "d40j-7O"
+            "key": "d40j-7O",
+            "created_at": "2023-01-01T00:00:00.000Z",
+            "links": [],
+            "links_aggregate": {},
+            "links_photos": [],
+            "links_photos_aggregate": {},
+            "links_tags": [],
+            "links_tags_aggregate": {},
+            "widgets_links": [],
+            "widgets_links_aggregate": {}
           }
         },
         {
@@ -23,7 +32,15 @@
           "link": {
             "url": "",
             "id": "6bb90cba-5561-4cf6-91bd-912c38920b34",
-            "key": "r3n7MGJ"
+            "key": "r3n7MGJ",
+            "links": [],
+            "links_aggregate": {},
+            "links_photos": [],
+            "links_photos_aggregate": {},
+            "links_tags": [],
+            "links_tags_aggregate": {},
+            "widgets_links": [],
+            "widgets_links_aggregate": {}
           }
         },
         {
@@ -33,7 +50,15 @@
           "link": {
             "url": "",
             "id": "07ff2b09-d2a2-4453-a787-450c4ded6847",
-            "key": "WUk6fCq"
+            "key": "WUk6fCq",
+            "links": [],
+            "links_aggregate": {},
+            "links_photos": [],
+            "links_photos_aggregate": {},
+            "links_tags": [],
+            "links_tags_aggregate": {},
+            "widgets_links": [],
+            "widgets_links_aggregate": {}
           }
         }
       ]

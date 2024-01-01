@@ -1,24 +1,19 @@
-"use client";
+'use client';
 
-import { ScrollArea } from "@/components/ui/scroll-area";
-import UserPage from "@/components/userpage";
-import PreviewData from "@/lib/constants/previewData.json";
-import templates from "@/lib/constants/templates.json";
-import { gql, useQuery, useSubscription } from "@urql/next";
-import { useSession } from "next-auth/react";
-import { useParams, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
-import IconLoading from "~icons/line-md/loading-twotone-loop";
+import { ScrollArea } from '@/components/ui/scroll-area';
+import UserPage from '@/components/userpage';
+import { Users } from '@/gql/graphql';
+import PreviewData from '@/lib/constants/previewData.json';
+import templates from '@/lib/constants/templates.json';
+import { gql, useQuery, useSubscription } from '@urql/next';
+import { useSession } from 'next-auth/react';
+import { useParams, useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
+import IconLoading from '~icons/line-md/loading-twotone-loop';
 
 const query = gql`
   query GetUserWidgets($userKey: String!) {
-    widgets(
-      where: {
-        isShow: { _eq: true }
-        userByUser: { url_key: { _eq: $userKey } }
-      }
-      order_by: { sort: asc }
-    ) {
+    widgets(where: { isShow: { _eq: true }, userByUser: { url_key: { _eq: $userKey } } }, order_by: { sort: asc }) {
       id
       config
       type
@@ -59,13 +54,7 @@ const query = gql`
 
 const subscription = gql`
   subscription GetWidgets($userKey: String!) {
-    widgets(
-      where: {
-        isShow: { _eq: true }
-        userByUser: { url_key: { _eq: $userKey } }
-      }
-      order_by: { sort: asc }
-    ) {
+    widgets(where: { isShow: { _eq: true }, userByUser: { url_key: { _eq: $userKey } } }, order_by: { sort: asc }) {
       id
       config
       type
@@ -97,37 +86,40 @@ function Loading() {
   );
 }
 
+type DataType = {
+  users: Partial<Users>[];
+  widgets: any;
+};
+
 export function UserPagePreview() {
   const { data: session } = useSession();
   const { key } = useParams();
   const searchParams = useSearchParams();
-  const isMocking = searchParams.has("mocking");
-  const userName = searchParams.has("username") && searchParams.get("username");
-  const theme = searchParams.has("themeId") && searchParams.get("themeId");
-  const [data, setData] = useState({ users: [], widgets: [] });
+  const isMocking = searchParams.has('mocking');
+  const userName = searchParams.has('username') && searchParams.get('username');
+  const theme = searchParams.has('themeId') && searchParams.get('themeId');
+  const [data, setData] = useState<DataType>({ users: [], widgets: [] });
   const [{ data: queryData, fetching }] = useQuery({
     query,
     variables: {
-      userKey: key,
-    },
+      userKey: key
+    }
   });
   useEffect(() => {
-    if (queryData && !fetching && !isMocking) {
-      setData(queryData);
-    }
+    if (queryData && !fetching && !isMocking) setData(queryData);
     if (isMocking) {
       setData(PreviewData);
       if (userName) {
         setData((prev) => ({
           ...prev,
-          users: [{ ...prev.users[0], display_name: userName }],
+          users: [{ ...prev.users[0], display_name: userName }]
         }));
       }
       if (theme) {
         const themeData = templates.find(({ id }) => id === Number(theme));
         setData((prev) => ({
           ...prev,
-          users: [{ ...prev.users[0], theme: themeData }],
+          users: [{ ...prev.users[0], theme: themeData }]
         }));
       }
     }
@@ -140,11 +132,11 @@ export function UserPagePreview() {
     {
       query: subscription,
       variables: {
-        userKey: key,
+        userKey: key
       },
-      pause: isMocking,
+      pause: isMocking
     },
-    handleSubscription,
+    handleSubscription
   );
   const users = data.users[0];
   if (!session) return <Loading />;

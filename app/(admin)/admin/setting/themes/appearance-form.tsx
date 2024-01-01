@@ -326,7 +326,7 @@ export function AppearanceForm() {
           </form>
         </Form>
         <div className={cn('relative sm:col-span-2', { '<sm:hidden': !isPreview })}>
-          <div className="<sm:fixed <sm:inset-0 sm:sticky sm:top-0">
+          <div className="<sm:fixed <sm:inset-0 sm:sticky sm:top-0 <sm:bg-white">
             <PreviewPage isFloating={false} ref={preview} />
           </div>
         </div>

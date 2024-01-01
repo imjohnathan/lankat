@@ -12,7 +12,7 @@ type WidgetListType = {
   type: string;
   title: string;
   icon: React.ComponentType<any>;
-  render: React.ComponentType<{ widget: Widgets; type: string }>;
+  render: React.ComponentType<{ widget: Partial<Widgets>; type: string }>;
 };
 
 export const widgetsList: WidgetListType[] = [
@@ -27,11 +27,11 @@ export const widgetsList: WidgetListType[] = [
     title: '圖片看板',
     icon: MaterialSymbolsImagesmodeOutlineSharp,
     render: (props) => {
-      const { widget }: { widget: Widgets } = props;
+      const { widget }: { widget: Partial<Widgets> } = props;
       const { config, widgets_links } = widget;
       const data = {
         config,
-        links: widgets_links.map(({ name, isShow, link }) => {
+        links: widgets_links?.map(({ name, isShow, link }) => {
           return {
             name: name ?? '',
             image: link?.image ?? '',
