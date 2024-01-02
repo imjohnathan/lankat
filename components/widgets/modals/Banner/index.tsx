@@ -158,7 +158,6 @@ export default function Banner({ widget }: { widget: Widgets }) {
       const filteredBlobs = data.links.filter((link) => link.image.startsWith('blob:'));
       const filesList = await convertLinksToBlobs(filteredBlobs);
       uppy.on('file-added', (file) => {
-        console.log('Added file', file);
         file.meta = {
           ...file.meta,
           bucketName: bucketName,
@@ -171,16 +170,13 @@ export default function Banner({ widget }: { widget: Widgets }) {
 
       const res = await uppy.upload();
       const { successful = [], failed = [] } = res;
-      console.log(res);
       if (failed.length) throw new Error('上傳失敗');
 
       const filesUrl = successful.map(({ meta: { objectName, blobId } }) => {
         return { blobId, url: `${publicUrl}/${objectName}` };
       });
-      console.log(filesUrl);
       return filesUrl;
     } catch (e: any) {
-      console.error(e);
       throw new Error(e.message);
     }
   }
@@ -221,7 +217,6 @@ export default function Banner({ widget }: { widget: Widgets }) {
 
         return fieldData;
       });
-      console.log(variablesLinks);
 
       const variables = {
         object: {
@@ -245,7 +240,6 @@ export default function Banner({ widget }: { widget: Widgets }) {
       close();
     } catch (e) {
       if (e instanceof Error) {
-        console.error(e.message);
         toast.error('錯誤：' + e.message);
         throw new Error(e.message);
       } else {
@@ -538,7 +532,7 @@ export function Fields({
                       </FormControl>
                       <FormMessage />
                     </div>
-                    <div className="h-full max-w-[40px] overflow-hidden rounded-md">
+                    <div className="h-[40px] w-[40px] overflow-hidden rounded-md">
                       <img
                         src={
                           field.value ||
