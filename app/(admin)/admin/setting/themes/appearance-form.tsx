@@ -253,7 +253,6 @@ export function AppearanceForm() {
   }
 
   const changeThemePreview = (theme: any) => {
-    console.log('changeThemePreview fire');
     if (preview.current && preview.current.contentWindow) {
       const message = {
         type: 'CSS_VARIABLES_UPDATE',

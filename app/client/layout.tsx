@@ -3,7 +3,6 @@
 import { getDeployGraphqlEndpoint } from '@/lib/utils';
 import { devtoolsExchange } from '@urql/devtools';
 import { authExchange } from '@urql/exchange-auth';
-import { cacheExchange as graphCacheExchange } from '@urql/exchange-graphcache';
 import {
   UrqlProvider,
   cacheExchange,
@@ -39,16 +38,6 @@ export default function Layout({ children }: { children: ReactNode }) {
 
     const wsClient = createWSClient({
       url: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT?.replace('https', 'wss') ?? ''
-    });
-
-    const cache = graphCacheExchange({
-      updates: {
-        Mutation: {
-          mutationField: (result, args, cache, info) => {
-            console.log(result, args, cache, info);
-          }
-        }
-      }
     });
 
     const subscription = subscriptionExchange({
