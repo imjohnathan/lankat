@@ -19,6 +19,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { gql, useMutation } from '@urql/next';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useContext } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -127,6 +128,7 @@ export function SortableItem(props: any) {
 }
 
 export function ProfileForm() {
+  const router = useRouter();
   const { update } = useSession();
   const { user } = useContext(ProfileContext);
   const [{ fetching: updating }, updateUser] = useMutation(updateUserQuery);
@@ -176,6 +178,7 @@ export function ProfileForm() {
       if (error) throw new Error(error.message);
       toast.success('更新成功');
       update();
+      router.refresh();
     } catch (e) {
       console.error(e);
       toast.error('更新失敗');
